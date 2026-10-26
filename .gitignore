@@ -36,6 +36,7 @@ desktop.ini
 
 # Logs and scratch files
 *.log
+*.pid
 scratch/
 tmp/
 
