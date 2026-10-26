@@ -11,6 +11,9 @@ from backend.routes import api_bp
 EC2_PUBLIC_IP = os.getenv("EC2_PUBLIC_IP", "3.110.208.141").strip()
 HOST = os.getenv("HOST", "0.0.0.0").strip()
 PORT = int(os.getenv("PORT", 5000))
+ENABLE_HTTPS = os.getenv("ENABLE_HTTPS", "true").strip().lower() == "true"
+SSL_CERT = os.getenv("SSL_CERT", "cert.pem").strip()
+SSL_KEY = os.getenv("SSL_KEY", "key.pem").strip()
 
 # Build dynamic allowed origins list from .env
 raw_origins = os.getenv("ALLOWED_ORIGINS", "")
@@ -164,10 +167,35 @@ def admin_settings():
     return render_template("admin_settings.html")
 
 if __name__ == "__main__":
+    ssl_context = None
+    scheme = "http"
+    if ENABLE_HTTPS:
+        # Check if certificate and key exist, or generate them automatically
+        if not (os.path.exists(SSL_CERT) and os.path.exists(SSL_KEY)):
+            try:
+                from scripts.generate_ssl import generate_self_signed_cert
+                generate_self_signed_cert(cert_path=SSL_CERT, key_path=SSL_KEY, ip_address=EC2_PUBLIC_IP)
+            except Exception as e:
+                print(f"[!] Could not auto-generate SSL certificate: {e}")
+
+        if os.path.exists(SSL_CERT) and os.path.exists(SSL_KEY):
+            ssl_context = (SSL_CERT, SSL_KEY)
+            scheme = "https"
+
     print("=" * 60)
     print(" RaiSakshya Smart Attendance Intelligence System")
-    print(f" Server starting on: http://{HOST}:{PORT}")
+    print(f" Server starting on: {scheme}://{HOST}:{PORT}")
     if EC2_PUBLIC_IP:
-        print(f" Public EC2 Access: http://{EC2_PUBLIC_IP}:{PORT}")
+        print(f" Public EC2 Access: {scheme}://{EC2_PUBLIC_IP}:{PORT}")
+    if ssl_context:
+        print(" [SSL/HTTPS Active] WebRTC MediaDevices & Camera Enabled!")
+        print(" Browser Tip: Click 'Advanced' -> 'Proceed to 3.110.208.141' to accept cert.")
+    else:
+        print(" [HTTP Mode] Set ENABLE_HTTPS=true in .env to enable SSL & Camera.")
     print("=" * 60)
-    app.run(host=HOST, port=PORT, debug=True)
+
+    if ssl_context:
+        app.run(host=HOST, port=PORT, ssl_context=ssl_context, debug=True)
+    else:
+        app.run(host=HOST, port=PORT, debug=True)
+

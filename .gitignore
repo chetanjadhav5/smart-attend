@@ -38,3 +38,9 @@ desktop.ini
 *.log
 scratch/
 tmp/
+
+# SSL Certificates & Private Keys
+*.pem
+*.key
+*.crt
+*.csr
