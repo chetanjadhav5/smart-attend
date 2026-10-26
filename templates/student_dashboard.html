@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>RaiSakshya - Student Attendance Dashboard</title>
+  <!-- Tailwind CSS CDN v3 with plugins -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <!-- Chart.js for real interactive graphs -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Font Awesome Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <!-- Google Fonts Plus Jakarta Sans -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              teal: '#00C48C',
+              dark: '#081726',
+              mint: '#E6F8F3',
+              accent: '#10B981',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background: radial-gradient(circle at 10% 20%, #eff6ff 0%, #f0fdf4 40%, #eef2f6 100%);
+      min-height: 100vh;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+  </style>
+</head>
+<body class="text-slate-800 font-sans min-h-screen flex flex-col justify-start">
+
+  <!-- Fixed Top Global Navbar -->
+  <div id="global-navbar" class="sticky top-0 z-[99999] w-full"></div>
+
+  <div class="w-full max-w-[1480px] mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col gap-6">
+
+  <!-- Hero Greeting Banner -->
+  <section class="relative z-10 bg-gradient-to-r from-blue-50/80 via-teal-50/60 to-emerald-50/80 rounded-2xl md:rounded-3xl p-5 md:p-6 overflow-hidden border border-white/80 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between min-h-[135px]">
+    <!-- Greeting and Date Details -->
+    <div class="z-10 max-w-xl">
+      <span id="dynamic-date" class="text-xs md:text-sm font-semibold tracking-wide text-slate-500 uppercase">
+        Monday, 26 Oct 2026
+      </span>
+      <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 mt-1 mb-1 tracking-tight flex items-center gap-2">
+        <span id="dynamic-greeting">Good Day, Student</span> <span class="inline-block transform hover:rotate-12 transition-transform cursor-default">👋</span>
+      </h2>
+      <p id="dynamic-subtitle" class="text-slate-600 text-sm md:text-base font-medium">Your attendance is on track. Keep up the good work!</p>
+    </div>
+
+    <!-- Campus Horizon Illustration (Kept behind with z-0 pointer-events-none) -->
+    <div class="hidden lg:block absolute right-0 bottom-0 h-full w-[480px] pointer-events-none select-none overflow-hidden z-0 opacity-80">
+      <svg class="absolute right-0 bottom-0 w-full h-full" fill="none" preserveAspectRatio="xMaxYMax slice" viewBox="0 0 540 170" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="280" cy="50" fill="#FED7AA" fill-opacity="0.6" r="45"></circle>
+        <path d="M0 170 C120 120 280 140 540 130 L540 170 Z" fill="#99F6E4" fill-opacity="0.35"></path>
+        <path d="M50 170 C200 130 380 135 540 150 L540 170 Z" fill="#BBF7D0" fill-opacity="0.45"></path>
+        <g opacity="0.9">
+          <path d="M290 60 L380 40 L380 170 L290 170 Z" fill="#93C5FD"></path>
+          <path d="M380 40 L450 65 L450 170 L380 170 Z" fill="#60A5FA"></path>
+          <rect fill="#DBEAFE" height="15" rx="1" width="12" x="305" y="70"></rect>
+          <rect fill="#DBEAFE" height="15" rx="1" width="12" x="325" y="66"></rect>
+          <rect fill="#DBEAFE" height="15" rx="1" width="12" x="345" y="62"></rect>
+          <rect fill="#DBEAFE" height="15" rx="1" width="12" x="305" y="95"></rect>
+          <rect fill="#DBEAFE" height="15" rx="1" width="12" x="325" y="91"></rect>
+          <rect fill="#DBEAFE" height="15" rx="1" width="12" x="345" y="87"></rect>
+          <path d="M450 65 L520 85 L520 170 L450 170 Z" fill="#3B82F6" opacity="0.8"></path>
+        </g>
+        <ellipse cx="230" cy="115" fill="#059669" rx="18" ry="32"></ellipse>
+        <circle cx="260" cy="125" fill="#047857" r="24"></circle>
+        <ellipse cx="180" cy="135" fill="#10B981" rx="22" ry="28"></ellipse>
+        <rect fill="#34D399" height="5" opacity="0.6" width="540" x="0" y="165"></rect>
+      </svg>
+    </div>
+  </section>
+
+  <!-- Top Metrics Grid -->
+  <section class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+    
+    <!-- Card: Overall Attendance (Left: 5 cols on lg) -->
+    <div class="lg:col-span-5 bg-white/95 backdrop-blur-md rounded-2xl md:rounded-3xl p-5 sm:p-6 shadow-sm border border-slate-100 flex flex-col justify-between">
+      <!-- Card Header -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-500 text-lg">
+          <i class="fa-solid fa-chart-pie"></i>
+        </div>
+        <div>
+          <h3 class="text-lg font-bold text-slate-800 leading-none">Overall Attendance</h3>
+          <p class="text-xs font-semibold text-slate-400 mt-1">All subjects · Till date</p>
+        </div>
+      </div>
+
+      <!-- Donut Chart & Counts -->
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-6 my-4">
+        <!-- Interactive Chart.js Donut Canvas with Center Percentage Text -->
+        <div class="relative w-44 h-44 sm:w-48 sm:h-48 flex items-center justify-center shrink-0">
+          <canvas id="donutChartCanvas" class="w-full h-full"></canvas>
+          <div class="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none select-none">
+            <span id="stat-overall-center" class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">--%</span>
+            <span class="text-xs font-bold text-slate-400 mt-0.5">Overall</span>
+          </div>
+        </div>
+
+        <!-- Legend & Numerical Stats -->
+        <div class="w-full sm:w-auto flex flex-col justify-center gap-4 pr-2 sm:pr-4 flex-1">
+          <!-- Present -->
+          <div class="flex items-center justify-between gap-6">
+            <div class="flex items-center gap-3">
+              <span class="w-3.5 h-3.5 rounded-full bg-[#00C48C] shrink-0"></span>
+              <span class="text-sm font-semibold text-slate-700">Present</span>
+            </div>
+            <span id="stat-present" class="text-base sm:text-lg font-bold text-slate-900">--</span>
+          </div>
+          <!-- Absent -->
+          <div class="flex items-center justify-between gap-6">
+            <div class="flex items-center gap-3">
+              <span class="w-3.5 h-3.5 rounded-full bg-rose-400 shrink-0"></span>
+              <span class="text-sm font-semibold text-slate-700">Absent</span>
+            </div>
+            <span id="stat-absent" class="text-base sm:text-lg font-bold text-slate-900">--</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+        <span>Required threshold: <strong class="text-slate-700">75%</strong></span>
+        <span id="stat-status-badge" class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">In Safe Zone</span>
+      </div>
+    </div>
+
+    <!-- Card: Attendance Trend (Right: 7 cols on lg) -->
+    <div class="lg:col-span-7 bg-white/95 backdrop-blur-md rounded-2xl md:rounded-3xl p-5 sm:p-6 shadow-sm border border-slate-100 flex flex-col justify-between">
+      <!-- Header & Time Filter -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-teal-500/10 flex items-center justify-center text-teal-500 text-lg">
+            <i class="fa-solid fa-arrow-trend-up"></i>
+          </div>
+          <div>
+            <h3 class="text-lg font-bold text-slate-800 leading-none">Attendance Trend</h3>
+            <p class="text-xs font-semibold text-slate-400 mt-1">Interactive weekly trend breakdown</p>
+          </div>
+        </div>
+        <!-- Dropdown Pill -->
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-slate-700">
+          <i class="fa-regular fa-calendar text-slate-500"></i>
+          <span>Last 8 Weeks</span>
+        </div>
+      </div>
+
+      <!-- Real Interactive Chart.js Canvas -->
+      <div class="w-full relative h-56 mt-2">
+        <canvas id="trendChartCanvas"></canvas>
+      </div>
+
+      <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+        <span>Average Weekly Consistency: <strong class="text-teal-600 font-bold" id="trend-avg">87%</strong></span>
+        <span class="text-slate-400">Hover data points to inspect weekly attendance</span>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- Bottom Details Section -->
+  <section class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+    
+    <!-- Subject-wise Attendance (Left: 7 cols on lg) -->
+    <div class="lg:col-span-7 bg-white/95 backdrop-blur-md rounded-2xl md:rounded-3xl p-5 sm:p-6 shadow-sm border border-slate-100 flex flex-col justify-between">
+      <!-- Header -->
+      <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-500 text-lg">
+            <i class="fa-solid fa-book-open"></i>
+          </div>
+          <div>
+            <h3 class="text-lg font-bold text-slate-800 leading-none">Subject-wise Attendance</h3>
+            <p class="text-xs font-semibold text-slate-400 mt-1">Click any subject to open its detailed syllabus audit</p>
+          </div>
+        </div>
+        <a href="/student/subjects" class="text-xs font-bold text-teal-600 hover:text-teal-700 hover:underline flex items-center gap-1">
+          <span>View All</span>
+          <i class="fa-solid fa-arrow-right text-[10px]"></i>
+        </a>
+      </div>
+
+      <!-- Dynamically Populated Subjects Container -->
+      <div id="subjects-container" class="flex flex-col gap-2.5">
+        <div class="p-6 text-center text-slate-400 text-sm">Loading subject attendance...</div>
+      </div>
+    </div>
+
+    <!-- Alerts & Consistency Column (Right: 5 cols on lg) -->
+    <div class="lg:col-span-5 flex flex-col justify-between gap-4">
+      
+      <!-- Alerts Container -->
+      <div class="bg-white/95 backdrop-blur-md rounded-2xl md:rounded-3xl p-5 shadow-sm border border-slate-100">
+        <div class="flex items-center gap-2.5 mb-3.5">
+          <i class="fa-solid fa-bell text-amber-500 text-lg"></i>
+          <h3 class="text-lg font-bold text-slate-800">Alerts & Insights</h3>
+        </div>
+        
+        <div id="alerts-container" class="flex flex-col gap-3">
+          <!-- Populated from data -->
+        </div>
+      </div>
+
+      <!-- Stay Consistent Motivational Banner -->
+      <div class="relative bg-gradient-to-r from-teal-50/90 via-emerald-50/60 to-white/90 rounded-2xl md:rounded-3xl p-4 sm:p-5 border border-emerald-100/60 shadow-sm overflow-hidden flex items-center justify-between">
+        <div class="flex items-center gap-4 z-10">
+          <div class="w-12 h-12 rounded-2xl bg-white shadow-sm border border-emerald-100 flex items-center justify-center shrink-0 text-emerald-500 text-xl">
+            <i class="fa-solid fa-bullseye"></i>
+          </div>
+          <div>
+            <h4 class="text-base font-extrabold text-slate-900 leading-tight">Stay Consistent!</h4>
+            <p class="text-xs text-slate-600 font-medium mt-0.5">Maintain minimum 75% attendance across all subjects.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </section>
+
+</div>
+
+<script src="/static/js/api.js"></script>
+<script src="/static/js/navbar.js"></script>
+<script>
+  renderGlobalNavbar('student', 'dashboard');
+
+  let donutChart = null;
+  let trendChart = null;
+
+  async function loadStudentDashboard() {
+    try {
+      const data = await API.getStudentDashboard();
+      if (!data) return;
+
+      // 1. Dynamic Greeting & Date
+      const studentFirstName = (data.student && data.student.name) ? data.student.name.split(' ')[0] : 'Student';
+      const todayFormatted = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' });
+      
+      const greetingEl = document.getElementById('dynamic-greeting');
+      if (greetingEl) greetingEl.textContent = data.greeting || `Good Day, ${studentFirstName}`;
+      
+      const dateEl = document.getElementById('dynamic-date');
+      if (dateEl) dateEl.textContent = data.date || todayFormatted;
+      
+      const m = data.metrics || {};
+      const presEl = document.getElementById('stat-present');
+      if (presEl) presEl.textContent = m.present_count ?? 0;
+      const absEl = document.getElementById('stat-absent');
+      if (absEl) absEl.textContent = m.absent_count ?? 0;
+      const nmEl = document.getElementById('stat-not-marked');
+      if (nmEl) nmEl.textContent = m.not_marked ?? 0;
+      const ocEl = document.getElementById('stat-overall-center');
+      if (ocEl) ocEl.textContent = `${m.overall_attendance ?? 0}%`;
+
+      const badge = document.getElementById('stat-status-badge');
+      if (badge) {
+        if ((m.total_sessions || 0) === 0) {
+          badge.className = "px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-800";
+          badge.textContent = "Newly Enrolled";
+        } else if ((m.overall_attendance || 0) >= 75) {
+          badge.className = "px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800";
+          badge.textContent = "In Safe Zone";
+        } else {
+          badge.className = "px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-100 text-rose-800";
+          badge.textContent = "Attendance Warning";
+        }
+      }
+
+      // 2. Render Interactive Donut Chart
+      const donutCtx = document.getElementById('donutChartCanvas').getContext('2d');
+      if (donutChart) donutChart.destroy();
+      donutChart = new Chart(donutCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Present', 'Absent'],
+          datasets: [{
+            data: [m.present_count || 0, (m.absent_count || 0) + (m.not_marked || 0)],
+            backgroundColor: ['#00C48C', '#F43F5E'],
+            borderWidth: 3,
+            borderColor: '#FFFFFF',
+            hoverOffset: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '76%',
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: function(ctx) {
+                  const total = m.total_sessions || ((m.present_count || 0) + (m.absent_count || 0) + (m.not_marked || 0)) || 1;
+                  const pct = Math.round((ctx.parsed / total) * 100);
+                  return ` ${ctx.label}: ${ctx.parsed} sessions (${pct}%)`;
+                }
+              }
+            }
+          }
+        }
+      });
+
+      // 3. Render Interactive Weekly Bar Graph
+      const trendCanvas = document.getElementById('trendChartCanvas');
+      if (trendCanvas) {
+        const trendCtx = trendCanvas.getContext('2d');
+        const weeks = (data.weekly_trends && data.weekly_trends.length > 0) ? data.weekly_trends : [
+          { week: 'W1', rate: 85 },
+          { week: 'W2', rate: 88 },
+          { week: 'W3', rate: 92 },
+          { week: 'W4', rate: 89 },
+          { week: 'W5', rate: 94 },
+          { week: 'W6', rate: 91 },
+          { week: 'W7', rate: 95 },
+          { week: 'W8', rate: 91 }
+        ];
+        const labels = weeks.map(w => w.week);
+        const values = weeks.map(w => w.rate);
+
+        const avgRate = values.length ? Math.round(values.reduce((a, b) => a + b, 0) / values.length) : 87;
+        const avgEl = document.getElementById('trend-avg');
+        if (avgEl) avgEl.textContent = `${avgRate}%`;
+
+        if (trendChart) trendChart.destroy();
+        trendChart = new Chart(trendCtx, {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Attendance Rate',
+              data: values,
+              backgroundColor: '#00C48C',
+              hoverBackgroundColor: '#009d70',
+              borderRadius: 8,
+              borderSkipped: false,
+              barThickness: 24
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                min: 0,
+                max: 100,
+                ticks: {
+                  callback: v => v + '%',
+                  font: { size: 10, family: 'Plus Jakarta Sans', weight: '600' },
+                  color: '#94A3B8'
+                },
+                grid: { color: '#F1F5F9' }
+              },
+              x: {
+                ticks: {
+                  font: { size: 11, family: 'Plus Jakarta Sans', weight: '700' },
+                  color: '#64748B'
+                },
+                grid: { display: false }
+              }
+            },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: ctx => ` Attendance Rate: ${ctx.parsed.y}%`
+                }
+              }
+            }
+          }
+        });
+      }
+
+      // 4. Render Subject List
+      const subjectsCont = document.getElementById('subjects-container');
+      const subjects = data.subjects || [];
+      const iconMap = {
+        'Operating Systems': 'fa-solid fa-gear text-amber-500 bg-amber-50',
+        'Database Management': 'fa-solid fa-database text-sky-500 bg-sky-50',
+        'Data Structures': 'fa-solid fa-code text-teal-600 bg-teal-50',
+        'Computer Networks': 'fa-solid fa-wifi text-rose-500 bg-rose-50',
+        'Software Engineering': 'fa-regular fa-file-lines text-emerald-600 bg-emerald-50'
+      };
+
+      subjectsCont.innerHTML = subjects.map(s => {
+        const iconClass = iconMap[s.name] || 'fa-solid fa-book text-indigo-500 bg-indigo-50';
+        const color = s.attendance >= 85 ? '#00C48C' : (s.attendance >= 75 ? '#3B82F6' : '#F59E0B');
+
+        return `
+          <div onclick="window.location.href='/student/subjects'" class="flex items-center justify-between gap-4 py-2.5 px-3 rounded-2xl hover:bg-slate-50 transition-all cursor-pointer group border border-slate-100 hover:border-slate-200">
+            <div class="flex items-center gap-3.5 w-48 sm:w-56 shrink-0">
+              <div class="w-10 h-10 rounded-xl flex items-center justify-center text-base font-bold shrink-0 ${iconClass}"></div>
+              <div>
+                <span class="text-xs sm:text-sm font-bold text-slate-800 block leading-tight group-hover:text-teal-700">${s.name}</span>
+                <span class="text-[10px] text-slate-400 font-semibold">${s.teacher}</span>
+              </div>
+            </div>
+            
+            <div class="flex-1 bg-slate-100 rounded-full h-3 overflow-hidden mx-2">
+              <div class="h-3 rounded-full transition-all duration-500" style="width: ${s.attendance}%; background-color: ${color};"></div>
+            </div>
+
+            <div class="flex items-center gap-2 justify-end w-20 text-right shrink-0">
+              <span class="text-xs sm:text-sm font-bold text-slate-800">${s.attendance}%</span>
+              <i class="fa-solid fa-chevron-right text-xs text-slate-300 group-hover:text-teal-600 transition-colors"></i>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // 5. Render Alerts
+      const alertsCont = document.getElementById('alerts-container');
+      let alertHtml = '';
+
+      if (m.total_sessions === 0) {
+        alertHtml = `
+          <div class="p-3.5 rounded-2xl bg-teal-50/80 border border-teal-200 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full bg-teal-100 text-teal-600 flex items-center justify-center shrink-0">
+                <i class="fa-solid fa-graduation-cap text-sm"></i>
+              </div>
+              <div>
+                <h4 class="text-xs font-bold text-slate-900 leading-tight">Welcome to RaiSakshya, ${data.student_name}!</h4>
+                <p class="text-[11px] text-teal-800 mt-0.5">Your enrolment in ${data.student.class_code || 'SE Computer'} is active. Live lecture attendance will register here when verified.</p>
+              </div>
+            </div>
+            <span class="text-xs font-extrabold text-teal-700 bg-teal-100/80 px-2.5 py-1 rounded-full">Active</span>
+          </div>
+        `;
+      } else {
+        const lowSubject = subjects.find(s => s.held > 0 && s.attendance < 75);
+        if (lowSubject) {
+          alertHtml += `
+            <div onclick="window.location.href='/student/subjects'" class="p-3.5 rounded-2xl bg-amber-50/80 border border-amber-200 flex items-center justify-between gap-3 hover:bg-amber-100/60 transition cursor-pointer">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+                  <i class="fa-solid fa-triangle-exclamation text-sm"></i>
+                </div>
+                <div>
+                  <h4 class="text-xs font-bold text-slate-900 leading-tight">${lowSubject.name} attendance is ${lowSubject.attendance}%</h4>
+                  <p class="text-[11px] text-amber-800 mt-0.5">Attend upcoming lectures to maintain safe score above 75%.</p>
+                </div>
+              </div>
+              <i class="fa-solid fa-chevron-right text-xs text-amber-500 shrink-0"></i>
+            </div>
+          `;
+        }
+        alertHtml += `
+          <div onclick="window.location.href='/student/subjects'" class="p-3.5 rounded-2xl bg-emerald-50/80 border border-emerald-200 flex items-center justify-between gap-3 hover:bg-emerald-100/60 transition cursor-pointer">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                <i class="fa-solid fa-chart-line text-sm"></i>
+              </div>
+              <div>
+                <h4 class="text-xs font-bold text-slate-900 leading-tight">Overall Attendance at ${m.overall_attendance}%</h4>
+                <p class="text-[11px] text-emerald-800 mt-0.5">Awesome job! You are well above the university attendance bar.</p>
+              </div>
+            </div>
+            <i class="fa-solid fa-chevron-right text-xs text-emerald-500 shrink-0"></i>
+          </div>
+        `;
+      }
+      alertsCont.innerHTML = alertHtml;
+
+    } catch (e) {
+      console.error("Error loading student dashboard:", e);
+    }
+  }
+
+  window.onload = loadStudentDashboard;
+</script>
+</body>
+</html>

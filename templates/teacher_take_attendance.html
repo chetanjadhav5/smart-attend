@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Face Verification Attendance - RaiSakshya</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              dark: '#0B1522',
+              teal: '#00C48C',
+              clay: '#DFBEB0'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #E8EEF5;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(214, 233, 255, 0.7) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(254, 235, 226, 0.6) 0px, transparent 50%),
+        radial-gradient(at 50% 100%, rgba(220, 248, 238, 0.5) 0px, transparent 50%);
+      background-attachment: fixed;
+      color: #1e293b;
+      -webkit-font-smoothing: antialiased;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 5px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    .scanner-line {
+      position: absolute;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #00C48C, #65fcbf, transparent);
+      box-shadow: 0 0 15px rgba(0, 196, 140, 0.8);
+      animation: scanAnim 2.2s infinite ease-in-out;
+    }
+    @keyframes scanAnim {
+      0% { top: 12%; opacity: 0.3; }
+      50% { top: 88%; opacity: 1; }
+      100% { top: 12%; opacity: 0.3; }
+    }
+    /* Completely free select dropdown - no rectangular/square focus borders */
+    select, select:focus, select:active, select:hover {
+      border: none !important;
+      outline: none !important;
+      box-shadow: none !important;
+      -webkit-appearance: none !important;
+      -moz-appearance: none !important;
+      appearance: none !important;
+      --tw-ring-shadow: none !important;
+      --tw-ring-offset-shadow: none !important;
+      --tw-ring-color: transparent !important;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-start">
+
+  <!-- Fixed Top Global Navbar -->
+  <div id="global-navbar" class="sticky top-0 z-[99999] w-full"></div>
+
+  <div class="w-full max-w-[1480px] mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 flex flex-col">
+
+    <!-- MAIN CARD CONTAINER -->
+    <main class="w-full bg-[#f8fafc] rounded-[32px] p-5 sm:p-6 shadow-2xl border border-white/80 relative z-10">
+      
+      <!-- Top Title & Academic Selectors Bar -->
+      <div class="mb-6 flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-200/80">
+        
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 rounded-full border-2 border-[#0B1522] flex items-center justify-center shrink-0">
+            <i class="fa-regular fa-face-smile text-[#0B1522] text-2xl"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h2 class="text-2xl sm:text-3xl font-extrabold text-[#0B1522] tracking-tight">Take Attendance</h2>
+              <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-teal-100 text-teal-800 border border-teal-200">AWS Rekognition Live</span>
+            </div>
+            <p class="text-xs sm:text-sm font-medium text-gray-500 mt-0.5">Select academic parameters, verify teacher face, then take and finalize attendance.</p>
+          </div>
+        </div>
+
+        <!-- Academic Selection Form (Year, Class, Division, Subject) -->
+        <div class="flex flex-wrap items-center gap-2.5 bg-slate-100/90 p-2.5 rounded-2xl border border-slate-200 shadow-sm">
+          
+          <!-- 1. Year Selector (Teacher's Allotted Year) -->
+          <div class="flex flex-col">
+            <label for="sel-year" class="text-[9px] font-extrabold uppercase text-slate-500 pl-1">Year</label>
+            <select id="sel-year" onchange="onAcademicSelectionChange()" class="px-3 py-1.5 rounded-xl bg-white text-xs font-bold text-slate-800 border-0 border-none outline-none ring-0 focus:ring-0 focus:outline-none cursor-pointer appearance-none shadow-sm">
+              <option value="Second Year" selected>Second Year (SE)</option>
+            </select>
+          </div>
+
+          <!-- 2. Class / Branch Selector (Teacher's Allotted Branch) -->
+          <div class="flex flex-col">
+            <label for="sel-class" class="text-[9px] font-extrabold uppercase text-slate-500 pl-1">Class / Branch</label>
+            <select id="sel-class" onchange="onAcademicSelectionChange()" class="px-3 py-1.5 rounded-xl bg-white text-xs font-bold text-slate-800 border-0 border-none outline-none ring-0 focus:ring-0 focus:outline-none cursor-pointer appearance-none shadow-sm">
+              <option value="Computer Engineering" selected>Computer Engineering</option>
+            </select>
+          </div>
+
+          <!-- 3. Division Selector (Teacher's Allotted Division) -->
+          <div class="flex flex-col">
+            <label for="sel-div" class="text-[9px] font-extrabold uppercase text-slate-500 pl-1">Division</label>
+            <select id="sel-div" onchange="onAcademicSelectionChange()" class="px-3 py-1.5 rounded-xl bg-white text-xs font-bold text-slate-800 border-0 border-none outline-none ring-0 focus:ring-0 focus:outline-none cursor-pointer appearance-none shadow-sm">
+              <option value="Div A" selected>Div A</option>
+            </select>
+          </div>
+
+          <!-- 4. Subject Selector (Teacher's Allotted Subject) -->
+          <div class="flex flex-col">
+            <label for="sel-subject" class="text-[9px] font-extrabold uppercase text-slate-500 pl-1">Subject</label>
+            <select id="sel-subject" onchange="onAcademicSelectionChange()" class="px-3 py-1.5 rounded-xl bg-white text-xs font-bold text-slate-800 border-0 border-none outline-none ring-0 focus:ring-0 focus:outline-none cursor-pointer appearance-none shadow-sm">
+              <option value="Operating Systems" selected>Operating Systems</option>
+            </select>
+          </div>
+
+          <input type="hidden" id="sel-date" value="2026-10-26">
+
+        </div>
+
+      </div>
+
+      <!-- TEACHER VERIFICATION NOTICE BANNER (WHEN LOCKED) -->
+      <div id="teacher-lock-banner" class="mb-6 p-4 rounded-2xl bg-amber-50 border-2 border-amber-300 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center font-bold text-lg shrink-0 shadow">
+            <i class="fa-solid fa-lock"></i>
+          </div>
+          <div>
+            <h4 class="text-sm font-extrabold text-amber-950">Teacher Identity Verification Required</h4>
+            <p class="text-xs text-amber-800">The class teacher (<span id="banner-teacher-name" class="font-bold">Prof. Priya Sharma</span>) must verify face to unlock this attendance session.</p>
+          </div>
+        </div>
+        <button type="button" onclick="verifyTeacherFace()" id="verify-teacher-btn" class="px-5 py-2.5 rounded-xl bg-[#0B1522] hover:bg-[#152335] text-white text-xs font-extrabold flex items-center gap-2 shadow transition shrink-0">
+          <i class="fa-solid fa-user-check text-teal-400"></i>
+          <span>Verify Teacher Face</span>
+        </button>
+      </div>
+
+      <!-- TEACHER VERIFIED SUCCESS BANNER -->
+      <div id="teacher-verified-banner" class="hidden mb-6 p-4 rounded-2xl bg-emerald-50 border-2 border-emerald-300 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center font-bold text-lg shrink-0 shadow">
+            <i class="fa-solid fa-check-double"></i>
+          </div>
+          <div>
+            <h4 class="text-sm font-extrabold text-emerald-950">Teacher Verified: <span id="verified-teacher-name">Prof. Priya Sharma</span> ✓</h4>
+            <p class="text-xs text-emerald-800">Live attendance session unlocked for <strong id="active-session-summary">SE Computer - Div A · Operating Systems</strong>. Select student to verify face.</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          <span class="text-xs font-bold px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full border border-emerald-300">
+            Live Session Active
+          </span>
+          <a href="/teacher/daily-attendance" class="text-xs font-bold px-3 py-1 bg-white text-slate-700 hover:bg-slate-100 rounded-full border border-slate-300">
+            View Daily Grid <i class="fa-solid fa-arrow-right ml-1"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- ATTENDANCE SESSION LOCKED & FINALIZED BANNER -->
+      <div id="session-locked-banner" class="hidden mb-6 p-4 rounded-2xl bg-slate-900 text-white border-2 border-teal-400 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xl">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-teal-500 text-slate-950 flex items-center justify-center font-black text-xl shrink-0 shadow">
+            <i class="fa-solid fa-lock"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h4 class="text-sm font-black text-white">Attendance Locked for this Period</h4>
+              <span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-teal-400/20 text-teal-300 border border-teal-400/30">FINALIZED</span>
+            </div>
+            <p class="text-xs text-slate-300 mt-0.5" id="session-locked-summary">
+              Session sealed by Prof. Priya Sharma. All unverified students have been marked Absent.
+            </p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          <button type="button" onclick="startAnotherPeriodSession()" id="new-period-btn" class="text-xs font-bold px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-xl shadow font-extrabold transition flex items-center gap-1.5 cursor-pointer">
+            <i class="fa-solid fa-plus-circle"></i>
+            <span>Take Another Attendance (New Period)</span>
+          </button>
+          <a href="/teacher/dashboard" class="text-xs font-bold px-4 py-2 bg-teal-400 hover:bg-teal-300 text-slate-950 rounded-xl shadow font-extrabold transition">
+            View in Dashboard <i class="fa-solid fa-arrow-right ml-1"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- TWO-COLUMN WORKSPACE GRID -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- LEFT: Biometric Verification Display (Plain Background, Viewfinder, Scanner, Character ONLY) -->
+        <section class="lg:col-span-7 flex flex-col items-center">
+          
+          <div class="w-full flex flex-col md:flex-row items-center gap-6">
+            
+            <!-- MAIN VIEWPORT CARD (Fixed Aspect Ratio) -->
+            <div id="biometric-viewport" class="relative w-full aspect-[4/3] rounded-[28px] overflow-hidden shadow-xl border-2 border-slate-200 flex items-center justify-center bg-[#0B1522]">
+              
+              <!-- ================= STATE A: FACE VERIFICATION ANIMATION (PLAIN BACKGROUND, NO FLOATING RINGS) ================= -->
+              <div id="animation-container" class="absolute inset-0 flex flex-col items-center justify-center bg-[#0B1522] text-white p-6">
+                
+                <!-- Viewfinder Circular Reticle (Target Area) -->
+                <div class="relative w-52 h-52 sm:w-60 sm:h-60 rounded-full border-2 border-teal-400/70 flex items-center justify-center overflow-hidden bg-slate-900/40 shadow-[0_0_25px_rgba(0,196,140,0.2)]">
+                  
+                  <!-- Target Student Animated Character / Avatar -->
+                  <img id="active-subject-avatar" alt="Target student face" class="h-[92%] object-contain object-bottom drop-shadow-2xl transition-all" src="/static/student_faces/268e4791-61db-45cb-b948-2a40ce6e5374.png">
+                  
+                  <!-- Animated Scanning Line -->
+                  <div class="scanner-line"></div>
+
+                  <!-- Biometric Landmarks (Nodes) -->
+                  <div class="absolute top-[35%] left-[32%] w-2 h-2 rounded-full bg-teal-400 shadow-[0_0_8px_#65fcbf] animate-ping"></div>
+                  <div class="absolute top-[35%] right-[32%] w-2 h-2 rounded-full bg-teal-400 shadow-[0_0_8px_#65fcbf] animate-ping"></div>
+                  <div class="absolute top-[52%] left-[48%] w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#65fcbf]"></div>
+                  <div class="absolute top-[68%] left-[42%] w-2 h-2 rounded-full bg-teal-400 shadow-[0_0_8px_#65fcbf]"></div>
+                  <div class="absolute top-[68%] right-[42%] w-2 h-2 rounded-full bg-teal-400 shadow-[0_0_8px_#65fcbf]"></div>
+                </div>
+
+                <!-- 4 Corner Framing Viewfinder Brackets -->
+                <div class="absolute w-[280px] h-[260px] pointer-events-none">
+                  <div class="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-teal-400 rounded-tl-2xl"></div>
+                  <div class="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-teal-400 rounded-tr-2xl"></div>
+                  <div class="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-teal-400 rounded-bl-2xl"></div>
+                  <div class="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-teal-400 rounded-br-2xl"></div>
+                </div>
+
+                <!-- Mode Indicator Badge -->
+                <div class="absolute top-4 right-4 z-20 flex items-center gap-2 bg-black/60 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-teal-500/30 text-white">
+                  <span class="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></span>
+                  <span class="text-[11px] font-extrabold uppercase tracking-wider text-teal-300">Biometric Viewfinder</span>
+                </div>
+
+                <!-- Selected Target Badge -->
+                <div class="absolute top-4 left-4 z-20 flex items-center gap-2 bg-black/60 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10 text-white">
+                  <i class="fa-solid fa-user text-teal-400 text-xs"></i>
+                  <span id="target-name-badge" class="text-xs font-bold">Target: Select Student</span>
+                </div>
+
+                <!-- Guidance Subtitle -->
+                <div class="absolute bottom-4 inset-x-4 text-center">
+                  <span class="text-[11px] font-bold text-teal-200/90 bg-black/60 px-4 py-1.5 rounded-full border border-teal-500/20">
+                    <i class="fa-solid fa-circle-info mr-1 text-teal-400"></i> Press "Verify Face &amp; Mark Present" to scan via webcam
+                  </span>
+                </div>
+
+              </div>
+
+              <!-- ================= STATE B: LIVE CAMERA WINDOW (REPLACES ANIMATION UPON CLICK) ================= -->
+              <div id="camera-container" class="hidden absolute inset-0 bg-black flex items-center justify-center">
+                
+                <!-- Live Video Feed from Webcam -->
+                <video id="live-camera-feed" autoplay playsinline class="w-full h-full object-cover"></video>
+
+                <!-- Active Scanner Overlays -->
+                <div class="absolute inset-0 z-20 flex items-center justify-center pointer-events-none">
+                  <div class="scanner-line"></div>
+                  
+                  <!-- Circular Target Reticle -->
+                  <div class="w-60 h-60 sm:w-64 sm:h-64 rounded-full border-2 border-white/80 shadow-[0_0_20px_rgba(255,255,255,0.4)] relative flex items-center justify-center">
+                    <div class="w-full h-full rounded-full border border-teal-400/60 animate-ping" style="animation-duration: 3s;"></div>
+                  </div>
+
+                  <!-- 4 Corner Framing Brackets -->
+                  <div class="absolute w-[300px] h-[280px] pointer-events-none">
+                    <div class="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-teal-400 rounded-tl-2xl"></div>
+                    <div class="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-teal-400 rounded-tr-2xl"></div>
+                    <div class="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-teal-400 rounded-bl-2xl"></div>
+                    <div class="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-teal-400 rounded-br-2xl"></div>
+                  </div>
+                </div>
+
+                <!-- Top Camera Status Pill -->
+                <div id="cam-status-pill" class="absolute top-4 right-4 z-20 flex items-center gap-2 bg-black/75 backdrop-blur-md px-3.5 py-1.5 rounded-full text-white border border-white/10">
+                  <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <span class="text-xs font-extrabold" id="cam-status-label">Live Camera Scanning...</span>
+                </div>
+
+                <!-- Top Left Target Badge in Camera View -->
+                <div class="absolute top-4 left-4 z-20 flex items-center gap-2 bg-black/75 backdrop-blur-md px-3.5 py-1.5 rounded-full text-white border border-white/10">
+                  <i class="fa-solid fa-video text-emerald-400 text-xs"></i>
+                  <span id="cam-target-badge" class="text-xs font-bold">Verifying Live Student...</span>
+                </div>
+
+                <!-- RESULT OVERLAY (Match or Mismatch) -->
+                <div id="result-overlay" class="hidden absolute inset-0 z-30 flex flex-col items-center justify-center p-6 text-center backdrop-blur-md transition-all">
+                  <div id="result-icon-box" class="w-16 h-16 rounded-full flex items-center justify-center text-3xl mb-3 shadow-lg"></div>
+                  <h3 id="result-title" class="text-xl font-black text-white"></h3>
+                  <p id="result-desc" class="text-xs mt-1 max-w-sm"></p>
+                </div>
+
+              </div>
+
+            </div>
+
+            <!-- Guidelines Column -->
+            <div class="flex md:flex-col items-center justify-around gap-6 md:gap-7 shrink-0 py-2 select-none">
+              
+              <div class="flex flex-col items-center text-center max-w-[105px]">
+                <div class="w-12 h-12 rounded-2xl bg-white shadow-sm border border-slate-200 flex items-center justify-center text-slate-800">
+                  <i class="fa-solid fa-eye text-xl text-teal-600"></i>
+                </div>
+                <span class="text-xs font-bold text-gray-600 mt-2 leading-tight">Look at the camera</span>
+              </div>
+
+              <div class="flex flex-col items-center text-center max-w-[105px]">
+                <div class="w-12 h-12 rounded-2xl bg-white shadow-sm border border-slate-200 flex items-center justify-center text-slate-800">
+                  <i class="fa-solid fa-sun text-xl text-amber-500"></i>
+                </div>
+                <span class="text-xs font-bold text-gray-600 mt-2 leading-tight">Keep face well lit</span>
+              </div>
+
+              <div class="flex flex-col items-center text-center max-w-[105px]">
+                <div class="w-12 h-12 rounded-2xl bg-white shadow-sm border border-slate-200 flex items-center justify-center text-slate-800">
+                  <i class="fa-solid fa-face-smile text-xl text-indigo-500"></i>
+                </div>
+                <span class="text-xs font-bold text-gray-600 mt-2 leading-tight">Remove mask / glasses</span>
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- Prompt Pill -->
+          <div class="mt-4 flex items-center justify-center gap-2 bg-[#e5f4f8] text-[#1c6677] px-6 py-2.5 rounded-full font-bold text-xs sm:text-sm shadow-sm border border-[#cce8f0]">
+            <i class="fa-solid fa-circle-info text-teal-600"></i>
+            <span id="guidance-prompt">Select student and verify live face.</span>
+          </div>
+
+          <!-- Verify Face Button (Activates Camera & Verifies) -->
+          <button type="button" onclick="handleVerifyFaceClick()" id="verify-student-cta" class="mt-5 w-full max-w-[460px] bg-[#0B1522] hover:bg-[#152335] active:scale-[0.99] text-white py-4 px-8 rounded-2xl flex items-center justify-center gap-3 shadow-xl transition font-extrabold text-base">
+            <i class="fa-solid fa-expand text-teal-400 text-lg"></i>
+            <span id="cta-button-text">Verify Face &amp; Mark Present</span>
+            <i class="fa-solid fa-arrow-right text-teal-400 text-sm"></i>
+          </button>
+
+          <!-- Back to Animation Button (visible only when in Camera mode) -->
+          <button id="back-to-animation-btn" type="button" onclick="showAnimationView()" class="hidden mt-3 text-xs font-bold text-slate-500 hover:text-teal-700 underline flex items-center gap-1.5">
+            <i class="fa-solid fa-rotate-left"></i> Return to Face Viewfinder
+          </button>
+
+        </section>
+
+        <!-- RIGHT: Students Roll List Section (Locked until Teacher Face is Verified) -->
+        <section class="lg:col-span-5 bg-white rounded-[28px] p-5 flex flex-col border border-slate-200 shadow-sm min-h-[580px] justify-between">
+          
+          <!-- STATE 1: LOCKED PLACEHOLDER (SHOWN DIRECTLY ON LOAD UNTIL TEACHER VERIFIES FACE) -->
+          <div id="students-locked-placeholder" class="my-auto flex flex-col items-center justify-center text-center p-6 py-12">
+            <div class="w-20 h-20 rounded-3xl bg-amber-50 text-amber-500 border-2 border-amber-200 flex items-center justify-center text-3xl shadow-sm mb-4">
+              <i class="fa-solid fa-lock"></i>
+            </div>
+            <h3 class="text-xl font-black text-[#0B1522] tracking-tight">Student Roster Locked</h3>
+            <p class="text-xs sm:text-sm text-slate-500 font-medium max-w-xs mt-2">
+              Choose Year, Class, Division, and Subject, then verify your face to unlock the student list and record attendance.
+            </p>
+            <button type="button" onclick="verifyTeacherFace()" class="mt-6 px-6 py-3.5 rounded-2xl bg-[#0B1522] hover:bg-[#18273b] text-white font-extrabold text-xs sm:text-sm flex items-center gap-2.5 shadow-xl transition">
+              <i class="fa-solid fa-user-check text-teal-400"></i>
+              <span>Verify Teacher Face to Unlock</span>
+            </button>
+          </div>
+
+          <!-- STATE 2: UNLOCKED STUDENT LIST & COMPLETE ATTENDANCE CTA -->
+          <div id="students-unlocked-container" class="hidden flex flex-col flex-1">
+            
+            <!-- Header and Search -->
+            <div class="flex items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-100">
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-user-group text-slate-800 text-lg"></i>
+                <h3 class="text-lg font-extrabold text-slate-900 tracking-tight">Students</h3>
+                <span id="present-count-badge" class="ml-1 text-xs font-extrabold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
+                  0/0 Present
+                </span>
+              </div>
+
+              <!-- Search by Roll No or Name -->
+              <div class="relative w-40 sm:w-48">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
+                  <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                </span>
+                <input id="student-search-input" oninput="filterStudents()" type="text" placeholder="Search..."
+                  class="w-full bg-[#f1f4f8] text-slate-700 text-xs font-semibold rounded-full pl-8 pr-3 py-1.5 border-none outline-none focus:ring-2 focus:ring-slate-300">
+              </div>
+            </div>
+
+            <!-- Students List Container -->
+            <div id="students-list" class="flex flex-col gap-2.5 max-h-[460px] overflow-y-auto custom-scroll pr-1 flex-1">
+              <!-- Populated via JS -->
+            </div>
+
+            <!-- COMPLETE ATTENDANCE BUTTON -->
+            <div class="mt-4 pt-3 border-t border-slate-100">
+              <button type="button" onclick="startCompleteAttendanceFlow()" id="complete-attendance-btn" 
+                class="w-full py-3.5 px-5 rounded-2xl bg-[#0B1522] hover:bg-[#18273b] active:scale-[0.99] text-white font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2.5 shadow-xl transition">
+                <i class="fa-solid fa-lock text-amber-400"></i>
+                <span id="complete-btn-text">Complete Attendance</span>
+                <i class="fa-solid fa-arrow-right text-teal-400 text-xs"></i>
+              </button>
+              <p class="text-[10px] text-center text-slate-400 font-semibold mt-1.5">
+                Locks period attendance & marks all unverified students Absent
+              </p>
+            </div>
+
+          </div>
+
+        </section>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- SECONDARY TEACHER VERIFICATION MODAL TO LOCK ATTENDANCE -->
+  <div id="complete-modal" class="hidden fixed inset-0 z-[999999] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="bg-white rounded-[32px] max-w-md w-full p-6 shadow-2xl border border-white/80 relative flex flex-col items-center text-center">
+      
+      <!-- Close Button -->
+      <button type="button" onclick="closeCompleteModal()" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition">
+        <i class="fa-solid fa-xmark text-sm"></i>
+      </button>
+
+      <div class="w-14 h-14 rounded-2xl bg-amber-50 text-amber-500 border border-amber-200 flex items-center justify-center text-2xl font-black mb-3">
+        <i class="fa-solid fa-user-lock"></i>
+      </div>
+
+      <h3 class="text-xl font-black text-[#0B1522] tracking-tight">Finalize &amp; Lock Attendance</h3>
+      <p class="text-xs text-slate-500 font-medium mt-1 mb-4">
+        Teacher identity verification required. Look into the camera to seal this period. <strong>All unverified students will be marked Absent.</strong>
+      </p>
+
+      <!-- Video Feed Container -->
+      <div class="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-black shadow-inner flex items-center justify-center">
+        <video id="complete-modal-video" autoplay playsinline class="w-full h-full object-cover"></video>
+        
+        <!-- Viewfinder Reticle -->
+        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div class="scanner-line"></div>
+          <div class="w-48 h-48 rounded-full border-2 border-teal-400/80 shadow-[0_0_15px_rgba(0,196,140,0.5)]"></div>
+          <div class="absolute w-[240px] h-[220px]">
+            <div class="absolute top-0 left-0 w-6 h-6 border-t-4 border-l-4 border-teal-400 rounded-tl-xl"></div>
+            <div class="absolute top-0 right-0 w-6 h-6 border-t-4 border-r-4 border-teal-400 rounded-tr-xl"></div>
+            <div class="absolute bottom-0 left-0 w-6 h-6 border-b-4 border-l-4 border-teal-400 rounded-bl-xl"></div>
+            <div class="absolute bottom-0 right-0 w-6 h-6 border-b-4 border-r-4 border-teal-400 rounded-br-xl"></div>
+          </div>
+        </div>
+
+        <div class="absolute top-3 right-3 bg-black/60 px-3 py-1 rounded-full text-white text-[10px] font-bold border border-white/10">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 inline-block mr-1 animate-pulse"></span> Camera Active
+        </div>
+      </div>
+
+      <!-- Action Button -->
+      <button type="button" onclick="performCompleteAttendanceLock()" id="confirm-lock-btn" 
+        class="mt-5 w-full py-4 px-6 rounded-2xl bg-[#0B1522] hover:bg-[#162335] active:scale-[0.99] text-white font-extrabold text-sm flex items-center justify-center gap-2 shadow-xl transition">
+        <i class="fa-solid fa-lock text-amber-400"></i>
+        <span>Verify Teacher Face &amp; Lock Attendance</span>
+      </button>
+
+      <button type="button" onclick="closeCompleteModal()" class="mt-2 text-xs font-bold text-slate-400 hover:text-slate-600 transition">
+        Cancel and continue marking attendance
+      </button>
+
+    </div>
+  </div>
+
+  <script src="/static/js/api.js"></script>
+  <script src="/static/js/camera.js"></script>
+  <script src="/static/js/navbar.js"></script>
+  <script>
+    renderGlobalNavbar('teacher', 'take_attendance');
+
+    let teacherVerified = false;
+    let isSessionLocked = false;
+    let cameraCtrl = null;
+    let modalCameraCtrl = null;
+    let currentSession = null;
+    let classStudents = [];
+    let activeStudentId = null;
+    let sessionVerifiedStudentIds = [];
+    let isCameraActive = false;
+
+    function getCombinedClassCode() {
+      const yr = document.getElementById('sel-year').value;
+      const cls = document.getElementById('sel-class').value;
+      const div = document.getElementById('sel-div').value;
+      return `${yr} ${cls} - ${div}`;
+    }
+
+    async function initPage() {
+      // 1. Show plain face animation view initially
+      showAnimationView();
+
+      // 2. Fetch session data
+      try {
+        const res = await API.getSession();
+        if (res && res.session) {
+          currentSession = res.session;
+          // Initially do NOT unlock roster automatically; teacher must verify face
+          teacherVerified = false;
+          sessionVerifiedStudentIds = currentSession.verified_students || [];
+          isSessionLocked = !!currentSession.is_locked;
+        }
+      } catch (e) {
+        console.warn("Could not fetch active session", e);
+      }
+
+      // 3. Update locked state UI
+      updateTeacherLockUI();
+    }
+
+    function showAnimationView() {
+      isCameraActive = false;
+      const animCont = document.getElementById('animation-container');
+      const camCont = document.getElementById('camera-container');
+      const backBtn = document.getElementById('back-to-animation-btn');
+      const resultOverlay = document.getElementById('result-overlay');
+
+      animCont.classList.remove('hidden');
+      camCont.classList.add('hidden');
+      if (backBtn) backBtn.classList.add('hidden');
+      if (resultOverlay) resultOverlay.classList.add('hidden');
+
+      if (cameraCtrl) {
+        cameraCtrl.stopCamera();
+      }
+
+      document.getElementById('guidance-prompt').textContent = 'Select student and verify live face.';
+      const ctaBtn = document.getElementById('verify-student-cta');
+      if (!isSessionLocked && teacherVerified) {
+        ctaBtn.disabled = false;
+        ctaBtn.innerHTML = `<i class="fa-solid fa-expand text-teal-400 text-lg"></i> <span id="cta-button-text">Verify Face &amp; Mark Present</span> <i class="fa-solid fa-arrow-right text-teal-400 text-sm"></i>`;
+      }
+    }
+
+    async function showCameraView() {
+      isCameraActive = true;
+      const animCont = document.getElementById('animation-container');
+      const camCont = document.getElementById('camera-container');
+      const backBtn = document.getElementById('back-to-animation-btn');
+
+      animCont.classList.add('hidden');
+      camCont.classList.remove('hidden');
+      if (backBtn) backBtn.classList.remove('hidden');
+
+      document.getElementById('guidance-prompt').textContent = 'Live camera active. Center face inside the reticle.';
+      
+      const activeStudent = classStudents.find(s => s.id === activeStudentId);
+      if (activeStudent) {
+        document.getElementById('cam-target-badge').textContent = `Verifying: ${activeStudent.name} (${activeStudent.roll_no})`;
+      }
+
+      if (!cameraCtrl) {
+        cameraCtrl = new CameraController('live-camera-feed', null, 'cam-status-pill');
+      }
+      await cameraCtrl.startCamera();
+    }
+
+    async function loadStudentsForSelectedClass() {
+      const classCode = getCombinedClassCode();
+      const sub = document.getElementById('sel-subject').value;
+      const date = document.getElementById('sel-date').value;
+
+      document.getElementById('active-session-summary').textContent = `${classCode} · ${sub} (${date})`;
+
+      try {
+        const res = await API.getTeacherStudentsAttendance(classCode, date, sub);
+        classStudents = res.students || [];
+
+        // Derive verified students specifically for THIS subject and date
+        sessionVerifiedStudentIds = classStudents.filter(s => s.daily_status === 'PRESENT').map(s => s.id);
+
+        if (classStudents.length > 0) {
+          const firstUnverified = classStudents.find(s => !sessionVerifiedStudentIds.includes(s.id));
+          activeStudentId = firstUnverified ? firstUnverified.id : classStudents[0].id;
+          selectStudentForVerification(activeStudentId);
+        } else {
+          activeStudentId = null;
+        }
+
+        renderStudentsList();
+      } catch (e) {
+        console.error("Error loading class students:", e);
+      }
+    }
+
+    function onAcademicSelectionChange() {
+      const classCode = getCombinedClassCode();
+      const sub = document.getElementById('sel-subject').value;
+      API.showToast(`Selected: ${classCode} (${sub})`, 'info');
+      
+      // When teacher changes parameters, session requires verification
+      teacherVerified = false;
+      isSessionLocked = false;
+      showAnimationView();
+      updateTeacherLockUI();
+    }
+
+    function updateTeacherLockUI() {
+      const lockBanner = document.getElementById('teacher-lock-banner');
+      const verifiedBanner = document.getElementById('teacher-verified-banner');
+      const lockedBanner = document.getElementById('session-locked-banner');
+      const lockedPlaceholder = document.getElementById('students-locked-placeholder');
+      const unlockedContainer = document.getElementById('students-unlocked-container');
+      const ctaBtn = document.getElementById('verify-student-cta');
+      const completeBtn = document.getElementById('complete-attendance-btn');
+
+      if (isSessionLocked) {
+        lockBanner.classList.add('hidden');
+        verifiedBanner.classList.add('hidden');
+        lockedBanner.classList.remove('hidden');
+        lockedPlaceholder.classList.add('hidden');
+        unlockedContainer.classList.remove('hidden');
+
+        ctaBtn.disabled = true;
+        ctaBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        ctaBtn.innerHTML = `<i class="fa-solid fa-lock text-slate-400"></i> <span>Attendance Period Locked</span>`;
+
+        if (completeBtn) {
+          completeBtn.disabled = true;
+          completeBtn.classList.add('opacity-60', 'cursor-not-allowed', 'bg-slate-700');
+          completeBtn.innerHTML = `<i class="fa-solid fa-check-double text-teal-400"></i> <span>Attendance Completed &amp; Locked ✓</span>`;
+        }
+        return;
+      }
+
+      lockedBanner.classList.add('hidden');
+
+      if (teacherVerified) {
+        lockBanner.classList.add('hidden');
+        verifiedBanner.classList.remove('hidden');
+        lockedPlaceholder.classList.add('hidden');
+        unlockedContainer.classList.remove('hidden');
+
+        ctaBtn.disabled = false;
+        ctaBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        ctaBtn.innerHTML = `<i class="fa-solid fa-expand text-teal-400 text-lg"></i> <span id="cta-button-text">Verify Face &amp; Mark Present</span> <i class="fa-solid fa-arrow-right text-teal-400 text-sm"></i>`;
+
+        if (completeBtn) {
+          completeBtn.disabled = false;
+          completeBtn.classList.remove('opacity-60', 'cursor-not-allowed', 'bg-slate-700');
+          completeBtn.innerHTML = `<i class="fa-solid fa-lock text-amber-400"></i> <span>Complete Attendance</span> <i class="fa-solid fa-arrow-right text-teal-400 text-xs"></i>`;
+        }
+      } else {
+        lockBanner.classList.remove('hidden');
+        verifiedBanner.classList.add('hidden');
+        lockedPlaceholder.classList.remove('hidden');
+        unlockedContainer.classList.add('hidden');
+
+        ctaBtn.disabled = true;
+        ctaBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        ctaBtn.innerHTML = `<i class="fa-solid fa-lock text-amber-400"></i> <span>Verify Teacher Face to Unlock</span>`;
+      }
+    }
+
+    async function verifyTeacherFace() {
+      const btn = document.getElementById('verify-teacher-btn');
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Scanning Teacher Face...`;
+
+      // Open camera briefly for teacher
+      await showCameraView();
+
+      setTimeout(async () => {
+        const snap = cameraCtrl ? cameraCtrl.captureSnapshotBase64() : null;
+        const res = await API.verifyTeacher({
+          teacher_id: 'teacher_1',
+          class_code: getCombinedClassCode(),
+          year: document.getElementById('sel-year').value,
+          subject: document.getElementById('sel-subject').value,
+          face_image: snap
+        });
+
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fa-solid fa-user-check text-teal-400"></i> <span>Verify Teacher Face</span>`;
+
+        if (res.success) {
+          teacherVerified = true;
+          await loadStudentsForSelectedClass();
+          updateTeacherLockUI();
+          API.showToast(res.message, 'success');
+        } else {
+          API.showToast(res.message || "Teacher verification failed", 'error');
+        }
+
+        showAnimationView();
+      }, 1000);
+    }
+
+    function renderStudentsList() {
+      const listEl = document.getElementById('students-list');
+      const query = (document.getElementById('student-search-input').value || '').toLowerCase().trim();
+      const sub = document.getElementById('sel-subject').value;
+
+      const verifiedCount = classStudents.filter(s => sessionVerifiedStudentIds.includes(s.id)).length;
+      document.getElementById('present-count-badge').textContent = `${verifiedCount}/${classStudents.length} Present`;
+
+      const filtered = classStudents.filter(s => 
+        (s.name || '').toLowerCase().includes(query) || 
+        (s.roll_no || '').toLowerCase().includes(query)
+      );
+
+      if (filtered.length === 0) {
+        listEl.innerHTML = `<div class="p-8 text-center text-slate-400 text-xs">No students matching search.</div>`;
+        return;
+      }
+
+      listEl.innerHTML = filtered.map(s => {
+        const isVerified = sessionVerifiedStudentIds.includes(s.id);
+        const isSelected = s.id === activeStudentId;
+        const isDemo = s.is_demo !== false;
+
+        let bgClass = 'bg-white hover:bg-slate-50 border-slate-100';
+        let statusBadge = `<span class="text-xs font-extrabold text-slate-600 bg-slate-100 px-3 py-1.5 rounded-xl">${s.roll_no}</span>`;
+
+        if (isSessionLocked) {
+          if (isVerified) {
+            bgClass = 'bg-[#eaf8f0] border-emerald-300';
+            statusBadge = `
+              <div class="flex items-center gap-1.5">
+                <span class="text-xs font-black text-emerald-800 bg-[#d8f2e2] px-2.5 py-1 rounded-xl">PRESENT</span>
+                <span class="text-xs font-bold text-slate-400">${s.roll_no}</span>
+              </div>
+            `;
+          } else {
+            bgClass = 'bg-rose-50/70 border-rose-200';
+            statusBadge = `
+              <div class="flex items-center gap-1.5">
+                <span class="text-xs font-black text-rose-700 bg-rose-100 px-2.5 py-1 rounded-xl">ABSENT</span>
+                <span class="text-xs font-bold text-slate-400">${s.roll_no}</span>
+              </div>
+            `;
+          }
+        } else {
+          if (isVerified) {
+            bgClass = 'bg-[#eaf8f0] border-emerald-300';
+            statusBadge = `
+              <div class="flex items-center gap-1.5">
+                <span class="text-xs font-black text-emerald-800 bg-[#d8f2e2] px-2.5 py-1 rounded-xl">PRESENT</span>
+                <span class="text-xs font-bold text-slate-400">${s.roll_no}</span>
+              </div>
+            `;
+          } else if (isSelected) {
+            bgClass = 'bg-amber-50 border-amber-300 ring-2 ring-amber-400/40';
+          }
+        }
+
+        const typeTag = isDemo ? `
+          <span class="text-[9px] px-1.5 py-0.2 rounded bg-slate-100 text-slate-500 font-bold">Demo</span>
+        ` : `
+          <span class="text-[9px] px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 font-extrabold">Registered</span>
+        `;
+
+        return `
+          <div onclick="${isSessionLocked ? '' : `selectStudentForVerification('${s.id}')`}" class="flex items-center justify-between p-2.5 rounded-2xl border ${bgClass} transition-all ${isSessionLocked ? 'opacity-90' : 'cursor-pointer'} shadow-sm group">
+            <div class="flex items-center gap-3">
+              <img src="${s.avatar || '/static/student_faces/268e4791-61db-45cb-b948-2a40ce6e5374.png'}" 
+                class="w-11 h-11 rounded-full object-cover bg-amber-100 shrink-0 border border-slate-200">
+              <div>
+                <div class="flex items-center gap-1.5">
+                  <span class="font-bold text-slate-900 text-sm group-hover:text-teal-700">${s.name}</span>
+                  ${typeTag}
+                </div>
+                <div class="flex items-center gap-2 text-[11px] text-slate-400">
+                  <span class="text-indigo-600 font-extrabold">Roll #${s.roll_no}</span>
+                  <span>•</span>
+                  <span>${sub}: <strong>${s.subject_attendance_rate || 85}%</strong></span>
+                  <span>•</span>
+                  <a href="/teacher/student-profile?student_id=${s.id}" onclick="event.stopPropagation()" class="text-teal-600 font-bold hover:underline">Profile</a>
+                </div>
+              </div>
+            </div>
+            ${statusBadge}
+          </div>
+        `;
+      }).join('');
+    }
+
+    function selectStudentForVerification(studentId) {
+      if (isSessionLocked) return;
+      activeStudentId = studentId;
+      const student = classStudents.find(s => s.id === studentId);
+      if (student) {
+        document.getElementById('target-name-badge').textContent = `Target: ${student.name} (${student.roll_no})`;
+        document.getElementById('active-subject-avatar').src = student.avatar || '/static/student_faces/268e4791-61db-45cb-b948-2a40ce6e5374.png';
+        if (isCameraActive) {
+          document.getElementById('cam-target-badge').textContent = `Verifying: ${student.name} (${student.roll_no})`;
+        }
+      }
+      renderStudentsList();
+    }
+
+    async function handleVerifyFaceClick() {
+      if (isSessionLocked) {
+        API.showToast("Attendance is already finalized and locked for this period.", 'info');
+        return;
+      }
+      if (!teacherVerified) {
+        API.showToast("Please verify teacher face first to unlock session!", 'error');
+        return;
+      }
+      if (!activeStudentId) {
+        API.showToast("Please select a student from the roll list", 'info');
+        return;
+      }
+
+      const activeStudent = classStudents.find(s => s.id === activeStudentId);
+      const ctaBtn = document.getElementById('verify-student-cta');
+
+      await showCameraView();
+
+      ctaBtn.disabled = true;
+      ctaBtn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin text-teal-400"></i> Scanning Face with AWS Rekognition...`;
+
+      setTimeout(async () => {
+        const snap = cameraCtrl ? cameraCtrl.captureSnapshotBase64() : null;
+        const currentCls = getCombinedClassCode();
+        const currentSub = document.getElementById('sel-subject').value;
+        const res = await API.verifyStudent(activeStudentId, snap, currentCls, currentSub);
+
+        const overlay = document.getElementById('result-overlay');
+        const iconBox = document.getElementById('result-icon-box');
+        const titleEl = document.getElementById('result-title');
+        const descEl = document.getElementById('result-desc');
+
+        overlay.classList.remove('hidden');
+
+        if (res.success) {
+          overlay.className = "absolute inset-0 z-30 flex flex-col items-center justify-center p-6 text-center backdrop-blur-md bg-emerald-950/85 transition-all";
+          iconBox.className = "w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-400 border-2 border-emerald-500 flex items-center justify-center text-3xl mb-3 shadow-[0_0_20px_#10b981]";
+          iconBox.innerHTML = `<i class="fa-solid fa-check"></i>`;
+          titleEl.textContent = `Face Verified (${res.biometric_details?.similarity || 96.2}%)`;
+          titleEl.className = "text-xl font-black text-white";
+          descEl.textContent = `${activeStudent ? activeStudent.name : 'Student'} marked PRESENT in today's daily attendance!`;
+          descEl.className = "text-xs text-emerald-200 mt-1 max-w-sm font-semibold";
+
+          API.showToast(res.message, 'success');
+
+          if (!sessionVerifiedStudentIds.includes(activeStudentId)) {
+            sessionVerifiedStudentIds.push(activeStudentId);
+          }
+          renderStudentsList();
+
+          setTimeout(() => {
+            overlay.classList.add('hidden');
+            const nextUnverified = classStudents.find(s => !sessionVerifiedStudentIds.includes(s.id));
+            if (nextUnverified) {
+              selectStudentForVerification(nextUnverified.id);
+            }
+            showAnimationView();
+          }, 2200);
+
+        } else {
+          overlay.className = "absolute inset-0 z-30 flex flex-col items-center justify-center p-6 text-center backdrop-blur-md bg-rose-950/85 transition-all";
+          iconBox.className = "w-16 h-16 rounded-full bg-rose-500/20 text-rose-400 border-2 border-rose-500 flex items-center justify-center text-3xl mb-3 shadow-[0_0_20px_#f43f5e]";
+          iconBox.innerHTML = `<i class="fa-solid fa-xmark"></i>`;
+          titleEl.textContent = "Face Not Matched!";
+          titleEl.className = "text-xl font-black text-white";
+          descEl.textContent = res.message || "Biometric signature does not match demo record. Register a new student profile with your camera face to verify attendance.";
+          descEl.className = "text-xs text-rose-200 mt-1 max-w-sm font-semibold";
+
+          API.showToast(res.message || "Face not matched", 'error');
+
+          setTimeout(() => {
+            overlay.classList.add('hidden');
+            showAnimationView();
+          }, 2800);
+        }
+      }, 1200);
+    }
+
+    // ================= COMPLETE ATTENDANCE WORKFLOW =================
+    async function startCompleteAttendanceFlow() {
+      if (isSessionLocked) return;
+      document.getElementById('complete-modal').classList.remove('hidden');
+      if (!modalCameraCtrl) {
+        modalCameraCtrl = new CameraController('complete-modal-video', null, null);
+      }
+      await modalCameraCtrl.startCamera();
+    }
+
+    function closeCompleteModal() {
+      if (modalCameraCtrl) {
+        modalCameraCtrl.stopCamera();
+      }
+      document.getElementById('complete-modal').classList.add('hidden');
+    }
+
+    async function performCompleteAttendanceLock() {
+      const lockBtn = document.getElementById('confirm-lock-btn');
+      lockBtn.disabled = true;
+      lockBtn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Verifying Teacher &amp; Locking Attendance...`;
+
+      const snap = modalCameraCtrl ? modalCameraCtrl.captureSnapshotBase64() : null;
+      const classCode = getCombinedClassCode();
+      const subject = document.getElementById('sel-subject').value;
+      const date = document.getElementById('sel-date').value;
+
+      try {
+        const res = await API.completeAttendanceSession({
+          teacher_id: 'teacher_1',
+          class_code: classCode,
+          subject: subject,
+          date: date,
+          face_image: snap
+        });
+
+        lockBtn.disabled = false;
+        lockBtn.innerHTML = `<i class="fa-solid fa-lock text-amber-400"></i> <span>Verify Teacher Face &amp; Lock Attendance</span>`;
+
+        if (res.success) {
+          closeCompleteModal();
+          isSessionLocked = true;
+          updateTeacherLockUI();
+          renderStudentsList();
+          API.showToast(res.message, 'success');
+          document.getElementById('session-locked-summary').textContent = 
+            `Attendance sealed: ${res.session_summary.present_count} Present, ${res.session_summary.absent_count} Absent. Unverified students marked Absent.`;
+        } else {
+          API.showToast(res.message || "Attendance lock failed", 'error');
+        }
+      } catch (e) {
+        lockBtn.disabled = false;
+        lockBtn.innerHTML = `<i class="fa-solid fa-lock text-amber-400"></i> <span>Verify Teacher Face &amp; Lock Attendance</span>`;
+        API.showToast("Network error while completing attendance", 'error');
+      }
+    }
+
+    async function startAnotherPeriodSession() {
+      const btn = document.getElementById('new-period-btn');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Starting New Period...`;
+      }
+      try {
+        const res = await API.startNewPeriodSession();
+        if (res && res.success) {
+          isSessionLocked = false;
+          teacherVerified = false;
+          sessionVerifiedStudentIds = [];
+          updateTeacherLockUI();
+          showAnimationView();
+          API.showToast(res.message || "New period attendance opened! Verify teacher face to begin.", "success");
+        } else {
+          API.showToast(res.message || "Could not open new period session.", "error");
+        }
+      } catch (e) {
+        console.error("Error opening new period session:", e);
+        API.showToast("Network error starting new period session", "error");
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = `<i class="fa-solid fa-plus-circle"></i> <span>Take Another Attendance (New Period)</span>`;
+        }
+      }
+    }
+
+    function filterStudents() {
+      renderStudentsList();
+    }
+
+    window.onload = initPage;
+  </script>
+</body>
+</html>

@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>My Faculty Profile - RaiSakshya</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #E8EEF5;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(214, 233, 255, 0.7) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(254, 235, 226, 0.6) 0px, transparent 50%),
+        radial-gradient(at 50% 100%, rgba(220, 248, 238, 0.5) 0px, transparent 50%);
+      background-attachment: fixed;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+  </style>
+</head>
+<body class="min-h-screen text-slate-800 antialiased flex flex-col justify-start">
+
+  <!-- Fixed Top Global Navbar -->
+  <div id="global-navbar" class="sticky top-0 z-[99999] w-full"></div>
+
+  <!-- Standardized Page Content Wrapper -->
+  <main class="w-full max-w-[1480px] mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 flex flex-col gap-6">
+
+    <!-- Breadcrumb -->
+    <div class="flex items-center gap-2 text-xs font-semibold text-slate-500">
+      <a href="/teacher/daily-attendance" class="hover:text-slate-800 transition">Teacher Portal</a>
+      <span>&gt;</span>
+      <span class="text-slate-900 font-bold">My Faculty Profile</span>
+    </div>
+
+    <!-- Profile Management Card -->
+    <div class="w-full bg-white/95 backdrop-blur-xl rounded-[32px] p-6 sm:p-8 shadow-xl border border-white/80">
+      
+      <div class="flex flex-col md:flex-row md:items-center justify-between pb-6 mb-6 border-b border-slate-100 gap-4">
+        <div>
+          <div class="flex items-center gap-2.5">
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Faculty Profile Details</h1>
+            <span id="badge-teacher-role" class="px-3 py-1 rounded-full text-xs font-extrabold bg-indigo-100 text-indigo-800 border border-indigo-200">
+              Class Teacher
+            </span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-500 font-medium mt-1">
+            Manage your personal academic records, office cabin location, contact details, and assigned course curriculum.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <a href="/teacher/take-attendance" class="px-4 py-2.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition flex items-center gap-2">
+            <i class="fa-solid fa-camera"></i> Take Attendance
+          </a>
+          <a href="/teacher/daily-attendance" class="px-4 py-2.5 rounded-2xl bg-[#00C48C] hover:bg-[#00ab7a] text-white text-xs font-extrabold shadow-md transition flex items-center gap-2">
+            <i class="fa-solid fa-users"></i> View Students
+          </a>
+        </div>
+      </div>
+
+      <!-- Main Form & Avatar Grid -->
+      <form id="teacher-profile-form" onsubmit="handleTeacherProfileSubmit(event)" class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- Left Column: 3D Avatar & Visual Identity -->
+        <div class="lg:col-span-4 flex flex-col items-center gap-5 p-6 rounded-3xl bg-slate-50/80 border border-slate-200/80">
+          <div class="relative w-40 h-40 rounded-3xl bg-gradient-to-tr from-amber-100 to-indigo-50 border-2 border-white shadow-xl flex items-center justify-center p-2 overflow-hidden">
+            <img id="profile-display-avatar" alt="Faculty Avatar" class="w-full h-full object-contain" src="/static/teacher_faces/308cb046-f220-4dba-a871-63cdef5a258c.png">
+          </div>
+
+          <div class="text-center w-full">
+            <h3 id="display-name" class="text-lg font-black text-slate-900">Prof. Priya Sharma</h3>
+            <p id="display-designation" class="text-xs text-indigo-600 font-bold mt-0.5">Class Teacher · SE Computer Div A</p>
+            <p id="display-cabin" class="text-xs text-slate-500 font-medium mt-1">Cabin 402, 4th Floor</p>
+          </div>
+
+          <!-- Avatar Picker -->
+          <div class="w-full pt-4 border-t border-slate-200/80">
+            <label class="block text-xs font-bold text-slate-600 mb-2.5 text-center">Select Profile Character</label>
+            <div id="avatar-picker-grid" class="grid grid-cols-4 gap-2">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- Biometrics Card -->
+          <div class="w-full p-4 rounded-2xl bg-white border border-slate-200/80 flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center text-lg shrink-0">
+              <i class="fa-solid fa-face-smile"></i>
+            </div>
+            <div class="min-w-0 flex-1">
+              <div class="text-xs font-bold text-slate-800">Biometric Facial Verification</div>
+              <div class="text-[11px] text-emerald-600 font-semibold flex items-center gap-1 mt-0.5">
+                <i class="fa-solid fa-circle-check text-[10px]"></i> Active (AWS Rekognition)
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Personal & Academic Information Fields -->
+        <div class="lg:col-span-8 flex flex-col gap-6">
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-1.5">Full Name</label>
+              <input id="input-name" type="text" required class="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-bold text-slate-800 outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition">
+            </div>
+
+            <div>
+              <label class="block text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-1.5">Email Address</label>
+              <input id="input-email" type="email" readonly class="w-full px-4 py-3 rounded-2xl bg-slate-100 border border-slate-200 text-sm font-semibold text-slate-500 cursor-not-allowed">
+            </div>
+
+            <div>
+              <label class="block text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-1.5">Designation</label>
+              <input id="input-designation" type="text" required class="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-bold text-slate-800 outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition" placeholder="e.g. Assistant Professor">
+            </div>
+
+            <div>
+              <label class="block text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-1.5">Department</label>
+              <select id="select-dept" class="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-bold text-slate-800 outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition cursor-pointer">
+                <option value="Computer Engineering">Computer Engineering</option>
+                <option value="Information Technology">Information Technology</option>
+                <option value="AI & Data Science">AI & Data Science</option>
+                <option value="Electronics & Telecommunication">Electronics & Telecommunication</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-1.5">Cabin / Office Room</label>
+              <input id="input-cabin" type="text" required class="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-bold text-slate-800 outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition" placeholder="e.g. Cabin 402, 4th Floor">
+            </div>
+
+            <div>
+              <label class="block text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-1.5">Phone Number</label>
+              <input id="input-phone" type="text" class="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-bold text-slate-800 outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition" placeholder="e.g. +91 98765 43210">
+            </div>
+          </div>
+
+          <!-- Academic Assigned Section -->
+          <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col gap-4">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-extrabold uppercase tracking-wider text-slate-500">Class In-Charge</span>
+              <span id="display-assigned-class" class="text-xs font-extrabold px-3 py-1 rounded-full bg-teal-100 text-teal-800 border border-teal-200">
+                SE Computer - Div A
+              </span>
+            </div>
+            
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-extrabold uppercase tracking-wider text-slate-500">Subjects Taught (Add or Delete)</span>
+                <span class="text-[11px] text-slate-400 font-medium">Click × to delete</span>
+              </div>
+              
+              <!-- Subject Pills Grid -->
+              <div id="subjects-container" class="flex flex-wrap gap-2 mb-3">
+                <!-- Dynamically rendered pills with delete button -->
+              </div>
+
+              <!-- Add New Subject Input Row -->
+              <div class="flex items-center gap-2 max-w-md">
+                <input id="input-new-subject" type="text" placeholder="e.g. Artificial Intelligence" onkeydown="if(event.key==='Enter'){event.preventDefault();addNewSubject();}" class="flex-1 px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-xs font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-indigo-500">
+                <button type="button" onclick="addNewSubject()" class="px-3.5 py-2 rounded-xl bg-[#0B1522] hover:bg-[#1a293c] text-white text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer">
+                  <i class="fa-solid fa-plus text-[10px]"></i>
+                  <span>Add Subject</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Save Button -->
+          <div class="pt-4 flex items-center justify-end gap-4 border-t border-slate-100">
+            <button type="submit" id="btn-save-teacher" class="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-[#6e51f4] to-[#886bf8] hover:from-[#6244ec] hover:to-[#7859f3] text-white text-sm font-extrabold shadow-lg shadow-indigo-500/25 transition active:scale-95 flex items-center gap-2 cursor-pointer">
+              <i class="fa-solid fa-floppy-disk"></i>
+              <span>Save Faculty Profile Changes</span>
+            </button>
+          </div>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </main>
+
+  <script src="/static/js/api.js"></script>
+  <script src="/static/js/navbar.js"></script>
+  <script>
+    renderGlobalNavbar('teacher', 'profile');
+
+    const availableTeacherAvatars = [
+      "/static/teacher_faces/308cb046-f220-4dba-a871-63cdef5a258c.png",
+      "/static/teacher_faces/70a23d6a-ee5f-422b-b85e-a43ed14cab66.png",
+      "/static/teacher_faces/20bb28b4-f54a-4a3c-9630-e75ad391e672.png",
+      "/static/teacher_faces/22ea68d3-8b39-4b21-86f5-524d563ceee4.png"
+    ];
+
+    let currentTeacher = null;
+    let selectedAvatar = availableTeacherAvatars[0];
+    let currentTeacherSubjects = [];
+
+    async function initTeacherProfile() {
+      try {
+        const res = await API.getMyProfile();
+        if (res.success && res.user) {
+          currentTeacher = res.user;
+          selectedAvatar = currentTeacher.avatar || availableTeacherAvatars[0];
+          currentTeacherSubjects = Array.isArray(currentTeacher.subjects) ? [...currentTeacher.subjects] : ["Operating Systems", "Computer Networks", "Data Structures"];
+
+          document.getElementById('input-name').value = currentTeacher.name || '';
+          document.getElementById('input-email').value = currentTeacher.email || '';
+          document.getElementById('input-designation').value = currentTeacher.designation || '';
+          document.getElementById('select-dept').value = currentTeacher.department || 'Computer Engineering';
+          document.getElementById('input-cabin').value = currentTeacher.cabin || '';
+          document.getElementById('input-phone').value = currentTeacher.phone || '+91 98230 44556';
+
+          document.getElementById('display-name').textContent = currentTeacher.name;
+          document.getElementById('display-designation').textContent = `${currentTeacher.designation || 'Faculty'} · ${currentTeacher.is_class_teacher ? 'Class Teacher' : ''}`;
+          document.getElementById('display-cabin').textContent = currentTeacher.cabin || 'Main Faculty Block';
+          document.getElementById('profile-display-avatar').src = selectedAvatar;
+
+          const badgeRole = document.getElementById('badge-teacher-role');
+          if (currentTeacher.is_class_teacher) {
+            badgeRole.textContent = `Class Teacher (${currentTeacher.class_assigned || 'SE Computer - Div A'})`;
+          } else {
+            badgeRole.textContent = currentTeacher.designation || 'Faculty Member';
+          }
+
+          document.getElementById('display-assigned-class').textContent = currentTeacher.class_assigned || 'SE Computer - Div A';
+
+          renderSubjects();
+          renderAvatarPicker();
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function renderSubjects() {
+      const subsCont = document.getElementById('subjects-container');
+      if (!currentTeacherSubjects || currentTeacherSubjects.length === 0) {
+        subsCont.innerHTML = `<span class="text-xs text-slate-400 italic">No subjects added yet. Add one below.</span>`;
+        return;
+      }
+      subsCont.innerHTML = currentTeacherSubjects.map((s, idx) => `
+        <span class="px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-xs font-bold text-slate-800 shadow-sm flex items-center gap-2 group hover:border-indigo-300 transition">
+          <i class="fa-solid fa-book-bookmark text-indigo-500 text-[10px]"></i>
+          <span>${s}</span>
+          <button type="button" onclick="removeSubject(${idx})" class="text-slate-400 hover:text-rose-600 transition ml-1 p-0.5 rounded-full hover:bg-rose-50" title="Delete ${s}">
+            <i class="fa-solid fa-xmark text-xs"></i>
+          </button>
+        </span>
+      `).join('');
+    }
+
+    function addNewSubject() {
+      const inp = document.getElementById('input-new-subject');
+      const val = inp.value.trim();
+      if (!val) {
+        API.showToast("Please enter a subject name", "info");
+        return;
+      }
+      if (currentTeacherSubjects.includes(val)) {
+        API.showToast("Subject already exists in your list", "info");
+        return;
+      }
+      currentTeacherSubjects.push(val);
+      inp.value = '';
+      renderSubjects();
+      API.showToast(`Added "${val}" to subjects list`, "success");
+    }
+
+    function removeSubject(idx) {
+      const removed = currentTeacherSubjects.splice(idx, 1);
+      renderSubjects();
+      API.showToast(`Removed "${removed[0]}"`, "info");
+    }
+
+    function renderAvatarPicker() {
+      const grid = document.getElementById('avatar-picker-grid');
+      grid.innerHTML = availableTeacherAvatars.map(av => {
+        const isSel = av === selectedAvatar;
+        return `
+          <div onclick="selectTeacherAvatar('${av}')" class="cursor-pointer rounded-xl p-1 border-2 ${isSel ? 'border-indigo-600 bg-indigo-50' : 'border-transparent hover:border-slate-300'} transition">
+            <img src="${av}" class="w-full aspect-square rounded-lg object-contain">
+          </div>
+        `;
+      }).join('');
+    }
+
+    function selectTeacherAvatar(url) {
+      selectedAvatar = url;
+      document.getElementById('profile-display-avatar').src = url;
+      renderAvatarPicker();
+    }
+
+    async function handleTeacherProfileSubmit(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btn-save-teacher');
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Saving...`;
+
+      const payload = {
+        name: document.getElementById('input-name').value,
+        cabin: document.getElementById('input-cabin').value,
+        designation: document.getElementById('input-designation').value,
+        department: document.getElementById('select-dept').value,
+        phone: document.getElementById('input-phone').value,
+        avatar: selectedAvatar,
+        subjects: currentTeacherSubjects
+      };
+
+      try {
+        const res = await API.updateTeacherProfile(payload);
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> <span>Save Faculty Profile Changes</span>`;
+
+        if (res.success) {
+          API.showToast("Faculty profile updated successfully!", "success");
+          currentTeacher = res.teacher || currentTeacher;
+          initTeacherProfile();
+          // Update navbar avatar dynamically
+          const navAvatar = document.getElementById('nav-user-avatar');
+          if (navAvatar && selectedAvatar) navAvatar.src = selectedAvatar;
+        } else {
+          API.showToast(res.message || "Failed to update profile", "error");
+        }
+      } catch (err) {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> <span>Save Faculty Profile Changes</span>`;
+        API.showToast("Server error updating profile", "error");
+      }
+    }
+
+    window.onload = initTeacherProfile;
+  </script>
+</body>
+</html>

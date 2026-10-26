@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>RaiSakshya - Institutional Admin Dashboard</title>
+  <!-- Tailwind CSS CDN v3 with plugins -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <!-- Chart.js for real interactive graphs -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background: radial-gradient(circle at 10% 15%, #eff6ff 0%, #f5f3ff 40%, #eef2f6 100%);
+      min-height: 100vh;
+      color: #1e293b;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-start text-slate-800 antialiased selection:bg-rose-500 selection:text-white">
+
+  <!-- Fixed Top Global Navbar -->
+  <div id="global-navbar" class="sticky top-0 z-[99999] w-full"></div>
+
+  <div class="w-full max-w-[1480px] mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col gap-6">
+
+  <!-- Hero Banner Section (Matched with Student/Teacher Portals) -->
+  <section class="relative z-10 bg-gradient-to-r from-rose-50/90 via-white/95 to-teal-50/80 text-slate-900 rounded-3xl p-6 sm:p-8 shadow-sm border border-white/90 overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-6 backdrop-blur-xl">
+    <div class="z-10 max-w-xl">
+      <div class="flex items-center gap-2 mb-1.5">
+        <span class="text-[10px] font-extrabold uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800 border border-rose-200 shadow-xs">
+          Administrator Console
+        </span>
+        <span id="admin-date-text" class="text-xs text-slate-500 font-bold uppercase">
+          Monday, 26 Oct 2026
+        </span>
+      </div>
+      <h1 id="admin-greeting-text" class="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-slate-900 leading-tight">
+        Good Day, Dr. Rajesh Kulkarni <span class="inline-block transform hover:rotate-12 transition-transform cursor-default">👋</span>
+      </h1>
+      <p class="text-slate-600 text-xs sm:text-sm font-medium mt-1">
+        Campus-wide attendance health summary, departmental audit, and biometric intelligence.
+      </p>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-3 z-10 shrink-0">
+      <button onclick="downloadDefaultersReport()" type="button" class="px-5 py-3 rounded-2xl bg-[#0B1522] hover:bg-[#162335] text-white font-extrabold text-xs shadow-md transition flex items-center gap-2 cursor-pointer">
+        <i class="fa-solid fa-file-arrow-down text-rose-400"></i>
+        <span>Download Defaulters</span>
+      </button>
+      <a href="/admin/teachers-attendance" class="px-5 py-3 rounded-2xl bg-white hover:bg-slate-50 text-slate-800 border border-slate-200/90 font-extrabold text-xs shadow-sm transition flex items-center gap-2">
+        <i class="fa-solid fa-users-rectangle text-rose-500"></i>
+        <span>Teachers Attendance</span>
+      </a>
+      <a href="/admin/settings" class="px-5 py-3 rounded-2xl bg-[#00C48C] hover:bg-[#00ab7a] text-white font-extrabold text-xs shadow-md transition flex items-center gap-2">
+        <i class="fa-solid fa-gear text-white"></i>
+        <span>Settings</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- Top Metrics Row: Today's Summary (5 cols) + Institutional Attendance Radar (7 cols) -->
+  <section class="grid grid-cols-1 lg:grid-cols-12 gap-5 relative z-10">
+    
+    <!-- Today's Attendance Donut Card (5 cols) -->
+    <div class="lg:col-span-5 bg-white rounded-3xl p-6 shadow-sm border border-slate-100 flex flex-col justify-between">
+      <div class="flex items-center justify-between mb-2">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center font-bold text-sm">
+            <i class="fa-solid fa-chart-pie"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-extrabold text-slate-900 leading-tight">Today's Summary</h3>
+            <p class="text-[11px] text-slate-400 font-medium">Campus-wide verified attendance</p>
+          </div>
+        </div>
+        <span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-extrabold flex items-center gap-1">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Live
+        </span>
+      </div>
+
+      <!-- Donut Chart Canvas with Center Text -->
+      <div class="relative w-48 h-48 mx-auto my-3 flex items-center justify-center">
+        <canvas id="adminDonutCanvas"></canvas>
+        <div class="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none select-none">
+          <span id="donut-total-students" class="text-3xl font-black text-slate-900 tracking-tight leading-none">1,256</span>
+          <span class="text-[10px] font-bold text-slate-400 mt-1 uppercase">Total Students</span>
+        </div>
+      </div>
+
+      <!-- Donut Legend Pills (Only Present and Absent) -->
+      <div class="grid grid-cols-2 gap-3 pt-2 border-t border-slate-100 text-center">
+        <div class="bg-emerald-50/80 p-3 rounded-2xl border border-emerald-100">
+          <span class="text-[10px] font-extrabold text-emerald-800 uppercase block">Present</span>
+          <span id="stat-present-count" class="text-base font-black text-emerald-700">1,102</span>
+          <span id="stat-present-pct" class="text-[10px] text-emerald-600 font-bold block">87.8%</span>
+        </div>
+        <div class="bg-rose-50/80 p-3 rounded-2xl border border-rose-100">
+          <span class="text-[10px] font-extrabold text-rose-800 uppercase block">Absent</span>
+          <span id="stat-absent-count" class="text-base font-black text-rose-700">154</span>
+          <span id="stat-absent-pct" class="text-[10px] text-rose-600 font-bold block">12.2%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Institutional Department Attendance Radar (7 cols) -->
+    <div class="lg:col-span-7 bg-white rounded-3xl p-6 shadow-sm border border-slate-100 flex flex-col justify-between">
+      <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center font-bold text-sm">
+            <i class="fa-solid fa-compass-drafting"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-extrabold text-slate-900 leading-tight">Institutional Attendance Radar</h3>
+            <p class="text-[11px] text-slate-400 font-medium">Departmental health and faculty presence against 75% regulatory criteria</p>
+          </div>
+        </div>
+        <span class="text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full bg-teal-50 text-teal-700 border border-teal-200">
+          Multi-Axis Matrix
+        </span>
+      </div>
+
+      <!-- Real Interactive Multi-Axis Radar Canvas -->
+      <div class="relative w-full aspect-square max-h-[250px] mx-auto my-2 flex items-center justify-center">
+        <canvas id="adminRadarCanvas"></canvas>
+      </div>
+
+      <div class="flex flex-wrap items-center justify-center gap-4 text-xs font-bold pt-2 border-t border-slate-100">
+        <span class="flex items-center gap-1.5 text-slate-700">
+          <span class="w-3 h-3 rounded-full bg-[#00C48C]"></span> Department Attendance %
+        </span>
+        <span class="flex items-center gap-1.5 text-slate-700">
+          <span class="w-3 h-3 rounded-full bg-[#6366F1]"></span> Target (85%)
+        </span>
+        <span class="flex items-center gap-1.5 text-slate-400">
+          <span class="w-4 h-0.5 bg-rose-400 border-t border-dashed"></span> 75% Baseline Threshold
+        </span>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- Middle Row: Stretched Institutional Attendance Trend Curve (Full Width) -->
+  <section class="w-full bg-white rounded-3xl p-6 sm:p-7 shadow-sm border border-slate-100 flex flex-col justify-between relative z-10">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2 pb-2 border-b border-slate-100">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-sm">
+          <i class="fa-solid fa-arrow-trend-up"></i>
+        </div>
+        <div>
+          <h3 class="text-base sm:text-lg font-extrabold text-slate-900 leading-tight">Institutional Attendance Trend</h3>
+          <p class="text-[11px] text-slate-400 font-medium">Daily verified attendance trajectory across all campus departments over the last 14 days</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="text-xs font-bold px-3 py-1 bg-slate-100 text-slate-600 rounded-xl">
+          Last 14 Days
+        </span>
+        <span class="text-xs font-bold px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-xl flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Stretched Institutional View
+        </span>
+      </div>
+    </div>
+
+    <!-- Real Interactive Chart.js Line Canvas -->
+    <div class="w-full h-64 sm:h-72 relative mt-2">
+      <canvas id="adminTrendCanvas"></canvas>
+    </div>
+
+    <div class="pt-3 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between text-xs text-slate-500 gap-2">
+      <div class="flex items-center gap-4">
+        <span>Highest: <strong class="text-teal-600 font-bold">95% (18 Oct)</strong></span>
+        <span>Lowest: <strong class="text-rose-500 font-bold">80% (10 Oct)</strong></span>
+        <span>14-Day Average: <strong class="text-indigo-600 font-bold">88.5%</strong></span>
+      </div>
+      <div class="flex items-center gap-3 text-slate-400">
+        <span><i class="fa-solid fa-circle-info text-teal-500 mr-1"></i> Interactive data points across all faculties</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bottom Section: Department Breakdown & Alerts -->
+  <section class="grid grid-cols-1 lg:grid-cols-12 gap-5 relative z-10">
+    
+    <!-- Department Breakdown (7 cols) -->
+    <div class="lg:col-span-7 bg-white rounded-3xl p-6 shadow-sm border border-slate-100 flex flex-col gap-4">
+      <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-sm">
+            <i class="fa-solid fa-building-columns"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-extrabold text-slate-900">Department Attendance Health</h3>
+            <p class="text-[11px] text-slate-400 font-medium">Real-time attendance percentage by branch</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="dept-list-container" class="flex flex-col gap-3">
+        <!-- Populated from data -->
+      </div>
+    </div>
+
+    <!-- Low Attendance Warnings (5 cols) -->
+    <div class="lg:col-span-5 bg-white rounded-3xl p-6 shadow-sm border border-slate-100 flex flex-col justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-2.5 mb-3">
+          <div class="w-8 h-8 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center text-sm">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-extrabold text-slate-900">Low Attendance Alerts</h3>
+            <p class="text-[11px] text-slate-400 font-medium">Students below institutional 80% mark</p>
+          </div>
+        </div>
+
+        <div id="alerts-list-container" class="flex flex-col gap-2.5">
+          <!-- Populated from data -->
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-2.5">
+        <button onclick="downloadDefaultersReport()" type="button" class="w-full py-2.5 rounded-2xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-extrabold text-xs text-center transition flex items-center justify-center gap-2 cursor-pointer">
+          <i class="fa-solid fa-file-arrow-down text-rose-600"></i>
+          <span>Download Defaulter Students File (.CSV)</span>
+        </button>
+        <a href="/admin/teachers-attendance" class="w-full py-3 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs text-center shadow-md transition">
+          View Faculty Attendance Audit <i class="fa-solid fa-arrow-right ml-1"></i>
+        </a>
+      </div>
+    </div>
+
+  </section>
+
+</div>
+
+<script src="/static/js/api.js"></script>
+<script src="/static/js/navbar.js"></script>
+<script>
+  renderGlobalNavbar('admin', 'dashboard');
+
+  let donutChart = null;
+  let radarChart = null;
+  let trendChart = null;
+
+  async function loadAdminDashboard() {
+    try {
+      const data = await API.getAdminDashboardData();
+      if (!data) return;
+
+      document.getElementById('admin-greeting-text').innerHTML = `${data.greeting} <span class="inline-block transform hover:rotate-12 transition-transform cursor-default">👋</span>`;
+      document.getElementById('admin-date-text').textContent = data.date || "Monday, 26 Oct 2026";
+
+      const s = data.summary || {};
+      document.getElementById('donut-total-students').textContent = (s.total_students || 1256).toLocaleString();
+      document.getElementById('stat-present-count').textContent = (s.present_count || 1102).toLocaleString();
+      document.getElementById('stat-present-pct').textContent = `${s.attendance_rate || 87.8}%`;
+      const absTotal = (s.absent_count || 124) + (s.not_marked_count || 30);
+      document.getElementById('stat-absent-count').textContent = absTotal.toLocaleString();
+      document.getElementById('stat-absent-pct').textContent = `${Math.round((absTotal / (s.total_students || 1256)) * 100)}%`;
+
+      // 1. Render Interactive Donut Chart (Only Present & Absent)
+      const donutCtx = document.getElementById('adminDonutCanvas').getContext('2d');
+      if (donutChart) donutChart.destroy();
+      donutChart = new Chart(donutCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Present', 'Absent'],
+          datasets: [{
+            data: [s.present_count || 1102, absTotal],
+            backgroundColor: ['#00C48C', '#F43F5E'],
+            borderWidth: 2,
+            borderColor: '#FFFFFF',
+            hoverOffset: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '74%',
+          plugins: {
+            legend: { display: false }
+          }
+        }
+      });
+
+      // 2. Render Multi-Axis Institutional Attendance Radar Chart
+      const radarCanvas = document.getElementById('adminRadarCanvas');
+      if (radarCanvas) {
+        const radarCtx = radarCanvas.getContext('2d');
+        const radarData = data.radar || {
+          labels: ["Computer Engg", "Info Tech", "AI & Data Sci", "Electronics", "First Year (FE)", "Faculty Presence"],
+          current: [91.0, 88.0, 84.0, 79.0, 86.5, 93.3],
+          baseline: [75, 75, 75, 75, 75, 75],
+          target: [85, 85, 85, 85, 85, 85]
+        };
+        if (radarChart) radarChart.destroy();
+        radarChart = new Chart(radarCtx, {
+          type: 'radar',
+          data: {
+            labels: radarData.labels,
+            datasets: [
+              {
+                label: 'Department Attendance %',
+                data: radarData.current,
+                backgroundColor: 'rgba(0, 196, 140, 0.22)',
+                borderColor: '#00C48C',
+                borderWidth: 2.5,
+                pointBackgroundColor: '#00C48C',
+                pointBorderColor: '#ffffff',
+                pointRadius: 4,
+                pointHoverRadius: 6
+              },
+              {
+                label: 'Target (85%)',
+                data: radarData.target || [85, 85, 85, 85, 85, 85],
+                backgroundColor: 'rgba(99, 102, 241, 0.08)',
+                borderColor: '#6366F1',
+                borderWidth: 1.8,
+                borderDash: [3, 3],
+                pointBackgroundColor: '#6366F1',
+                pointRadius: 3
+              },
+              {
+                label: '75% Baseline Threshold',
+                data: radarData.baseline || [75, 75, 75, 75, 75, 75],
+                backgroundColor: 'transparent',
+                borderColor: '#F43F5E',
+                borderWidth: 1.5,
+                borderDash: [4, 4],
+                pointBackgroundColor: '#F43F5E',
+                pointRadius: 2
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: '#0B1522',
+                titleFont: { family: 'Plus Jakarta Sans', weight: 'bold' },
+                bodyFont: { family: 'Plus Jakarta Sans' },
+                padding: 10,
+                cornerRadius: 12
+              }
+            },
+            scales: {
+              r: {
+                angleLines: { color: 'rgba(226, 232, 240, 0.8)' },
+                grid: { color: 'rgba(226, 232, 240, 0.8)' },
+                pointLabels: {
+                  font: { family: 'Plus Jakarta Sans', size: 10, weight: '700' },
+                  color: '#334155'
+                },
+                ticks: {
+                  display: false,
+                  stepSize: 20,
+                  min: 60,
+                  max: 100
+                }
+              }
+            }
+          }
+        });
+      }
+
+      // 3. Render 14-Day Trend Line Chart
+      const trendCtx = document.getElementById('adminTrendCanvas').getContext('2d');
+      const trendList = data.trend || [];
+      if (trendChart) trendChart.destroy();
+      trendChart = new Chart(trendCtx, {
+        type: 'line',
+        data: {
+          labels: trendList.map(t => t.date),
+          datasets: [{
+            label: 'Institutional Attendance',
+            data: trendList.map(t => t.rate),
+            borderColor: '#00C48C',
+            backgroundColor: 'rgba(0, 196, 140, 0.1)',
+            fill: true,
+            tension: 0.35,
+            borderWidth: 3,
+            pointBackgroundColor: '#00C48C',
+            pointRadius: 4,
+            pointHoverRadius: 7
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: { min: 70, max: 100, ticks: { callback: v => v + '%' } },
+            x: { grid: { display: false } }
+          },
+          plugins: {
+            legend: { display: false }
+          }
+        }
+      });
+
+      // 3. Render Department List
+      const deptCont = document.getElementById('dept-list-container');
+      const depts = data.departments || [];
+      deptCont.innerHTML = depts.map(d => {
+        const color = d.rate >= 90 ? '#00C48C' : (d.rate >= 85 ? '#3B82F6' : '#F59E0B');
+        return `
+          <div class="flex flex-col gap-1.5 p-3 rounded-2xl bg-slate-50/80 border border-slate-200/80">
+            <div class="flex items-center justify-between text-xs font-bold">
+              <span class="text-slate-800">${d.name} (${d.students} students)</span>
+              <span class="font-black text-slate-900">${d.rate}%</span>
+            </div>
+            <div class="w-full bg-slate-200 rounded-full h-2.5 overflow-hidden">
+              <div class="h-2.5 rounded-full" style="width: ${d.rate}%; background-color: ${color};"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // 4. Render Low Attendance Alerts
+      const alertCont = document.getElementById('alerts-list-container');
+      const alerts = data.low_attendance_alerts || [];
+      alertCont.innerHTML = alerts.map(a => `
+        <div class="p-3 rounded-2xl bg-rose-50/80 border border-rose-200 flex items-center justify-between text-xs">
+          <div>
+            <span class="font-bold text-slate-900 block">${a.name} (Roll ${a.roll_no})</span>
+            <span class="text-[11px] text-slate-500">${a.class}</span>
+          </div>
+          <span class="px-2.5 py-1 rounded-xl text-xs font-black bg-rose-200 text-rose-800">${a.rate}% Attendance</span>
+        </div>
+      `).join('');
+
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  function downloadDefaultersReport() {
+    window.location.href = '/api/admin/defaulters/download';
+    if (window.API && API.showToast) {
+      API.showToast("Defaulters attendance report downloading...", "info");
+    }
+  }
+
+  window.onload = loadAdminDashboard;
+</script>
+</body>
+</html>

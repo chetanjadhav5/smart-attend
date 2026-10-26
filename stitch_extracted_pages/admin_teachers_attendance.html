@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Teachers Attendance Dashboard - RaiSakshya</title>
+<!-- Tailwind CSS v3 with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Plus Jakarta Sans -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              purple: '#5651e5',
+              dark: '#0c1524',
+              teal: '#00d2aa',
+              coral: '#ff5c60',
+              lavender: '#8a88c8',
+            }
+          },
+          boxShadow: {
+            'soft': '0 8px 30px rgba(0, 0, 0, 0.04)',
+            'card': '0 4px 20px rgba(18, 38, 63, 0.04)',
+            'nav': '0 10px 25px -5px rgba(0, 0, 0, 0.4)',
+          }
+        }
+      }
+    }
+  </script>
+<!-- BEGIN: Custom Styles -->
+<style data-purpose="background-and-layout">
+    body {
+      background-color: #ebf3fa;
+      background-image: 
+        radial-gradient(at 10% 15%, rgba(215, 236, 255, 0.8) 0px, transparent 50%),
+        radial-gradient(at 90% 10%, rgba(225, 230, 255, 0.8) 0px, transparent 50%),
+        radial-gradient(at 50% 90%, rgba(220, 240, 255, 0.5) 0px, transparent 50%);
+      min-height: 100vh;
+      color: #1e293b;
+    }
+  </style>
+<style data-purpose="card-themes">
+    /* Subtle pastel card background tints matching reference */
+    .card-mint {
+      background: linear-gradient(135deg, #f4fbf9 0%, #ebf8f5 100%);
+    }
+    .card-peach {
+      background: linear-gradient(135deg, #fff7f7 0%, #feeeee 100%);
+    }
+    .card-blue {
+      background: linear-gradient(135deg, #f3f8fd 0%, #eaf2fb 100%);
+    }
+    .card-lavender {
+      background: linear-gradient(135deg, #f7f6fc 0%, #eeecf9 100%);
+    }
+
+    /* Donut chart gradient segment styling */
+    .donut-gauge {
+      background: conic-gradient(
+        #00d49e 0deg 240deg,
+        #ff5964 240deg 320deg,
+        #8284b3 320deg 360deg
+      );
+    }
+  </style>
+<!-- END: Custom Styles -->
+</head>
+<body class="font-sans antialiased text-slate-800 p-4 md:p-6 lg:p-7">
+<div class="max-w-[1580px] mx-auto flex flex-col gap-5">
+<!-- BEGIN: TopHeader -->
+<header class="w-full bg-[#0d141e] text-white rounded-2xl px-6 py-3 flex items-center justify-between shadow-nav" data-purpose="global-navigation">
+<!-- Logo and App Name -->
+<div class="flex items-center gap-3.5">
+<div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-white border border-white/10">
+<!-- Graduation Cap Icon -->
+<svg class="w-6 h-6 fill-current" viewbox="0 0 24 24">
+<path d="M12 3L1 9L12 15L21 10.09V17H23V9M5 13.18V17.18L12 21L19 17.18V13.18L12 17L5 13.18Z"></path>
+</svg>
+</div>
+<div>
+<h1 class="text-lg font-bold tracking-tight text-white flex items-center gap-1.5 leading-none">
+            RaiSakshya
+          </h1>
+<p class="text-[11px] text-slate-400 font-medium tracking-wide mt-1">Smart Attendance for Brighter Futures</p>
+</div>
+</div>
+<!-- Navigation Tabs -->
+<nav class="hidden md:flex items-center gap-2">
+<a class="flex items-center gap-2 px-5 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all text-xs font-semibold" href="#">
+<svg class="w-4 h-4 fill-current opacity-80" viewbox="0 0 24 24">
+<path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path>
+</svg>
+          Dashboard
+        </a>
+<!-- Active Tab: Teachers -->
+<a class="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-[#008f84] text-white text-xs font-semibold shadow-inner border border-teal-400/20" href="#">
+<svg class="w-4 h-4 fill-current" viewbox="0 0 24 24">
+<path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"></path>
+</svg>
+          Teachers
+        </a>
+<a class="flex items-center gap-2 px-5 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all text-xs font-semibold" href="#">
+<svg class="w-4 h-4 fill-current opacity-80" viewbox="0 0 24 24">
+<path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"></path>
+</svg>
+          Settings
+        </a>
+</nav>
+<!-- User Profile and Notifications -->
+<div class="flex items-center gap-4">
+<button aria-label="Notifications" class="relative p-2 text-slate-300 hover:text-white transition-colors">
+<svg class="w-5 h-5 fill-current" viewbox="0 0 24 24">
+<path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"></path>
+</svg>
+<span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500"></span>
+</button>
+<!-- Admin Profile Pill -->
+<div class="flex items-center gap-2.5 pl-2 cursor-pointer">
+<img alt="Admin Avatar" class="w-9 h-9 rounded-full object-cover border-2 border-white/20 bg-amber-100" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCi8QGhe1BPL05Wn4aI9HjnuQ7FgYwNnFUcjZRLxjT3Ndl2GVpvj16yRr1LNi9dXT-RrSBR1c7_yQagWTNLj_4zEI2HovrQ-p2jDV5EFz2LWbevjcCBgvNQP2nRyIN-zQ7W0_ZXmql8OHyxtFc7KGHkvBtxAtIHJo9awSyPZrPDFQVqLHctTg7qGwNir-ohIvJlMpXF_cS0nSvJXjVM2xJx3qLUyIUsWHNa0T_2vCi5c0UPz1IeYhATdmMXJYBHLc3f3Q"/>
+<span class="text-xs font-medium text-white tracking-wide">Admin</span>
+<svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+</header>
+<!-- END: TopHeader -->
+<!-- BEGIN: TitleAndActionTabs -->
+<section class="flex flex-col gap-3" data-purpose="page-title-and-tabs">
+<!-- Title Heading -->
+<div class="flex items-center gap-3">
+<h2 class="text-3xl font-extrabold text-[#111827] tracking-tight">Teachers</h2>
+<div class="w-9 h-9 rounded-xl bg-purple-100 flex items-center justify-center text-[#554ce1]">
+<svg class="w-5 h-5 fill-current" viewbox="0 0 24 24">
+<path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"></path>
+</svg>
+</div>
+</div>
+<p class="text-sm font-medium text-slate-500">Manage teachers and their attendance.</p>
+<!-- Pill Buttons Toggle -->
+<div class="flex items-center gap-3 pt-1">
+<button class="flex items-center gap-2.5 px-5 py-2.5 rounded-xl bg-[#524be3] text-white font-semibold text-xs shadow-md shadow-indigo-500/20 hover:bg-[#433bc9] transition-all">
+<svg class="w-4 h-4 fill-current" viewbox="0 0 24 24">
+<path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"></path>
+</svg>
+          Teachers Attendance
+        </button>
+<button class="flex items-center gap-2.5 px-5 py-2.5 rounded-xl bg-white text-slate-700 font-semibold text-xs border border-slate-200/80 shadow-sm hover:bg-slate-50 transition-all">
+<svg class="w-4 h-4 fill-current text-slate-600" viewbox="0 0 24 24">
+<path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path>
+</svg>
+          Sign-up Requests
+        </button>
+</div>
+</section>
+<!-- END: TitleAndActionTabs -->
+<!-- BEGIN: FilterAndSearchBar -->
+<section class="w-full flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4" data-purpose="filtering-bar">
+<!-- Filter Dropdown Items Group -->
+<div class="flex flex-wrap items-center gap-3.5">
+<!-- Filter 1: Department -->
+<div class="bg-white rounded-2xl px-4 py-2 border border-slate-200/70 shadow-sm flex items-center gap-3 min-w-[210px] cursor-pointer">
+<div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+<svg class="w-5 h-5 fill-current" viewbox="0 0 24 24">
+<path d="M12 3L1 9L12 15L21 10.09V17H23V9M5 13.18V17.18L12 21L19 17.18V13.18L12 17L5 13.18Z"></path>
+</svg>
+</div>
+<div class="flex-1">
+<span class="block text-[10px] font-semibold text-slate-400 leading-tight">Department</span>
+<div class="flex items-center justify-between text-xs font-bold text-slate-800 mt-0.5">
+<span>Computer Networks</span>
+<svg class="w-3.5 h-3.5 text-slate-500 ml-2" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+</div>
+</div>
+</div>
+<!-- Filter 2: Class / Section -->
+<div class="bg-white rounded-2xl px-4 py-2 border border-slate-200/70 shadow-sm flex items-center gap-3 min-w-[190px] cursor-pointer">
+<div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+<svg class="w-5 h-5 fill-current" viewbox="0 0 24 24">
+<path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"></path>
+</svg>
+</div>
+<div class="flex-1">
+<span class="block text-[10px] font-semibold text-slate-400 leading-tight">Class / Section</span>
+<div class="flex items-center justify-between text-xs font-bold text-slate-800 mt-0.5">
+<span>BE - Computer (A)</span>
+<svg class="w-3.5 h-3.5 text-slate-500 ml-2" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+</div>
+</div>
+</div>
+<!-- Filter 3: Date -->
+<div class="bg-white rounded-2xl px-4 py-2 border border-slate-200/70 shadow-sm flex items-center gap-3 min-w-[170px] cursor-pointer">
+<div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+<svg class="w-5 h-5 fill-current" viewbox="0 0 24 24">
+<path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"></path>
+</svg>
+</div>
+<div class="flex-1">
+<span class="block text-[10px] font-semibold text-slate-400 leading-tight">Date</span>
+<div class="flex items-center justify-between text-xs font-bold text-slate-800 mt-0.5">
+<span>03 Oct 2026</span>
+<svg class="w-3.5 h-3.5 text-slate-500 ml-2" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+</div>
+</div>
+</div>
+</div>
+<!-- Search Input Pill -->
+<div class="flex-1 max-w-md relative">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+<svg class="w-4 h-4 fill-none stroke-current" stroke-width="2.2" viewbox="0 0 24 24">
+<circle cx="11" cy="11" r="8"></circle>
+<path d="M21 21l-4.35-4.35"></path>
+</svg>
+</div>
+<input class="w-full pl-11 pr-4 py-3 bg-white/90 backdrop-blur-sm border border-slate-200/80 rounded-2xl text-xs font-medium placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 shadow-sm" placeholder="Search by teacher name or employee ID..." type="text"/>
+</div>
+</section>
+<!-- END: FilterAndSearchBar -->
+<!-- BEGIN: MainDashboardContent -->
+<main class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+<!-- Left Column: Teachers Grid Deck (8 Columns) -->
+<div class="lg:col-span-8 flex flex-col gap-5">
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+<!-- Card 01: Amit Patil -->
+<div class="card-mint rounded-2xl p-3.5 border border-white flex items-center justify-between shadow-card hover:shadow-md transition-shadow" data-purpose="teacher-card">
+<div class="w-20 h-24 overflow-hidden rounded-xl flex items-end justify-center shrink-0">
+<img alt="Amit Patil" class="w-full h-full object-cover object-top" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBErQsfQq_TyGo3-aJjk86VFCMe83OsBu3kuoUaAgu6DLqW-NRZCo1nEYFdsM8J-xNQCsvZGnSt_0WaVzDDJjhxqw1D3Nn94Fb8NEg8kJVQYKyTNuHw2sRuFSXFHGrMTe4O2vluPUFTvEIsfPj3kKorJ23-j_x__l4D8UwKQe-85wiITprn3T2QkIYG2SOgnXKe_m4Jh08NFhPfgdJHGSlfrFr4gMbRzu8iXe9R7Px9eiJQKBiCDGnNF8Aq7uoUpV3rlw"/>
+</div>
+<div class="flex flex-col justify-between h-full pl-3 flex-1">
+<div>
+<span class="text-xs font-bold text-slate-900 block leading-tight">01</span>
+<h4 class="text-xs font-bold text-slate-800 mt-0.5 leading-snug">Amit Patil</h4>
+<p class="text-[10px] text-teal-600 font-semibold truncate leading-tight">Computer Networks</p>
+</div>
+<div class="mt-3">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold">
+<span class="w-3.5 h-3.5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[8px]">✓</span>
+                  Present
+                </span>
+</div>
+</div>
+</div>
+<!-- Card 02: Neha Joshi -->
+<div class="card-peach rounded-2xl p-3.5 border border-white flex items-center justify-between shadow-card hover:shadow-md transition-shadow" data-purpose="teacher-card">
+<div class="w-20 h-24 overflow-hidden rounded-xl flex items-end justify-center shrink-0">
+<img alt="Neha Joshi" class="w-full h-full object-cover object-top" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8QUOApr3jBmMshPp634wtyh9enyiVVopSUujRQ67wsh92kVFznkG3Wlt5Vh08-sqtcD1VPcJwyDnRXY-Vw7U1PIeXhAmY3pyw0QnnPkbOg99RpMJ-YRSv-IdVDA6TOLoXF2skzM_pmeTFb-oLHgKiIJXiPLdI0a6gFGUKNz7u60zP_p1K-re5HG0JGJnuu396JfvMI8bkgAExEYrm0wXqC7V-9Dy0g-m4Up49IxqGXhMc89lzppMYVcJ4PEV7pVuuhw"/>
+</div>
+<div class="flex flex-col justify-between h-full pl-3 flex-1">
+<div>
+<span class="text-xs font-bold text-slate-900 block leading-tight">02</span>
+<h4 class="text-xs font-bold text-slate-800 mt-0.5 leading-snug">Neha Joshi</h4>
+<p class="text-[10px] text-rose-500 font-semibold truncate leading-tight">DBMS</p>
+</div>
+<div class="mt-3">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-100 text-rose-600 text-[10px] font-bold">
+<span class="w-3.5 h-3.5 rounded-full bg-rose-500 text-white flex items-center justify-center text-[8px]">✕</span>
+                  Absent
+                </span>
+</div>
+</div>
+</div>
+<!-- Card 03: Vikram Sane -->
+<div class="card-mint rounded-2xl p-3.5 border border-white flex items-center justify-between shadow-card hover:shadow-md transition-shadow" data-purpose="teacher-card">
+<div class="w-20 h-24 overflow-hidden rounded-xl flex items-end justify-center shrink-0">
+<img alt="Vikram Sane" class="w-full h-full object-cover object-top" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqiY-FxS8XU4AIPcT6TKhctRzh5kW21OxksJFSW8R_-Ft13VmttRSuv_gR2eXnAClh1kU4eEtdKwal2vQF8croKyELraei0y8ghZmIpydpBWozg0PQPiaccAg48PSKkAT_gDFDNX1AnYmXVWwtsN5MX9LTxHAmoMqQIxmpmA2Uk3HpuTr8DkaVoeGaR0nuTD9jEo5zk-wInJ2q5H1XBpjNLoW44ew8XIYiYBLVWR4Dbi5p4VcAwZhatlYaCVHsGNkZcA"/>
+</div>
+<div class="flex flex-col justify-between h-full pl-3 flex-1">
+<div>
+<span class="text-xs font-bold text-slate-900 block leading-tight">03</span>
+<h4 class="text-xs font-bold text-slate-800 mt-0.5 leading-snug">Vikram Sane</h4>
+<p class="text-[10px] text-teal-600 font-semibold truncate leading-tight">Operating Systems</p>
+</div>
+<div class="mt-3">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold">
+<span class="w-3.5 h-3.5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[8px]">✓</span>
+                  Present
+                </span>
+</div>
+</div>
+</div>
+<!-- Card 04: Pooja Deshmukh -->
+<div class="card-peach rounded-2xl p-3.5 border border-white flex items-center justify-between shadow-card hover:shadow-md transition-shadow" data-purpose="teacher-card">
+<div class="w-20 h-24 overflow-hidden rounded-xl flex items-end justify-center shrink-0">
+<img alt="Pooja Deshmukh" class="w-full h-full object-cover object-top" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGJ93p57EoK_EPv44L1xR6huuVrERoelg0FHyZOFl7uzekqn4In18kla01oX2P4oAnxNincApsek5X1vX1XI4_b_9LDE7svghmipzLaCp5Ji4qKPCni8Lh-86BVMIIH0Tji5RXF6NvueTYEv82sUArTG1ez7veaEOSh_XPYQpG6Ys67OZsJ8DL8IOubdg16SzYnOCJfNgbpWXMyWQNTe7B0X42gN2-wwVyk7o02W8MmrBAKx2GFj-f19LuNctfVPRmOA"/>
+</div>
+<div class="flex flex-col justify-between h-full pl-3 flex-1">
+<div>
+<span class="text-xs font-bold text-slate-900 block leading-tight">04</span>
+<h4 class="text-xs font-bold text-slate-800 mt-0.5 leading-snug">Pooja Deshmukh</h4>
+<p class="text-[10px] text-teal-600 font-semibold truncate leading-tight">Data Communication</p>
+</div>
+<div class="mt-3">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold">
+<span class="w-3.5 h-3.5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[8px]">✓</span>
+                  Present
+                </span>
+</div>
+</div>
+</div>
+<!-- Card 05: Karan Mehta -->
+<div class="card-blue rounded-2xl p-3.5 border border-white flex items-center justify-between shadow-card hover:shadow-md transition-shadow" data-purpose="teacher-card">
+<div class="w-20 h-24 overflow-hidden rounded-xl flex items-end justify-center shrink-0">
+<img alt="Karan Mehta" class="w-full h-full object-cover object-top" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCyERfBhKnnfsa9aHHgsUPd7KPwBxam2qiwgMVTJxe01g3DaRKyB48FViOtRSajQ5khwn_NHPH7klZKHityfAyBbXzOYgrNV9Gvr2LgZ1K0wd_Y9QHAVdSzrGXEXqcln5alIcva0nKetjUloTQq3mJcw4KOL93FPuCCGDdmSK7tT3kr0PxuUctm1kZaDNpbpP1JXfWrEib8i3dzySpdzjssq3z3NMhTcWlnc6TvmcXC1CWrqV9Q4gZCeVkjt2oK1msN6Q"/>
+</div>
+<div class="flex flex-col justify-between h-full pl-3 flex-1">
+<div>
+<span class="text-xs font-bold text-slate-900 block leading-tight">05</span>
+<h4 class="text-xs font-bold text-slate-800 mt-0.5 leading-snug">Karan Mehta</h4>
+<p class="text-[10px] text-slate-500 font-semibold truncate leading-tight">Advanced Networking</p>
+</div>
+<div class="mt-3">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-100 text-rose-600 text-[10px] font-bold">
+<span class="w-3.5 h-3.5 rounded-full bg-rose-500 text-white flex items-center justify-center text-[8px]">✕</span>
+                  Absent
+                </span>
+</div>
+</div>
+</div>
+<!-- Card 06: Sneha Kulkarni -->
+<div class="card-peach rounded-2xl p-3.5 border border-white flex items-center justify-between shadow-card hover:shadow-md transition-shadow" data-purpose="teacher-card">
+<div class="w-20 h-24 overflow-hidden rounded-xl flex items-end justify-center shrink-0">
+<img alt="Sneha Kulkarni" class="w-full h-full object-cover object-top" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAEQfR4xla4sQ9fckWyY7iHuVN5aCzq-CLhdBKy8v0ldx9dqZoHXh8TbkRl4Ni-67FnqRAM1AiKPP8VQHoCGuzkn0cPmue3sl_toGtRCW_a-lTMb8QVo44tUjBseHs0lCmJkoyU1d_HaiNU71l5ZB_MgZKqsMTBwYC1T5DWEIpzqrEiNe5as_MjTctq7cxK7i6hy5vqOvPAdp4lOQ6LK-mFQ9WNVDWvinm3kWKVFTYxgUmE02YGcEgdjBgYvD5Ud5xOXQ"/>
+</div>
+<div class="flex flex-col justify-between h-full pl-3 flex-1">
+<div>
+<span class="text-xs font-bold text-slate-900 block leading-tight">06</span>
+<h4 class="text-xs font-bold text-slate-800 mt-0.5 leading-snug">Sneha Kulkarni</h4>
+<p class="text-[10px] text-teal-600 font-semibold truncate leading-tight">Network Security</p>
+</div>
+<div class="mt-3">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold">
+<span class="w-3.5 h-3.5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[8px]">✓</span>
+                  Present
+                </span>
+</div>
+</div>
+</div>
+<!-- Card 07: Rahul Shinde -->
+<div class="card-blue rounded-2xl p-3.5 border border-white flex items-center justify-between shadow-card hover:shadow-md transition-shadow" data-purpose="teacher-card">
+<div class="w-20 h-24 overflow-hidden rounded-xl flex items-end justify-center shrink-0">
+<img alt="Rahul Shinde" class="w-full h-full object-cover object-top" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBn_W_g_mVOgXuW10O8O8KJNKhYHIonXFpA3VCszy30ZG6Us6E7wGNe_8WeI-TvbTklsAGGmRP5yCckYunURgcfK3r_StvIFItuGoc5_mL4rQ8zHFvgcsyOLds7kpUph2S1jltYI8pfMAj1pWguV_4Ul83MgvaqccP4uGqEQI0Re732qD_7p0VP1fekwKsbEUt6tLX05ivgDZyMiCZyLg8O7FpdzijCBL35uKn_gI92CthAn6oZwn2CCIdksgV24z4yPw"/>
+</div>
+<div class="flex flex-col justify-between h-full pl-3 flex-1">
+<div>
+<span class="text-xs font-bold text-slate-900 block leading-tight">07</span>
+<h4 class="text-xs font-bold text-slate-800 mt-0.5 leading-snug">Rahul Shinde</h4>
+<p class="text-[10px] text-teal-600 font-semibold truncate leading-tight">Machine Learning</p>
+</div>
+<div class="mt-3">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold">
+<span class="w-3.5 h-3.5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[8px]">✓</span>
+                  Present
+                </span>
+</div>
+</div>
+</div>
+<!-- Card 08: Priya Verma -->
+<div class="card-lavender rounded-2xl p-3.5 border border-white flex items-center justify-between shadow-card hover:shadow-md transition-shadow" data-purpose="teacher-card">
+<div class="w-20 h-24 overflow-hidden rounded-xl flex items-end justify-center shrink-0">
+<img alt="Priya Verma" class="w-full h-full object-cover object-top" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDXpmPTsZoZiygYyvsEM7TVQsszink_Qw6NYcu_BiUPl9GlzC2TAdMVAOzWuQzxjYyzGytY2ZrKzuR7N-7c8TEdIyLQgwsSCFnNLyZsupCYr_JIKgizMd-OMP_4ubSx2Z0BJ_5t4-zn1sqHP8n_6Ss1WxOjni0DDla3xaDBoe5mZInoDUPzUtRfQXvMAwJuj6YUZwUm6cO0xBFhqy7g8v9kQeWAQbKAPzKYay8O9-MX3y_qXQOfZCImCC36gYFQ075E2A"/>
+</div>
+<div class="flex flex-col justify-between h-full pl-3 flex-1">
+<div>
+<span class="text-xs font-bold text-slate-900 block leading-tight">08</span>
+<h4 class="text-xs font-bold text-slate-800 mt-0.5 leading-snug">Priya Verma</h4>
+<p class="text-[10px] text-indigo-500 font-semibold truncate leading-tight">Cloud Computing</p>
+</div>
+<div class="mt-3">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-200/80 text-slate-600 text-[10px] font-bold">
+<span class="w-3.5 h-3.5 rounded-full bg-slate-400 text-white flex items-center justify-center text-[8px] font-black">—</span>
+                  Not Marked
+                </span>
+</div>
+</div>
+</div>
+<!-- Card 09: Sanjay Bhosle -->
+<div class="card-mint rounded-2xl p-3.5 border border-white flex items-center justify-between shadow-card hover:shadow-md transition-shadow" data-purpose="teacher-card">
+<div class="w-20 h-24 overflow-hidden rounded-xl flex items-end justify-center shrink-0">
+<img alt="Sanjay Bhosle" class="w-full h-full object-cover object-top" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzVQ03lxOJL27j6EFMKL2R0u1JfWDPRBwnLUpFv2T16hcjoPu7KCTrIURM7K3rK5EKYdxKnUQk6Wt_D-gbwsCvclESnbd4RpNTrYE7euLBoIfNmMtFNuOhyoE2V_lINsnUCQT9QIf4BC2AYKYN2IC_gqJWgEO1BlE63Kz5hfeDxvogD2T2MqwEfHYoJdSg9BQUDb1KGzcsMPBbQxGcG625Pp5Y273D05My8ZDW81lBsCA7-ho7060pzr7fQ5Zw3RqOyQ"/>
+</div>
+<div class="flex flex-col justify-between h-full pl-3 flex-1">
+<div>
+<span class="text-xs font-bold text-slate-900 block leading-tight">09</span>
+<h4 class="text-xs font-bold text-slate-800 mt-0.5 leading-snug">Sanjay Bhosle</h4>
+<p class="text-[10px] text-teal-600 font-semibold truncate leading-tight">Wireless Networks</p>
+</div>
+<div class="mt-3">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold">
+<span class="w-3.5 h-3.5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[8px]">✓</span>
+                  Present
+                </span>
+</div>
+</div>
+</div>
+<!-- Card 10: Anjali More -->
+<div class="card-peach rounded-2xl p-3.5 border border-white flex items-center justify-between shadow-card hover:shadow-md transition-shadow" data-purpose="teacher-card">
+<div class="w-20 h-24 overflow-hidden rounded-xl flex items-end justify-center shrink-0">
+<img alt="Anjali More" class="w-full h-full object-cover object-top" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqCdDiqO7gJlM7vRGDCyaV6SURDYGFFbHHq13mzS6TtEZ10c8ObFZ9FmsT6KFKqZizhBA_MZge5wj04Vm9J2Wequg3VuAM920fEFs8dSlFFS90RcymW-aP6welPUCECvBrjmMmD-biAzx4_FiSrRi9RU1T0cZxgP71zl7Pe7jnDN1OpwJcGUFSftT48WtAeKF2I6mHdRI4WI2o1w7DCd8DiLbinYZ8ITzqQfDmelgF-XRuVm2IGMMW7MFiyoc1yToLfg"/>
+</div>
+<div class="flex flex-col justify-between h-full pl-3 flex-1">
+<div>
+<span class="text-xs font-bold text-slate-900 block leading-tight">10</span>
+<h4 class="text-xs font-bold text-slate-800 mt-0.5 leading-snug">Anjali More</h4>
+<p class="text-[10px] text-teal-600 font-semibold truncate leading-tight">Computer Networks</p>
+</div>
+<div class="mt-3">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold">
+<span class="w-3.5 h-3.5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[8px]">✓</span>
+                  Present
+                </span>
+</div>
+</div>
+</div>
+<!-- Card 11: Rohit Kadam -->
+<div class="card-peach rounded-2xl p-3.5 border border-white flex items-center justify-between shadow-card hover:shadow-md transition-shadow" data-purpose="teacher-card">
+<div class="w-20 h-24 overflow-hidden rounded-xl flex items-end justify-center shrink-0">
+<img alt="Rohit Kadam" class="w-full h-full object-cover object-top" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPZTKYiw6q3ky79yt_Kg54W-NW3_krXZ3s2FhfqCHZN11CFfpo34bTe35RLR0_Fe-h63H7XjYxYPCSPfhKIdV_2I4O84w5G1g_6knGXT7h0TZKht01cvDZw8_wJydjTdq5_mAL4hVvUrDXqmfk7akAMpaMstxU1Fju0k7FBklpAmTxlgSo7Y2LUiXledSVG0hyUgUJ_A4vLReH4tMdRCD5e8ag55RNPxRG8aupxSFQSOq_lb1OgFu15AezJaatZd63ug"/>
+</div>
+<div class="flex flex-col justify-between h-full pl-3 flex-1">
+<div>
+<span class="text-xs font-bold text-slate-900 block leading-tight">11</span>
+<h4 class="text-xs font-bold text-slate-800 mt-0.5 leading-snug">Rohit Kadam</h4>
+<p class="text-[10px] text-rose-500 font-semibold truncate leading-tight">DBMS</p>
+</div>
+<div class="mt-3">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-100 text-rose-600 text-[10px] font-bold">
+<span class="w-3.5 h-3.5 rounded-full bg-rose-500 text-white flex items-center justify-center text-[8px]">✕</span>
+                  Absent
+                </span>
+</div>
+</div>
+</div>
+<!-- Card 12: Meena Iyer -->
+<div class="card-mint rounded-2xl p-3.5 border border-white flex items-center justify-between shadow-card hover:shadow-md transition-shadow" data-purpose="teacher-card">
+<div class="w-20 h-24 overflow-hidden rounded-xl flex items-end justify-center shrink-0">
+<img alt="Meena Iyer" class="w-full h-full object-cover object-top" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCazEu8H6zhRkocIJMAeqYdTnM-OfklfgCI1d7esTSTyicyIasEK-4CAzk9jihqEP7pxIM7TtYdICPVHf4ABoNY1sqvzTC5HOusoItmWIxAAMZdYxsCwbC2OwEdEukdKOGrdWV3dNQGIjEBy73OAPyMdn6ieMxGbs3jaWhC5AH_VOKjYiEshFBQMTMwCwW-LNqGpzxTzm7QuJaH6t_231wyH_EFZMBaDhEpqsIbL-EDFjo3qNE1hYuq-fJdALmnGNKTBQ"/>
+</div>
+<div class="flex flex-col justify-between h-full pl-3 flex-1">
+<div>
+<span class="text-xs font-bold text-slate-900 block leading-tight">12</span>
+<h4 class="text-xs font-bold text-slate-800 mt-0.5 leading-snug">Meena Iyer</h4>
+<p class="text-[10px] text-teal-600 font-semibold truncate leading-tight">Operating Systems</p>
+</div>
+<div class="mt-3">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold">
+<span class="w-3.5 h-3.5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[8px]">✓</span>
+                  Present
+                </span>
+</div>
+</div>
+</div>
+</div>
+<!-- Pagination Controls -->
+<div class="flex items-center justify-between pt-2 text-xs font-medium text-slate-500" data-purpose="pagination">
+<p>Showing 1 – 12 of 18 teachers</p>
+<div class="flex items-center gap-1.5">
+<button class="w-7 h-7 rounded-lg flex items-center justify-center text-slate-500 hover:bg-slate-200/60 transition-colors">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+</button>
+<button class="w-7 h-7 rounded-full bg-[#00bcd4] text-white font-bold text-xs flex items-center justify-center shadow-sm">
+              1
+            </button>
+<button class="w-7 h-7 rounded-full hover:bg-slate-200/60 text-slate-600 font-semibold text-xs flex items-center justify-center transition-colors">
+              2
+            </button>
+<button class="w-7 h-7 rounded-full hover:bg-slate-200/60 text-slate-600 font-semibold text-xs flex items-center justify-center transition-colors">
+              3
+            </button>
+<button class="w-7 h-7 rounded-lg flex items-center justify-center text-slate-500 hover:bg-slate-200/60 transition-colors">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+</button>
+</div>
+</div>
+</div>
+<!-- END: Teachers Grid Deck -->
+<!-- Right Column: Analytics & Overview (4 Columns) -->
+<aside class="lg:col-span-4 flex flex-col gap-5">
+<!-- Attendance Overview Card -->
+<div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-card" data-purpose="attendance-overview-widget">
+<!-- Widget Title -->
+<div class="flex items-center gap-2.5 mb-6">
+<svg class="w-5 h-5 text-indigo-600 fill-current" viewbox="0 0 24 24">
+<path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z"></path>
+</svg>
+<h3 class="text-sm font-bold text-slate-800">Attendance Overview</h3>
+</div>
+<!-- Gauge and Stats Legend Container -->
+<div class="flex items-center justify-between gap-4">
+<!-- Donut Gauge Chart -->
+<div class="relative w-36 h-36 flex items-center justify-center shrink-0">
+<div class="w-full h-full rounded-full donut-gauge p-3 flex items-center justify-center shadow-inner">
+<div class="w-full h-full bg-white rounded-full flex flex-col items-center justify-center shadow-sm">
+<span class="text-2xl font-black text-slate-900 leading-none">18</span>
+<span class="text-[10px] font-semibold text-slate-400 mt-1">Teachers</span>
+</div>
+</div>
+</div>
+<!-- Chart Legends -->
+<div class="flex flex-col gap-3.5 flex-1 pl-2">
+<!-- Present Legend -->
+<div class="flex items-center justify-between text-xs">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-[#00d2aa]"></span>
+<span class="font-medium text-slate-600">Present</span>
+</div>
+<span class="font-bold text-slate-900">12</span>
+</div>
+<!-- Absent Legend -->
+<div class="flex items-center justify-between text-xs">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-[#ff5c60]"></span>
+<span class="font-medium text-slate-600">Absent</span>
+</div>
+<span class="font-bold text-slate-900">4</span>
+</div>
+<!-- Not Marked Legend -->
+<div class="flex items-center justify-between text-xs">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-[#7f83b6]"></span>
+<span class="font-medium text-slate-600">Not Marked</span>
+</div>
+<span class="font-bold text-slate-900">2</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Subject-wise Attendance Card -->
+<div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-card flex flex-col gap-4" data-purpose="subject-wise-attendance-widget">
+<!-- Widget Title -->
+<div class="flex items-center gap-2.5 mb-1">
+<svg class="w-5 h-5 text-indigo-600 fill-current" viewbox="0 0 24 24">
+<path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"></path>
+</svg>
+<h3 class="text-sm font-bold text-slate-800">Subject-wise Attendance</h3>
+</div>
+<!-- Subject Item 1: Computer Networks -->
+<div class="flex items-center justify-between gap-3 text-xs">
+<span class="w-36 font-semibold text-slate-600 truncate text-[11px]">Computer Networks</span>
+<div class="flex-1 h-3 bg-slate-100 rounded-full overflow-hidden flex">
+<div class="w-[75%] bg-[#00d2aa] rounded-l-full"></div>
+<div class="w-[15%] bg-[#ff5c60]"></div>
+<div class="w-[10%] bg-blue-100 rounded-r-full"></div>
+</div>
+<span class="w-8 text-right font-bold text-slate-700 text-[11px]">3 / 3</span>
+</div>
+<!-- Subject Item 2: DBMS -->
+<div class="flex items-center justify-between gap-3 text-xs">
+<span class="w-36 font-semibold text-slate-600 truncate text-[11px]">DBMS</span>
+<div class="flex-1 h-3 bg-slate-100 rounded-full overflow-hidden flex">
+<div class="w-[66%] bg-[#00d2aa] rounded-l-full"></div>
+<div class="w-[17%] bg-[#ff5c60]"></div>
+<div class="w-[17%] bg-blue-100 rounded-r-full"></div>
+</div>
+<span class="w-8 text-right font-bold text-slate-700 text-[11px]">2 / 3</span>
+</div>
+<!-- Subject Item 3: Operating Systems -->
+<div class="flex items-center justify-between gap-3 text-xs">
+<span class="w-36 font-semibold text-slate-600 truncate text-[11px]">Operating Systems</span>
+<div class="flex-1 h-3 bg-slate-100 rounded-full overflow-hidden flex">
+<div class="w-[50%] bg-[#00d2aa] rounded-l-full"></div>
+<div class="w-[20%] bg-[#ff5c60]"></div>
+<div class="w-[30%] bg-blue-100 rounded-r-full"></div>
+</div>
+<span class="w-8 text-right font-bold text-slate-700 text-[11px]">2 / 3</span>
+</div>
+<!-- Subject Item 4: Data Communication -->
+<div class="flex items-center justify-between gap-3 text-xs">
+<span class="w-36 font-semibold text-slate-600 truncate text-[11px]">Data Communication</span>
+<div class="flex-1 h-3 bg-slate-100 rounded-full overflow-hidden flex">
+<div class="w-full bg-[#00d2aa] rounded-full"></div>
+</div>
+<span class="w-8 text-right font-bold text-slate-700 text-[11px]">1 / 1</span>
+</div>
+<!-- Subject Item 5: Network Security -->
+<div class="flex items-center justify-between gap-3 text-xs">
+<span class="w-36 font-semibold text-slate-600 truncate text-[11px]">Network Security</span>
+<div class="flex-1 h-3 bg-slate-100 rounded-full overflow-hidden flex">
+<div class="w-full bg-[#00d2aa] rounded-full"></div>
+</div>
+<span class="w-8 text-right font-bold text-slate-700 text-[11px]">1 / 1</span>
+</div>
+<!-- Subject Item 6: Machine Learning -->
+<div class="flex items-center justify-between gap-3 text-xs">
+<span class="w-36 font-semibold text-slate-600 truncate text-[11px]">Machine Learning</span>
+<div class="flex-1 h-3 bg-slate-100 rounded-full overflow-hidden flex">
+<div class="w-full bg-[#00d2aa] rounded-full"></div>
+</div>
+<span class="w-8 text-right font-bold text-slate-700 text-[11px]">1 / 1</span>
+</div>
+</div>
+</aside>
+<!-- END: Right Column -->
+</main>
+<!-- END: MainDashboardContent -->
+</div>
+</body></html>

@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Login - RaiSakshya Smart Attendance</title>
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              teal: '#00C48C',
+              dark: '#081726',
+              mint: '#E6F8F3',
+              accent: '#10B981',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: radial-gradient(circle at 10% 20%, #eff6ff 0%, #f0fdf4 40%, #eef2f6 100%);
+      min-height: 100vh;
+    }
+    .reticle-ring {
+      border: 3px solid rgba(255, 255, 255, 0.8);
+      border-radius: 50%;
+    }
+  </style>
+</head>
+<body class="text-slate-800 antialiased p-3 sm:p-5 flex flex-col justify-center items-center min-h-screen">
+
+  <div class="w-full max-w-xl mx-auto flex flex-col gap-5">
+    
+    <!-- Brand Header -->
+    <div class="flex items-center justify-center gap-3 select-none">
+      <div class="w-12 h-12 rounded-2xl bg-[#0B1522] flex items-center justify-center text-teal-400 text-2xl shadow-xl border border-white/10">
+        <i class="fa-solid fa-graduation-cap"></i>
+      </div>
+      <div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 leading-none">RaiSakshya</h1>
+        <p class="text-xs text-slate-500 font-medium mt-1">Smart Attendance for Brighter Futures</p>
+      </div>
+    </div>
+
+    <!-- Main Login Card -->
+    <div class="bg-white/95 backdrop-blur-xl rounded-[32px] p-6 sm:p-8 shadow-2xl border border-white/80 flex flex-col gap-6">
+
+      <!-- Quick Demo Login Fillers -->
+      <div class="p-3 bg-teal-50/70 border border-teal-100 rounded-2xl flex flex-col gap-2">
+        <div class="flex items-center justify-between text-xs font-bold text-teal-800">
+          <span><i class="fa-solid fa-bolt text-teal-600 mr-1"></i> Quick 1-Click Demo Profiles</span>
+          <span class="text-[10px] text-teal-600">Click to autofill</span>
+        </div>
+        <div class="flex flex-wrap gap-1.5 text-xs">
+          <button type="button" onclick="fillDemo('aarav.sharma@college.edu', 'password123', 'student')" class="px-2.5 py-1 bg-white hover:bg-teal-100/60 border border-teal-200 text-teal-900 rounded-lg font-semibold transition">
+            🎓 Student (Aarav - Approved)
+          </button>
+          <button type="button" onclick="fillDemo('priya.sharma@college.edu', 'password123', 'teacher')" class="px-2.5 py-1 bg-white hover:bg-teal-100/60 border border-teal-200 text-indigo-900 rounded-lg font-semibold transition">
+            👩‍🏫 Class Teacher (Prof. Priya)
+          </button>
+          <button type="button" onclick="fillDemo('admin@college.edu', 'password123', 'admin')" class="px-2.5 py-1 bg-white hover:bg-teal-100/60 border border-teal-200 text-rose-900 rounded-lg font-semibold transition">
+            🏛️ Admin (Dean)
+          </button>
+          <button type="button" onclick="fillDemo('ishaan.t@college.edu', 'password123', 'student')" class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100/70 border border-amber-200 text-amber-900 rounded-lg font-semibold transition" title="Test class teacher approval flow">
+            ⏳ Pending Student
+          </button>
+          <button type="button" onclick="fillDemo('vikram.rao@college.edu', 'password123', 'teacher')" class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100/70 border border-amber-200 text-amber-900 rounded-lg font-semibold transition" title="Test admin approval flow">
+            ⏳ Pending Teacher
+          </button>
+        </div>
+      </div>
+
+      <!-- Pending Approval Banner (Hidden by default) -->
+      <div id="pending-alert" class="hidden p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 flex items-start gap-3">
+        <i class="fa-solid fa-triangle-exclamation text-amber-600 text-lg mt-0.5 shrink-0"></i>
+        <div>
+          <h4 class="text-xs sm:text-sm font-bold leading-tight" id="pending-alert-title">Account Pending Approval</h4>
+          <p class="text-xs text-amber-700 mt-1" id="pending-alert-msg">Your registration is awaiting approval. Once approved, you will be able to log in.</p>
+        </div>
+      </div>
+
+      <!-- Credentials Form -->
+      <form id="login-form" onsubmit="handleLogin(event)" class="flex flex-col gap-4">
+        
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5" for="email">College Email Address</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
+              <i class="fa-regular fa-envelope text-sm"></i>
+            </span>
+            <input id="email" type="email" required placeholder="name@college.edu" value="aarav.sharma@college.edu"
+              class="w-full pl-10 pr-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-semibold text-slate-900 focus:bg-white focus:ring-2 focus:ring-[#00C48C] focus:border-transparent outline-none transition">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5" for="password">Password</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
+              <i class="fa-solid fa-lock text-sm"></i>
+            </span>
+            <input id="password" type="password" required placeholder="••••••••" value="password123"
+              class="w-full pl-10 pr-10 py-3 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-semibold text-slate-900 focus:bg-white focus:ring-2 focus:ring-[#00C48C] focus:border-transparent outline-none transition">
+            <button type="button" onclick="togglePasswordVisibility()" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600">
+              <i id="eye-icon" class="fa-regular fa-eye text-sm"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" id="submit-btn" class="mt-2 w-full py-3.5 px-6 rounded-2xl bg-[#0B1522] hover:bg-[#121f31] text-white font-extrabold text-sm flex items-center justify-center gap-2 shadow-xl hover:shadow-2xl active:scale-[0.99] transition">
+          <span>Sign In to Portal</span>
+          <i class="fa-solid fa-arrow-right text-teal-400 text-xs"></i>
+        </button>
+
+      </form>
+
+      <!-- Face Recognition Login Option -->
+      <div class="relative flex py-1 items-center">
+        <div class="flex-grow border-t border-slate-200"></div>
+        <span class="flex-shrink mx-4 text-xs font-bold text-slate-400 uppercase tracking-wider">or verify with biometric</span>
+        <div class="flex-grow border-t border-slate-200"></div>
+      </div>
+
+      <button type="button" onclick="openFaceLoginModal()" class="w-full py-3 px-4 rounded-2xl border-2 border-slate-200 hover:border-teal-500 bg-white hover:bg-teal-50/30 text-slate-800 font-bold text-xs sm:text-sm flex items-center justify-center gap-2.5 transition">
+        <i class="fa-solid fa-face-smile text-teal-500 text-base"></i>
+        <span>Login with Face Verification (AWS Rekognition)</span>
+      </button>
+
+      <!-- Registration Links -->
+      <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+        <span class="text-slate-500 font-medium">Don't have an account yet?</span>
+        <div class="flex items-center gap-2">
+          <a href="/register/student" class="px-3 py-1.5 rounded-xl bg-teal-50 text-teal-700 hover:bg-teal-100 font-bold transition">
+            Student Sign-up
+          </a>
+          <a href="/register/teacher" class="px-3 py-1.5 rounded-xl bg-indigo-50 text-indigo-700 hover:bg-indigo-100 font-bold transition">
+            Teacher Sign-up
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Face Login Modal -->
+  <div id="face-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-[28px] max-w-lg w-full p-6 shadow-2xl flex flex-col gap-4 text-center transition-all">
+      
+      <!-- SCAN VIEW -->
+      <div id="face-scan-view" class="flex flex-col gap-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl bg-teal-50 flex items-center justify-center text-teal-600">
+              <i class="fa-solid fa-face-smile text-base"></i>
+            </div>
+            <div class="text-left">
+              <h3 class="font-extrabold text-base text-slate-900 leading-tight">Biometric Face Authentication</h3>
+              <p class="text-[11px] text-slate-500 font-medium">AWS Rekognition Live Facial Verification</p>
+            </div>
+          </div>
+          <button type="button" onclick="closeFaceLoginModal()" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-400 hover:text-slate-600 flex items-center justify-center transition">
+            <i class="fa-solid fa-xmark text-sm"></i>
+          </button>
+        </div>
+
+        <!-- Camera Frame -->
+        <div class="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-slate-900 flex items-center justify-center border-2 border-slate-100 shadow-inner">
+          <video id="modal-video" autoplay playsinline class="w-full h-full object-cover"></video>
+          <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div class="reticle-ring w-44 h-44"></div>
+          </div>
+          <div id="modal-cam-badge" class="absolute top-3 right-3 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-full text-[10px] text-white font-bold flex items-center gap-1.5">
+            <span class="status-dot w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span class="status-text">Camera active</span>
+          </div>
+        </div>
+
+        <p class="text-xs text-slate-500">Center your face inside the circle. We'll recognize your facial biometric features and log you in automatically.</p>
+
+        <!-- Dynamic feedback alert (hidden by default) -->
+        <div id="face-scan-alert" class="hidden p-3 rounded-xl text-xs font-semibold text-left flex items-start gap-2.5">
+          <i id="face-scan-alert-icon" class="fa-solid fa-circle-exclamation mt-0.5 shrink-0"></i>
+          <span id="face-scan-alert-msg"></span>
+        </div>
+
+        <button type="button" onclick="performFaceLogin()" id="scan-face-btn" class="w-full py-3.5 rounded-xl bg-[#00C48C] hover:bg-[#00b07e] text-white font-extrabold text-sm flex items-center justify-center gap-2 shadow-lg shadow-teal-500/20 active:scale-[0.99] transition">
+          <i class="fa-solid fa-expand"></i>
+          <span>Scan Face & Login</span>
+        </button>
+      </div>
+
+      <!-- ACCOUNTS SELECTION VIEW (Shown when same face is attached to multiple accounts) -->
+      <div id="face-accounts-view" class="hidden flex flex-col gap-4 text-left">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center font-bold">
+              <i class="fa-solid fa-users text-sm"></i>
+            </div>
+            <div>
+              <h3 class="font-extrabold text-base text-slate-900 leading-tight">Select Your Account</h3>
+              <p class="text-[11px] text-slate-500 font-medium">Face matched with multiple registered profiles</p>
+            </div>
+          </div>
+          <button type="button" onclick="closeFaceLoginModal()" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-400 hover:text-slate-600 flex items-center justify-center transition">
+            <i class="fa-solid fa-xmark text-sm"></i>
+          </button>
+        </div>
+
+        <div class="p-3 bg-teal-50/70 rounded-xl border border-teal-100 text-xs text-teal-900 flex items-start gap-2.5">
+          <i class="fa-solid fa-circle-check text-teal-600 text-sm mt-0.5 shrink-0"></i>
+          <span><strong>Biometrics Verified!</strong> Click on any account below to sign in directly without re-entering your email and password.</span>
+        </div>
+
+        <!-- Scrollable accounts list -->
+        <div id="face-accounts-list" class="flex flex-col gap-2.5 max-h-[340px] overflow-y-auto pr-1">
+          <!-- Dynamically populated cards -->
+        </div>
+
+        <div class="flex items-center justify-between pt-2 border-t border-slate-100">
+          <button type="button" onclick="returnToFaceScan()" class="px-3.5 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 transition flex items-center gap-1.5">
+            <i class="fa-solid fa-arrow-left text-[10px]"></i>
+            <span>Scan Again</span>
+          </button>
+          <span class="text-[11px] text-slate-400 font-medium">1-Click Fast Biometric Login</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="/static/js/api.js"></script>
+  <script src="/static/js/camera.js"></script>
+  <script>
+    let currentRole = null;
+    let cameraController = null;
+
+    function selectRole(role) {
+      currentRole = role;
+      const alertBox = document.getElementById('pending-alert');
+      if (alertBox) alertBox.classList.add('hidden');
+    }
+
+    function fillDemo(email, pass, role) {
+      document.getElementById('email').value = email;
+      document.getElementById('password').value = pass;
+      selectRole(role);
+    }
+
+    function togglePasswordVisibility() {
+      const pass = document.getElementById('password');
+      const icon = document.getElementById('eye-icon');
+      if (pass.type === 'password') {
+        pass.type = 'text';
+        icon.className = 'fa-regular fa-eye-slash text-sm';
+      } else {
+        pass.type = 'password';
+        icon.className = 'fa-regular fa-eye text-sm';
+      }
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const btn = document.getElementById('submit-btn');
+
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Authenticating...`;
+
+      try {
+        const res = await API.login(email, password, currentRole);
+        if (res.success) {
+          API.showToast(`Welcome back, ${res.user.name}!`, 'success');
+          setTimeout(() => {
+            window.location.href = res.redirect_url;
+          }, 600);
+        } else {
+          btn.disabled = false;
+          btn.innerHTML = `<span>Sign In to Portal</span> <i class="fa-solid fa-arrow-right text-teal-400 text-xs"></i>`;
+
+          if (res.pending_approval) {
+            const alertBox = document.getElementById('pending-alert');
+            const alertMsg = document.getElementById('pending-alert-msg');
+            alertMsg.textContent = res.message;
+            alertBox.classList.remove('hidden');
+            API.showToast(res.message, 'error');
+          } else {
+            API.showToast(res.message || 'Login failed', 'error');
+          }
+        }
+      } catch (err) {
+        btn.disabled = false;
+        btn.innerHTML = `<span>Sign In to Portal</span> <i class="fa-solid fa-arrow-right text-teal-400 text-xs"></i>`;
+        API.showToast("Network error during login", 'error');
+      }
+    }
+
+    async function openFaceLoginModal() {
+      document.getElementById('face-modal').classList.remove('hidden');
+      document.getElementById('face-scan-view').classList.remove('hidden');
+      document.getElementById('face-accounts-view').classList.add('hidden');
+      const alertBox = document.getElementById('face-scan-alert');
+      if (alertBox) alertBox.classList.add('hidden');
+      const scanBtn = document.getElementById('scan-face-btn');
+      if (scanBtn) {
+        scanBtn.disabled = false;
+        scanBtn.innerHTML = `<i class="fa-solid fa-expand"></i> <span>Scan Face & Login</span>`;
+      }
+      cameraController = new CameraController('modal-video', null, 'modal-cam-badge');
+      await cameraController.startCamera();
+    }
+
+    function closeFaceLoginModal() {
+      if (cameraController) {
+        cameraController.stopCamera();
+      }
+      document.getElementById('face-modal').classList.add('hidden');
+      document.getElementById('face-scan-view').classList.remove('hidden');
+      document.getElementById('face-accounts-view').classList.add('hidden');
+      const alertBox = document.getElementById('face-scan-alert');
+      if (alertBox) alertBox.classList.add('hidden');
+      const scanBtn = document.getElementById('scan-face-btn');
+      if (scanBtn) {
+        scanBtn.disabled = false;
+        scanBtn.innerHTML = `<i class="fa-solid fa-expand"></i> <span>Scan Face & Login</span>`;
+      }
+    }
+
+    async function performFaceLogin() {
+      const scanBtn = document.getElementById('scan-face-btn');
+      const alertBox = document.getElementById('face-scan-alert');
+      const alertMsg = document.getElementById('face-scan-alert-msg');
+      const alertIcon = document.getElementById('face-scan-alert-icon');
+
+      alertBox.classList.add('hidden');
+      scanBtn.disabled = true;
+      scanBtn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Matching Face with AWS Rekognition...`;
+
+      let snapshot = null;
+      if (cameraController) {
+        snapshot = cameraController.captureSnapshotBase64();
+      }
+
+      if (!snapshot) {
+        scanBtn.disabled = false;
+        scanBtn.innerHTML = `<i class="fa-solid fa-expand"></i> <span>Scan Face & Login</span>`;
+        alertBox.className = "p-3 rounded-xl text-xs font-semibold text-left flex items-start gap-2.5 bg-rose-50 border border-rose-200 text-rose-800";
+        alertIcon.className = "fa-solid fa-triangle-exclamation text-rose-600 mt-0.5 shrink-0";
+        alertMsg.textContent = "Camera stream not detected. Please ensure your camera is enabled and active.";
+        alertBox.classList.remove('hidden');
+        return;
+      }
+
+      try {
+        const res = await API.faceLogin(snapshot);
+
+        if (res.success) {
+          if (res.multiple && res.accounts && res.accounts.length > 1) {
+            // Multiple profiles match this face
+            if (cameraController) {
+              cameraController.stopCamera();
+            }
+            document.getElementById('face-scan-view').classList.add('hidden');
+            document.getElementById('face-accounts-view').classList.remove('hidden');
+            renderFaceAccounts(res.accounts);
+          } else {
+            // Single profile match: automatic direct login
+            API.showToast(res.message || `Face Verified! Welcome, ${res.user.name}`, 'success');
+            scanBtn.innerHTML = `<i class="fa-solid fa-check"></i> <span>Verified! Redirecting...</span>`;
+            setTimeout(() => {
+              window.location.href = res.redirect_url;
+            }, 600);
+          }
+        } else {
+          scanBtn.disabled = false;
+          scanBtn.innerHTML = `<i class="fa-solid fa-expand"></i> <span>Scan Face & Login</span>`;
+          alertBox.className = "p-3 rounded-xl text-xs font-semibold text-left flex items-start gap-2.5 bg-rose-50 border border-rose-200 text-rose-800";
+          alertIcon.className = "fa-solid fa-circle-xmark text-rose-600 mt-0.5 shrink-0";
+          alertMsg.textContent = res.message || "Face not recognized. Please try again or log in with credentials.";
+          alertBox.classList.remove('hidden');
+          API.showToast(res.message || "Face verification failed", 'error');
+        }
+      } catch (err) {
+        scanBtn.disabled = false;
+        scanBtn.innerHTML = `<i class="fa-solid fa-expand"></i> <span>Scan Face & Login</span>`;
+        alertBox.className = "p-3 rounded-xl text-xs font-semibold text-left flex items-start gap-2.5 bg-rose-50 border border-rose-200 text-rose-800";
+        alertIcon.className = "fa-solid fa-triangle-exclamation text-rose-600 mt-0.5 shrink-0";
+        alertMsg.textContent = "Error connecting to biometric verification server.";
+        alertBox.classList.remove('hidden');
+        API.showToast("Biometric verification error", 'error');
+      }
+    }
+
+    function renderFaceAccounts(accounts) {
+      const container = document.getElementById('face-accounts-list');
+      container.innerHTML = '';
+
+      const roleStyles = {
+        student: {
+          badgeBg: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+          icon: 'fa-graduation-cap text-emerald-600',
+          hoverBorder: 'hover:border-emerald-500 hover:bg-emerald-50/20'
+        },
+        teacher: {
+          badgeBg: 'bg-indigo-50 text-indigo-700 border-indigo-200',
+          icon: 'fa-chalkboard-user text-indigo-600',
+          hoverBorder: 'hover:border-indigo-500 hover:bg-indigo-50/20'
+        },
+        admin: {
+          badgeBg: 'bg-purple-50 text-purple-700 border-purple-200',
+          icon: 'fa-shield-halved text-purple-600',
+          hoverBorder: 'hover:border-purple-500 hover:bg-purple-50/20'
+        }
+      };
+
+      accounts.forEach(acc => {
+        const style = roleStyles[acc.role] || roleStyles.student;
+        const card = document.createElement('div');
+        card.className = `p-3.5 rounded-2xl border-2 border-slate-200/90 bg-white ${style.hoverBorder} transition-all cursor-pointer flex items-center justify-between gap-3 shadow-sm hover:shadow-md group`;
+        card.onclick = () => selectFaceAccount(acc.id, acc.role, acc.name, card);
+
+        card.innerHTML = `
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="relative shrink-0">
+              <img src="${acc.avatar || '/static/student_faces/268e4791-61db-45cb-b948-2a40ce6e5374.png'}" 
+                   alt="${acc.name}" 
+                   class="w-12 h-12 rounded-xl object-cover border border-slate-200"
+                   onerror="this.src='/static/student_faces/268e4791-61db-45cb-b948-2a40ce6e5374.png'">
+              <span class="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-white shadow flex items-center justify-center text-[10px]">
+                <i class="fa-solid ${style.icon}"></i>
+              </span>
+            </div>
+            <div class="min-w-0">
+              <div class="flex items-center gap-2">
+                <h4 class="font-extrabold text-sm text-slate-900 truncate group-hover:text-teal-700 transition">${acc.name}</h4>
+                <span class="px-2 py-0.5 rounded-md text-[10px] font-extrabold uppercase border ${style.badgeBg} shrink-0">
+                  ${acc.badge || acc.role}
+                </span>
+              </div>
+              <p class="text-xs text-slate-600 font-medium truncate mt-0.5">${acc.detail || acc.department || ''}</p>
+              <p class="text-[11px] text-slate-400 truncate">${acc.email}</p>
+            </div>
+          </div>
+          <div class="shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 group-hover:bg-[#00C48C] text-slate-700 group-hover:text-white font-extrabold text-xs transition">
+            <span>Log in</span>
+            <i class="fa-solid fa-arrow-right text-[10px]"></i>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    async function selectFaceAccount(userId, role, name, cardElement) {
+      if (cardElement) {
+        cardElement.classList.add('opacity-75', 'pointer-events-none');
+        const actionBtn = cardElement.querySelector('.shrink-0.flex');
+        if (actionBtn) {
+          actionBtn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin text-xs"></i> <span>Logging in...</span>`;
+          actionBtn.className = "shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#00C48C] text-white font-extrabold text-xs";
+        }
+      }
+
+      try {
+        const res = await API.selectFaceAccount(userId, role);
+        if (res.success) {
+          API.showToast(`Logged in successfully! Welcome, ${name || res.user.name}`, 'success');
+          setTimeout(() => {
+            window.location.href = res.redirect_url;
+          }, 500);
+        } else {
+          API.showToast(res.message || 'Login failed', 'error');
+          if (cardElement) {
+            cardElement.classList.remove('opacity-75', 'pointer-events-none');
+          }
+        }
+      } catch (err) {
+        API.showToast("Network error logging into account", 'error');
+        if (cardElement) {
+          cardElement.classList.remove('opacity-75', 'pointer-events-none');
+        }
+      }
+    }
+
+    async function returnToFaceScan() {
+      document.getElementById('face-accounts-view').classList.add('hidden');
+      document.getElementById('face-scan-view').classList.remove('hidden');
+      const alertBox = document.getElementById('face-scan-alert');
+      if (alertBox) alertBox.classList.add('hidden');
+      const scanBtn = document.getElementById('scan-face-btn');
+      if (scanBtn) {
+        scanBtn.disabled = false;
+        scanBtn.innerHTML = `<i class="fa-solid fa-expand"></i> <span>Scan Face & Login</span>`;
+      }
+      
+      if (!cameraController) {
+        cameraController = new CameraController('modal-video', null, 'modal-cam-badge');
+      }
+      await cameraController.startCamera();
+    }
+  </script>
+</body>
+</html>

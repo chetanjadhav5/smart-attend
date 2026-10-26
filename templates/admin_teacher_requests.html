@@ -1,0 +1,730 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Teacher Sign-up Requests - RaiSakshya</title>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Plus Jakarta Sans & Caveat for handwritten banner text -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            handwriting: ['"Caveat"', 'cursive']
+          },
+          colors: {
+            brand: {
+              navy: '#0c1524',
+              teal: '#0ea5e9',
+              purple: '#6366f1',
+              activePurple: '#7053f4'
+            }
+          }
+        }
+      }
+    }
+  </script>
+<!-- BEGIN: Custom Styles -->
+<style data-purpose="background-ambient">
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #eaf1fb;
+      background-image: 
+        radial-gradient(at 10% 15%, rgba(199, 219, 254, 0.6) 0px, transparent 55%),
+        radial-gradient(at 90% 20%, rgba(224, 215, 255, 0.7) 0px, transparent 50%),
+        radial-gradient(at 85% 75%, rgba(254, 235, 200, 0.4) 0px, transparent 40%),
+        radial-gradient(at 20% 85%, rgba(219, 234, 254, 0.6) 0px, transparent 50%);
+      background-attachment: fixed;
+    }
+  </style>
+<style data-purpose="chart-styling">
+    .donut-circle {
+      stroke-dasharray: 283;
+      stroke-dashoffset: 0;
+      transition: stroke-dashoffset 1s ease-in-out;
+    }
+  </style>
+<!-- END: Custom Styles -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="min-h-screen text-slate-800 antialiased flex flex-col justify-start">
+<!-- BEGIN: TopNavigationBar -->
+<div id="global-navbar" class="sticky top-0 z-[99999] w-full"></div>
+<!-- END: TopNavigationBar -->
+
+<div class="w-full max-w-[1480px] mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 flex flex-col gap-6">
+<!-- BEGIN: HeroBannerAndTabs -->
+<section class="w-full">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 relative">
+<!-- Left side: Titles and Tab switcher -->
+<div class="z-10">
+<div class="flex items-center gap-3 mb-2">
+<div class="w-10 h-10 rounded-xl bg-indigo-600/10 text-indigo-600 flex items-center justify-center">
+<!-- Add User Icon -->
+<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+<path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path>
+</svg>
+</div>
+<h2 class="text-2xl sm:text-3xl font-extrabold text-[#111827] tracking-tight">Teacher Sign-up Requests</h2>
+</div>
+<p class="text-slate-500 text-sm font-medium mb-5 max-w-xl">
+          Review and approve teachers who have registered to join your institution.
+        </p>
+<!-- Segmented Tab Buttons -->
+<div class="inline-flex p-1 bg-white/70 backdrop-blur-md rounded-2xl border border-slate-200/80 shadow-sm gap-1.5">
+<!-- Inactive Tab -->
+<button class="flex items-center gap-2 px-5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 text-sm font-bold transition">
+<svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+            Teachers Attendance
+          </button>
+<!-- Active Tab -->
+<button class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#6e51f4] to-[#886bf8] text-white text-sm font-bold shadow-md shadow-indigo-500/25">
+<svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+<path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path>
+</svg>
+            Sign-up Requests
+          </button>
+</div>
+</div>
+<!-- Right side: Artistic illustration & Quote -->
+<div class="hidden lg:flex items-center justify-end relative min-w-[420px] h-32 pr-6">
+<div class="text-right mr-4 relative">
+<!-- Playful sparkle decoration -->
+<span class="text-indigo-400 text-xl absolute -top-4 -left-3 animate-pulse">✨</span>
+<span class="text-amber-400 text-lg absolute -bottom-2 -right-4">✦</span>
+<p class="font-handwriting text-2xl sm:text-[26px] leading-[1.15] font-bold text-indigo-950 rotate-[-4deg]">
+            Great<br>Teachers<br>Build<br><span class="text-indigo-600">Brighter</span><br>Futures ✨
+          </p>
+</div>
+<!-- 3D Mascot Character holding tablet -->
+<div class="relative w-36 h-36 -mt-6">
+<img alt="Teacher mascot" class="w-full h-full object-contain filter drop-shadow-lg" src="/static/teacher_faces/20bb28b4-f54a-4a3c-9630-e75ad391e672.png">
+</div>
+</div>
+</div>
+</section>
+<!-- END: HeroBannerAndTabs -->
+<!-- BEGIN: FilterBar -->
+<section class="max-w-[1536px] mx-auto mb-6 px-1">
+<div class="bg-white/90 backdrop-blur-md rounded-2xl p-3 sm:p-4 shadow-sm border border-slate-200/90 flex flex-wrap lg:flex-nowrap items-center gap-3">
+<!-- Filter 1: Department -->
+<div class="flex-1 min-w-[190px] bg-slate-50/80 hover:bg-slate-100/80 transition rounded-xl px-3 py-1.5 border border-slate-200/70 flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-600 flex items-center justify-center shrink-0">
+<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+<path d="M12 3L1 9L12 15L21 10.09V17H23V9M5 13.18V17.18L12 21L19 17.18V13.18L12 17L5 13.18Z"></path>
+</svg>
+</div>
+<div class="flex-1 min-w-0">
+<span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Department</span>
+<select class="w-full bg-transparent p-0 border-0 text-xs sm:text-sm font-bold text-slate-700 focus:ring-0 cursor-pointer">
+<option>All Departments</option>
+<option>Computer Science</option>
+<option>Information Tech</option>
+</select>
+</div>
+</div>
+<!-- Filter 2: Class / Section -->
+<div class="flex-1 min-w-[190px] bg-slate-50/80 hover:bg-slate-100/80 transition rounded-xl px-3 py-1.5 border border-slate-200/70 flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-600 flex items-center justify-center shrink-0">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<div class="flex-1 min-w-0">
+<span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Class / Section</span>
+<select class="w-full bg-transparent p-0 border-0 text-xs sm:text-sm font-bold text-slate-700 focus:ring-0 cursor-pointer">
+<option>All Classes</option>
+<option>Year 1</option>
+<option>Year 2</option>
+<option>Year 3</option>
+</select>
+</div>
+</div>
+<!-- Filter 3: Status -->
+<div class="flex-1 min-w-[160px] bg-slate-50/80 hover:bg-slate-100/80 transition rounded-xl px-3 py-1.5 border border-slate-200/70 flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-lg bg-teal-500/10 text-teal-600 flex items-center justify-center shrink-0">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<div class="flex-1 min-w-0">
+<span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Status</span>
+<select class="w-full bg-transparent p-0 border-0 text-xs sm:text-sm font-bold text-slate-700 focus:ring-0 cursor-pointer">
+<option>Pending</option>
+<option>Approved</option>
+<option>Declined</option>
+</select>
+</div>
+</div>
+<!-- Filter Search Input -->
+<div class="w-full lg:w-96 relative">
+<span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+<path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</span>
+<input class="w-full bg-slate-50/80 border border-slate-200/80 rounded-xl pl-10 pr-4 py-2.5 text-xs sm:text-sm font-medium text-slate-700 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition" placeholder="Search by name, email or employee ID..." type="text">
+</div>
+</div>
+</section>
+<!-- END: FilterBar -->
+<!-- BEGIN: MainContentArea -->
+<main class="max-w-[1536px] mx-auto grid grid-cols-1 xl:grid-cols-12 gap-6 px-1">
+<!-- LEFT COLUMN: Grid of Teacher Cards (xl:col-span-8 or 9) -->
+<div class="xl:col-span-9">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+<!-- CARD 1: Riya Sharma -->
+<article class="bg-white rounded-3xl p-4 shadow-sm hover:shadow-md transition-shadow border border-slate-200/80 flex flex-col justify-between">
+<div>
+<!-- Top Card Content: Avatar Left, Details Right -->
+<div class="grid grid-cols-12 gap-3 items-center">
+<!-- Avatar Column -->
+<div class="col-span-5 flex justify-center items-center">
+<div class="relative w-28 h-32 rounded-2xl overflow-hidden bg-gradient-to-b from-rose-50 to-orange-50 p-1 flex items-end justify-center shadow-inner">
+<img alt="Riya Sharma" class="w-full h-full object-cover object-top filter contrast-105" src="/static/teacher_faces/22ea68d3-8b39-4b21-86f5-524d563ceee4.png">
+</div>
+</div>
+<!-- Info Column -->
+<div class="col-span-7 flex flex-col justify-between pl-1">
+<div>
+<!-- Badges Row -->
+<div class="flex items-center justify-between mb-1">
+<span class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">3 yrs exp</span>
+<span class="inline-flex items-center gap-1 text-[10px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200/60">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                      Pending
+                    </span>
+</div>
+<!-- Name & Subject -->
+<h3 class="font-bold text-slate-900 text-base leading-tight mt-1">Riya Sharma</h3>
+<p class="text-xs font-semibold text-indigo-600 mb-2">Computer Networks</p>
+<!-- Metadata List -->
+<div class="space-y-1 text-[11px] text-slate-500 font-medium">
+<div class="flex items-center gap-1.5 truncate">
+<svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span class="truncate">riya.sharma@college.com</span>
+</div>
+<div class="flex items-center gap-1.5">
+<svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span>T001</span>
+</div>
+<div class="flex items-center gap-1.5">
+<svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span>03 Oct 2026</span>
+</div>
+<div class="flex items-center gap-1 pt-0.5">
+<svg class="w-3.5 h-3.5 text-indigo-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<a class="text-indigo-600 hover:text-indigo-800 font-semibold inline-flex items-center gap-0.5" href="#">
+                        Resume.pdf
+                        <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Card Bottom Action Buttons -->
+<div class="grid grid-cols-2 gap-2 mt-4 pt-2 border-t border-slate-100">
+<button class="w-full py-2 px-3 rounded-xl bg-red-50 hover:bg-red-100 text-rose-600 font-bold text-xs flex items-center justify-center gap-1.5 transition">
+<span class="text-sm">✕</span> Decline
+            </button>
+<button class="w-full py-2 px-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs flex items-center justify-center gap-1.5 transition">
+<span class="text-sm">✓</span> Approve
+            </button>
+</div>
+</article>
+<!-- CARD 2: Manish Dubey -->
+<article class="bg-white rounded-3xl p-4 shadow-sm hover:shadow-md transition-shadow border border-slate-200/80 flex flex-col justify-between">
+<div>
+<div class="grid grid-cols-12 gap-3 items-center">
+<div class="col-span-5 flex justify-center items-center">
+<div class="relative w-28 h-32 rounded-2xl overflow-hidden bg-gradient-to-b from-blue-50 to-indigo-50 p-1 flex items-end justify-center shadow-inner">
+<img alt="Manish Dubey" class="w-full h-full object-cover object-top filter contrast-105" src="/static/teacher_faces/308cb046-f220-4dba-a871-63cdef5a258c.png">
+</div>
+</div>
+<div class="col-span-7 flex flex-col justify-between pl-1">
+<div>
+<div class="flex items-center justify-between mb-1">
+<span class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">5 yrs exp</span>
+<span class="inline-flex items-center gap-1 text-[10px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200/60">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                      Pending
+                    </span>
+</div>
+<h3 class="font-bold text-slate-900 text-base leading-tight mt-1">Manish Dubey</h3>
+<p class="text-xs font-semibold text-indigo-600 mb-2">DBMS</p>
+<div class="space-y-1 text-[11px] text-slate-500 font-medium">
+<div class="flex items-center gap-1.5 truncate">
+<svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span class="truncate">manish.dubey@college.com</span>
+</div>
+<div class="flex items-center gap-1.5">
+<svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span>T002</span>
+</div>
+<div class="flex items-center gap-1.5">
+<svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span>02 Oct 2026</span>
+</div>
+<div class="flex items-center gap-1 pt-0.5">
+<svg class="w-3.5 h-3.5 text-indigo-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<a class="text-indigo-600 hover:text-indigo-800 font-semibold inline-flex items-center gap-0.5" href="#">
+                        Resume.pdf
+                        <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-2 mt-4 pt-2 border-t border-slate-100">
+<button class="w-full py-2 px-3 rounded-xl bg-red-50 hover:bg-red-100 text-rose-600 font-bold text-xs flex items-center justify-center gap-1.5 transition">
+<span class="text-sm">✕</span> Decline
+            </button>
+<button class="w-full py-2 px-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs flex items-center justify-center gap-1.5 transition">
+<span class="text-sm">✓</span> Approve
+            </button>
+</div>
+</article>
+<!-- CARD 3: Priya Kulkarni -->
+<article class="bg-white rounded-3xl p-4 shadow-sm hover:shadow-md transition-shadow border border-slate-200/80 flex flex-col justify-between">
+<div>
+<div class="grid grid-cols-12 gap-3 items-center">
+<div class="col-span-5 flex justify-center items-center">
+<div class="relative w-28 h-32 rounded-2xl overflow-hidden bg-gradient-to-b from-purple-50 to-pink-50 p-1 flex items-end justify-center shadow-inner">
+<img alt="Priya Kulkarni" class="w-full h-full object-cover object-top filter contrast-105" src="/static/teacher_faces/33768a7e-c518-4ba6-bc46-b6cc06c36aa5.png">
+</div>
+</div>
+<div class="col-span-7 flex flex-col justify-between pl-1">
+<div>
+<div class="flex items-center justify-between mb-1">
+<span class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">4 yrs exp</span>
+<span class="inline-flex items-center gap-1 text-[10px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200/60">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                      Pending
+                    </span>
+</div>
+<h3 class="font-bold text-slate-900 text-base leading-tight mt-1">Priya Kulkarni</h3>
+<p class="text-xs font-semibold text-indigo-600 mb-2">Operating Systems</p>
+<div class="space-y-1 text-[11px] text-slate-500 font-medium">
+<div class="flex items-center gap-1.5 truncate">
+<svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span class="truncate">priya.kulkarni@college.com</span>
+</div>
+<div class="flex items-center gap-1.5">
+<svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span>T003</span>
+</div>
+<div class="flex items-center gap-1.5">
+<svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span>01 Oct 2026</span>
+</div>
+<div class="flex items-center gap-1 pt-0.5">
+<svg class="w-3.5 h-3.5 text-indigo-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<a class="text-indigo-600 hover:text-indigo-800 font-semibold inline-flex items-center gap-0.5" href="#">
+                        Resume.pdf
+                        <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-2 mt-4 pt-2 border-t border-slate-100">
+<button class="w-full py-2 px-3 rounded-xl bg-red-50 hover:bg-red-100 text-rose-600 font-bold text-xs flex items-center justify-center gap-1.5 transition">
+<span class="text-sm">✕</span> Decline
+            </button>
+<button class="w-full py-2 px-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs flex items-center justify-center gap-1.5 transition">
+<span class="text-sm">✓</span> Approve
+            </button>
+</div>
+</article>
+<!-- CARD 4: Amit Thakur -->
+<article class="bg-white rounded-3xl p-4 shadow-sm hover:shadow-md transition-shadow border border-slate-200/80 flex flex-col justify-between">
+<div>
+<div class="grid grid-cols-12 gap-3 items-center">
+<div class="col-span-5 flex justify-center items-center">
+<div class="relative w-28 h-32 rounded-2xl overflow-hidden bg-gradient-to-b from-sky-50 to-blue-50 p-1 flex items-end justify-center shadow-inner">
+<img alt="Amit Thakur" class="w-full h-full object-cover object-top filter contrast-105" src="/static/teacher_faces/70a23d6a-ee5f-422b-b85e-a43ed14cab66.png">
+</div>
+</div>
+<div class="col-span-7 flex flex-col justify-between pl-1">
+<div>
+<div class="flex items-center justify-between mb-1">
+<span class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">6 yrs exp</span>
+<span class="inline-flex items-center gap-1 text-[10px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200/60">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                      Pending
+                    </span>
+</div>
+<h3 class="font-bold text-slate-900 text-base leading-tight mt-1">Amit Thakur</h3>
+<p class="text-xs font-semibold text-indigo-600 mb-2">Computer Networks</p>
+<div class="space-y-1 text-[11px] text-slate-500 font-medium">
+<div class="flex items-center gap-1.5 truncate">
+<svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span class="truncate">amit.thakur@college.com</span>
+</div>
+<div class="flex items-center gap-1.5">
+<svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span>T004</span>
+</div>
+<div class="flex items-center gap-1.5">
+<svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span>01 Oct 2026</span>
+</div>
+<div class="flex items-center gap-1 pt-0.5">
+<svg class="w-3.5 h-3.5 text-indigo-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<a class="text-indigo-600 hover:text-indigo-800 font-semibold inline-flex items-center gap-0.5" href="#">
+                        Resume.pdf
+                        <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-2 mt-4 pt-2 border-t border-slate-100">
+<button class="w-full py-2 px-3 rounded-xl bg-red-50 hover:bg-red-100 text-rose-600 font-bold text-xs flex items-center justify-center gap-1.5 transition">
+<span class="text-sm">✕</span> Decline
+            </button>
+<button class="w-full py-2 px-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs flex items-center justify-center gap-1.5 transition">
+<span class="text-sm">✓</span> Approve
+            </button>
+</div>
+</article>
+<!-- CARD 5: Sneha Verma -->
+<article class="bg-white rounded-3xl p-4 shadow-sm hover:shadow-md transition-shadow border border-slate-200/80 flex flex-col justify-between">
+<div>
+<div class="grid grid-cols-12 gap-3 items-center">
+<div class="col-span-5 flex justify-center items-center">
+<div class="relative w-28 h-32 rounded-2xl overflow-hidden bg-gradient-to-b from-indigo-50 to-purple-50 p-1 flex items-end justify-center shadow-inner">
+<img alt="Sneha Verma" class="w-full h-full object-cover object-top filter contrast-105" src="/static/teacher_faces/9dbcd861-2ee5-4022-a40b-b36af3d8f553.png">
+</div>
+</div>
+<div class="col-span-7 flex flex-col justify-between pl-1">
+<div>
+<div class="flex items-center justify-between mb-1">
+<span class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">2 yrs exp</span>
+<span class="inline-flex items-center gap-1 text-[10px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200/60">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                      Pending
+                    </span>
+</div>
+<h3 class="font-bold text-slate-900 text-base leading-tight mt-1">Sneha Verma</h3>
+<p class="text-xs font-semibold text-indigo-600 mb-2">Machine Learning</p>
+<div class="space-y-1 text-[11px] text-slate-500 font-medium">
+<div class="flex items-center gap-1.5 truncate">
+<svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span class="truncate">sneha.verma@college.com</span>
+</div>
+<div class="flex items-center gap-1.5">
+<svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span>T005</span>
+</div>
+<div class="flex items-center gap-1.5">
+<svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span>30 Sep 2026</span>
+</div>
+<div class="flex items-center gap-1 pt-0.5">
+<svg class="w-3.5 h-3.5 text-indigo-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<a class="text-indigo-600 hover:text-indigo-800 font-semibold inline-flex items-center gap-0.5" href="#">
+                        Resume.pdf
+                        <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-2 mt-4 pt-2 border-t border-slate-100">
+<button class="w-full py-2 px-3 rounded-xl bg-red-50 hover:bg-red-100 text-rose-600 font-bold text-xs flex items-center justify-center gap-1.5 transition">
+<span class="text-sm">✕</span> Decline
+            </button>
+<button class="w-full py-2 px-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs flex items-center justify-center gap-1.5 transition">
+<span class="text-sm">✓</span> Approve
+            </button>
+</div>
+</article>
+<!-- CARD 6: Sanjay Bhosle -->
+<article class="bg-white rounded-3xl p-4 shadow-sm hover:shadow-md transition-shadow border border-slate-200/80 flex flex-col justify-between">
+<div>
+<div class="grid grid-cols-12 gap-3 items-center">
+<div class="col-span-5 flex justify-center items-center">
+<div class="relative w-28 h-32 rounded-2xl overflow-hidden bg-gradient-to-b from-amber-50 to-slate-100 p-1 flex items-end justify-center shadow-inner">
+<img alt="Sanjay Bhosle" class="w-full h-full object-cover object-top filter contrast-105" src="/static/teacher_faces/aaa3d5cf-fec2-4f08-ad68-c02cc114500b.png">
+</div>
+</div>
+<div class="col-span-7 flex flex-col justify-between pl-1">
+<div>
+<div class="flex items-center justify-between mb-1">
+<span class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">4 yrs exp</span>
+<span class="inline-flex items-center gap-1 text-[10px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200/60">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                      Pending
+                    </span>
+</div>
+<h3 class="font-bold text-slate-900 text-base leading-tight mt-1">Sanjay Bhosle</h3>
+<p class="text-xs font-semibold text-indigo-600 mb-2">Wireless Networks</p>
+<div class="space-y-1 text-[11px] text-slate-500 font-medium">
+<div class="flex items-center gap-1.5 truncate">
+<svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span class="truncate">sanjay.bhosle@college.com</span>
+</div>
+<div class="flex items-center gap-1.5">
+<svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span>T006</span>
+</div>
+<div class="flex items-center gap-1.5">
+<svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span>28 Sep 2026</span>
+</div>
+<div class="flex items-center gap-1 pt-0.5">
+<svg class="w-3.5 h-3.5 text-indigo-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<a class="text-indigo-600 hover:text-indigo-800 font-semibold inline-flex items-center gap-0.5" href="#">
+                        Resume.pdf
+                        <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-2 mt-4 pt-2 border-t border-slate-100">
+<button class="w-full py-2 px-3 rounded-xl bg-red-50 hover:bg-red-100 text-rose-600 font-bold text-xs flex items-center justify-center gap-1.5 transition">
+<span class="text-sm">✕</span> Decline
+            </button>
+<button class="w-full py-2 px-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs flex items-center justify-center gap-1.5 transition">
+<span class="text-sm">✓</span> Approve
+            </button>
+</div>
+</article>
+</div>
+</div>
+<!-- RIGHT COLUMN: Analytics & Overview Sidebar (xl:col-span-3) -->
+<aside class="xl:col-span-3 space-y-5">
+<!-- Widget 1: Requests Overview -->
+<section class="bg-white rounded-3xl p-5 shadow-sm border border-slate-200/80">
+<!-- Header -->
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-2">
+<div class="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
+<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+<path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z"></path>
+</svg>
+</div>
+<h4 class="font-bold text-slate-900 text-sm">Requests Overview</h4>
+</div>
+<div class="flex items-center text-xs font-semibold text-slate-500 cursor-pointer hover:text-slate-700">
+<span>This Month</span>
+<svg class="w-3.5 h-3.5 ml-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+</div>
+<!-- Donut & Legend Container -->
+<div class="flex items-center justify-between gap-2 pt-2 pb-1">
+<!-- Circular Donut Chart -->
+<div class="relative w-28 h-28 flex items-center justify-center">
+<svg class="w-full h-full -rotate-90 transform" viewBox="0 0 100 100">
+<!-- Background Ring -->
+<circle cx="50" cy="50" fill="transparent" r="42" stroke="#f1f5f9" stroke-width="9"></circle>
+<!-- Highlight Amber Ring for 7 Pending (100% of current total) -->
+<circle cx="50" cy="50" fill="transparent" r="42" stroke="#f59e0b" stroke-dasharray="263" stroke-dashoffset="0" stroke-linecap="round" stroke-width="9"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+<span class="text-2xl font-extrabold text-slate-900 leading-none">7</span>
+<span class="text-[10px] font-semibold text-slate-400 mt-0.5">Requests</span>
+</div>
+</div>
+<!-- Status Legend -->
+<div class="flex-1 space-y-2 pl-2">
+<div class="flex items-center justify-between text-xs">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-[#f59e0b]"></span>
+<span class="text-slate-600 font-medium">Pending</span>
+</div>
+<span class="font-bold text-slate-800">7</span>
+</div>
+<div class="flex items-center justify-between text-xs">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-[#10b981]"></span>
+<span class="text-slate-600 font-medium">Approved</span>
+</div>
+<span class="font-bold text-slate-800">0</span>
+</div>
+<div class="flex items-center justify-between text-xs">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-[#ef4444]"></span>
+<span class="text-slate-600 font-medium">Declined</span>
+</div>
+<span class="font-bold text-slate-800">0</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Widget 2: Department-wise Requests -->
+<section class="bg-white rounded-3xl p-5 shadow-sm border border-slate-200/80">
+<!-- Header -->
+<div class="flex items-center gap-2 mb-4">
+<div class="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<h4 class="font-bold text-slate-900 text-sm">Department-wise Requests</h4>
+</div>
+<!-- Progress List -->
+<div class="space-y-3.5">
+<!-- Item 1: Computer Networks -->
+<div>
+<div class="flex justify-between items-center text-xs mb-1">
+<span class="text-slate-600 font-medium">Computer Networks</span>
+<span class="font-bold text-slate-800">2</span>
+</div>
+<div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+<div class="bg-[#8b5cf6] h-full rounded-full" style="width: 75%"></div>
+</div>
+</div>
+<!-- Item 2: DBMS -->
+<div>
+<div class="flex justify-between items-center text-xs mb-1">
+<span class="text-slate-600 font-medium">DBMS</span>
+<span class="font-bold text-slate-800">1</span>
+</div>
+<div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+<div class="bg-[#38bdf8] h-full rounded-full" style="width: 40%"></div>
+</div>
+</div>
+<!-- Item 3: Operating Systems -->
+<div>
+<div class="flex justify-between items-center text-xs mb-1">
+<span class="text-slate-600 font-medium">Operating Systems</span>
+<span class="font-bold text-slate-800">1</span>
+</div>
+<div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+<div class="bg-[#2dd4bf] h-full rounded-full" style="width: 40%"></div>
+</div>
+</div>
+<!-- Item 4: Machine Learning -->
+<div>
+<div class="flex justify-between items-center text-xs mb-1">
+<span class="text-slate-600 font-medium">Machine Learning</span>
+<span class="font-bold text-slate-800">1</span>
+</div>
+<div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+<div class="bg-[#fb923c] h-full rounded-full" style="width: 40%"></div>
+</div>
+</div>
+<!-- Item 5: Wireless Networks -->
+<div>
+<div class="flex justify-between items-center text-xs mb-1">
+<span class="text-slate-600 font-medium">Wireless Networks</span>
+<span class="font-bold text-slate-800">1</span>
+</div>
+<div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+<div class="bg-[#f87171] h-full rounded-full" style="width: 40%"></div>
+</div>
+</div>
+<!-- Item 6: Data Communication -->
+<div>
+<div class="flex justify-between items-center text-xs mb-1">
+<span class="text-slate-600 font-medium">Data Communication</span>
+<span class="font-bold text-slate-800">1</span>
+</div>
+<div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+<div class="bg-[#a855f7] h-full rounded-full" style="width: 40%"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Widget 3: Quality Teachers Inspiration Card -->
+<section class="bg-gradient-to-r from-amber-50/90 to-yellow-50/70 border border-amber-200/70 rounded-3xl p-4 shadow-sm flex items-center justify-between">
+<div class="flex items-center gap-3">
+<!-- Lightbulb Icon Graphic -->
+<div class="w-10 h-10 rounded-2xl bg-amber-100 flex items-center justify-center shrink-0 shadow-inner text-amber-600">
+<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+<path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6A4.997 4.997 0 017 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z"></path>
+</svg>
+</div>
+<div>
+<h5 class="text-xs font-bold text-slate-900 leading-tight">Quality Teachers</h5>
+<p class="text-[11px] font-medium text-slate-600">Create Greater Opportunities</p>
+</div>
+</div>
+<!-- Star Badge -->
+<span class="text-amber-400 text-xl font-bold pr-1">★</span>
+</section>
+</aside>
+<!-- END: Sidebar -->
+</main>
+<!-- END: MainContentArea -->
+</div>
+
+<script src="/static/js/api.js"></script>
+<script src="/static/js/navbar.js"></script>
+<script>
+  renderGlobalNavbar('admin', 'teacher_requests');
+
+  async function loadPendingTeachers() {
+    const res = await API.getAdminTeacherRequests();
+    const requests = res.requests || [];
+  }
+
+  async function approveTeacher(id, name, btn) {
+    const res = await API.approveTeacher(id);
+    if (res.success) {
+      API.showToast(`Approved ${name}! Faculty can now sign in to Teacher Portal.`, 'success');
+      const card = btn.closest('article');
+      if (card) {
+        card.style.opacity = '0.6';
+        card.style.pointerEvents = 'none';
+        btn.parentElement.innerHTML = `<span class="col-span-2 text-center text-xs font-extrabold text-emerald-700 bg-emerald-50 py-2 rounded-xl">✓ Approved</span>`;
+      }
+    } else {
+      API.showToast(res.message || 'Error approving', 'error');
+    }
+  }
+
+  async function rejectTeacher(id, btn) {
+    const res = await API.rejectTeacher(id);
+    if (res.success) {
+      API.showToast(`Request rejected`, 'info');
+      const card = btn.closest('article');
+      if (card) {
+        card.style.opacity = '0.6';
+        card.style.pointerEvents = 'none';
+        btn.parentElement.innerHTML = `<span class="col-span-2 text-center text-xs font-extrabold text-rose-700 bg-rose-50 py-2 rounded-xl">✕ Declined</span>`;
+      }
+    } else {
+      API.showToast(res.message || 'Error declining', 'error');
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const articles = document.querySelectorAll('article');
+    const defaultIds = ['teacher_req_1', 'teacher_req_2', 'teacher_req_3', 'teacher_req_4', 'teacher_req_5', 'teacher_req_6'];
+    articles.forEach((art, idx) => {
+      const tid = defaultIds[idx % defaultIds.length];
+      const nameEl = art.querySelector('h3');
+      const tName = nameEl ? nameEl.textContent.trim() : 'Teacher';
+      const btns = art.querySelectorAll('button');
+      if (btns.length >= 2) {
+        btns[0].setAttribute('onclick', `rejectTeacher('${tid}', this)`);
+        btns[1].setAttribute('onclick', `approveTeacher('${tid}', '${tName}', this)`);
+      }
+    });
+    loadPendingTeachers();
+  });
+</script>
+</body>
+</html>

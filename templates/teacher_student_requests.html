@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Student Sign-up Requests (Class Teacher) - RaiSakshya</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            handwriting: ['"Caveat"', 'cursive']
+          },
+          colors: {
+            brand: {
+              navy: '#0c1524',
+              teal: '#0ea5e9',
+              purple: '#6366f1',
+              activePurple: '#7053f4'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #eaf1fb;
+      background-image: 
+        radial-gradient(at 10% 15%, rgba(199, 219, 254, 0.6) 0px, transparent 55%),
+        radial-gradient(at 90% 20%, rgba(224, 215, 255, 0.7) 0px, transparent 50%),
+        radial-gradient(at 85% 75%, rgba(254, 235, 200, 0.4) 0px, transparent 40%),
+        radial-gradient(at 20% 85%, rgba(219, 234, 254, 0.6) 0px, transparent 50%);
+      background-attachment: fixed;
+    }
+  </style>
+</head>
+<body class="min-h-screen text-slate-800 antialiased flex flex-col justify-start">
+
+  <!-- Fixed Top Global Navbar -->
+  <div id="global-navbar" class="sticky top-0 z-[99999] w-full"></div>
+
+  <!-- Page Content Wrapper -->
+  <div class="w-full max-w-[1480px] mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 flex flex-col gap-6">
+
+  <!-- Hero Banner and Title -->
+  <section class="w-full">
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 relative">
+      
+      <!-- Left side: Titles -->
+      <div class="z-10">
+        <div class="flex items-center gap-3 mb-2">
+          <div class="w-10 h-10 rounded-xl bg-indigo-600/10 text-indigo-600 flex items-center justify-center shadow-sm">
+            <i class="fa-solid fa-user-check text-xl"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h2 class="text-2xl sm:text-3xl font-extrabold text-[#111827] tracking-tight">Student Sign-up Requests</h2>
+              <span class="text-xs font-extrabold px-2.5 py-0.5 rounded-full bg-indigo-100 text-indigo-800 border border-indigo-200">
+                Class Teacher Section
+              </span>
+            </div>
+          </div>
+        </div>
+        <p class="text-slate-500 text-sm font-medium mb-5 max-w-xl">
+          Review, verify biometrics, and approve incoming student registration applications for your assigned division (<span id="assigned-class-badge" class="font-bold text-slate-800">SE Computer - Div A</span>).
+        </p>
+
+        <!-- Segmented Tab Buttons -->
+        <div class="inline-flex p-1 bg-white/70 backdrop-blur-md rounded-2xl border border-slate-200/80 shadow-sm gap-1.5">
+          <a href="/teacher/take-attendance" class="flex items-center gap-2 px-5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 text-sm font-bold transition">
+            <i class="fa-solid fa-camera text-slate-500"></i>
+            Take Attendance
+          </a>
+          <button class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#6e51f4] to-[#886bf8] text-white text-sm font-bold shadow-md shadow-indigo-500/25">
+            <i class="fa-solid fa-user-plus text-white"></i>
+            Student Requests (<span id="pending-counter">2</span>)
+          </button>
+        </div>
+      </div>
+
+      <!-- Right Side: Motto & Character -->
+      <div class="hidden lg:flex items-center justify-end relative min-w-[380px] h-32 pr-6">
+        <div class="text-right mr-4 relative">
+          <span class="text-indigo-400 text-xl absolute -top-4 -left-3 animate-pulse">✨</span>
+          <p class="font-handwriting text-2xl sm:text-[26px] leading-[1.15] font-bold text-indigo-950 rotate-[-3deg]">
+            Empowering<br>Students To<br><span class="text-indigo-600">Excel &amp; Lead</span> 🎓
+          </p>
+        </div>
+        <div class="relative w-32 h-32 -mt-4">
+          <img alt="Class teacher mascot" class="w-full h-full object-contain filter drop-shadow-lg" src="/static/teacher_faces/20bb28b4-f54a-4a3c-9630-e75ad391e672.png">
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Filter & Search Bar -->
+  <section class="max-w-[1536px] mx-auto mb-6 px-1">
+    <div class="bg-white/90 backdrop-blur-md rounded-2xl p-3 sm:p-4 shadow-sm border border-slate-200/90 flex flex-wrap lg:flex-nowrap items-center gap-3">
+      
+      <div class="flex-1 min-w-[200px] bg-slate-50/80 rounded-xl px-3 py-1.5 border border-slate-200/70 flex items-center gap-2.5">
+        <i class="fa-solid fa-graduation-cap text-indigo-600"></i>
+        <div class="flex-1">
+          <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Class Assigned</span>
+          <span class="text-xs font-bold text-slate-800">SE Computer - Div A</span>
+        </div>
+      </div>
+
+      <div class="flex-1 min-w-[200px] bg-slate-50/80 rounded-xl px-3 py-1.5 border border-slate-200/70 flex items-center gap-2.5">
+        <i class="fa-solid fa-shield-check text-emerald-600"></i>
+        <div class="flex-1">
+          <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Class Teacher</span>
+          <span class="text-xs font-bold text-slate-800">Prof. Priya Sharma</span>
+        </div>
+      </div>
+
+      <div class="flex-1 min-w-[240px] relative">
+        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+          <i class="fa-solid fa-magnifying-glass text-xs"></i>
+        </span>
+        <input id="search-requests" onkeyup="filterRequests()" type="text" placeholder="Search student by name, roll no, or email..."
+          class="w-full pl-9 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-indigo-500">
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Requests List Container -->
+  <div class="w-full">
+    
+    <!-- Empty state if all approved -->
+    <div id="empty-state" class="hidden p-12 bg-white/90 backdrop-blur-md rounded-3xl border border-slate-200 text-center flex flex-col items-center justify-center gap-3">
+      <div class="w-16 h-16 rounded-3xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-3xl shadow">
+        <i class="fa-solid fa-clipboard-check"></i>
+      </div>
+      <h3 class="text-xl font-extrabold text-slate-900">All Student Requests Processed!</h3>
+      <p class="text-xs text-slate-500 max-w-sm">There are currently no pending student applications awaiting verification. New student submissions will appear here.</p>
+    </div>
+
+    <div id="requests-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <!-- Populated dynamically via JS -->
+    </div>
+
+  </div>
+
+  </div>
+
+  <script src="/static/js/api.js"></script>
+  <script src="/static/js/navbar.js"></script>
+  <script>
+    renderGlobalNavbar('teacher', 'student_requests');
+
+    let allRequests = [];
+
+    async function loadRequests() {
+      const res = await API.getStudentRequestsForTeacher('teacher_1');
+      allRequests = res.requests || [];
+      renderRequests();
+    }
+
+    function renderRequests() {
+      const container = document.getElementById('requests-grid');
+      const emptyState = document.getElementById('empty-state');
+      const counter = document.getElementById('pending-counter');
+      const query = (document.getElementById('search-requests').value || '').toLowerCase();
+
+      const filtered = allRequests.filter(s => 
+        s.name.toLowerCase().includes(query) || 
+        s.email.toLowerCase().includes(query) || 
+        s.roll_no.includes(query)
+      );
+
+      counter.textContent = allRequests.length;
+
+      if (filtered.length === 0) {
+        container.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      container.innerHTML = filtered.map(s => {
+        const isProfileUpdate = s.profile_change_pending || s.change_request_type === 'PROFILE_UPDATE' || !!s.pending_changes;
+        const changes = s.pending_changes || {};
+
+        return `
+          <div class="bg-white rounded-[28px] p-5 shadow-lg border ${isProfileUpdate ? 'border-amber-200 ring-2 ring-amber-100' : 'border-slate-100'} flex flex-col justify-between gap-4 hover:shadow-xl transition-all">
+            
+            <!-- Card Header -->
+            <div class="flex items-start gap-4">
+              <div class="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-100 to-teal-50 flex items-center justify-center p-1 border border-slate-200 shrink-0">
+                <img src="${(isProfileUpdate && changes.avatar) ? changes.avatar : (s.avatar || '/static/student_faces/29bac66d-53a6-427f-ad43-218c61800bd0.png')}" class="w-full h-full object-contain">
+                <span class="absolute -bottom-1 -right-1 w-5 h-5 rounded-full ${isProfileUpdate ? 'bg-amber-500' : 'bg-emerald-500'} text-white text-[10px] font-bold flex items-center justify-center shadow">
+                  <i class="fa-solid ${isProfileUpdate ? 'fa-pen-to-square' : 'fa-check'}"></i>
+                </span>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between gap-1">
+                  <h3 class="text-base font-extrabold text-slate-900 truncate">${isProfileUpdate && changes.name ? changes.name : s.name}</h3>
+                  <span class="text-xs font-extrabold px-2.5 py-0.5 rounded-lg ${isProfileUpdate ? 'bg-amber-100 text-amber-800' : 'bg-indigo-50 text-indigo-700'}">
+                    Roll ${isProfileUpdate && changes.roll_no ? changes.roll_no : s.roll_no}
+                  </span>
+                </div>
+                <p class="text-xs text-slate-500 truncate mt-0.5">${s.email}</p>
+                <div class="flex items-center gap-2 mt-2">
+                  <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full ${isProfileUpdate ? 'bg-amber-100 text-amber-800 border border-amber-200' : 'bg-indigo-50 text-indigo-700'}">
+                    ${isProfileUpdate ? 'Profile Update Request' : 'New Registration'}
+                  </span>
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-teal-50 text-teal-700">
+                    ${isProfileUpdate && changes.division ? changes.division : s.division}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Verification / Proposed Changes Metadata Pills -->
+            ${isProfileUpdate ? `
+              <div class="p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200/80 flex flex-col gap-2 text-xs">
+                <div class="font-bold text-amber-950 flex items-center gap-1.5">
+                  <i class="fa-solid fa-clock-rotate-left text-amber-600"></i> Student Requested Profile Changes:
+                </div>
+                <div class="grid grid-cols-2 gap-2 text-[11px] text-slate-700">
+                  <div><span class="text-slate-400">Name:</span> <strong class="text-slate-900">${changes.name || s.name}</strong></div>
+                  <div><span class="text-slate-400">Roll No:</span> <strong class="text-slate-900">${changes.roll_no || s.roll_no}</strong></div>
+                  <div><span class="text-slate-400">Division:</span> <strong class="text-slate-900">${changes.division || s.division}</strong></div>
+                  <div><span class="text-slate-400">Phone:</span> <strong class="text-slate-900">${changes.phone || s.phone || 'N/A'}</strong></div>
+                </div>
+                <div class="text-[10px] text-amber-800 font-semibold border-t border-amber-200/60 pt-1.5">
+                  Requested on: ${s.change_requested_at || 'Today'} · Requires Class Teacher re-approval
+                </div>
+              </div>
+            ` : `
+              <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 flex flex-col gap-1.5 text-xs">
+                <div class="flex items-center justify-between">
+                  <span class="text-slate-500 font-semibold">Email OTP Status:</span>
+                  <span class="font-bold text-emerald-600 flex items-center gap-1">
+                    <i class="fa-solid fa-circle-check text-[10px]"></i> Verified
+                  </span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-slate-500 font-semibold">Biometric Facial Data:</span>
+                  <span class="font-bold text-indigo-600 flex items-center gap-1">
+                    <i class="fa-solid fa-face-smile text-[10px]"></i> Enrolled (AWS)
+                  </span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-slate-500 font-semibold">Applied On:</span>
+                  <span class="font-bold text-slate-700">${s.created_at || 'Today'}</span>
+                </div>
+              </div>
+            `}
+
+            <!-- Action Buttons -->
+            <div class="grid grid-cols-2 gap-2 pt-1 border-t border-slate-100">
+              <button onclick="rejectStudent('${s.id}')" type="button" class="py-2.5 px-3 rounded-xl border border-rose-200 hover:bg-rose-50 text-rose-600 text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer">
+                <i class="fa-solid fa-xmark"></i> ${isProfileUpdate ? 'Reject Changes' : 'Reject'}
+              </button>
+              <button onclick="approveStudent('${s.id}', '${s.name}')" type="button" class="py-2.5 px-3 rounded-xl bg-[#00C48C] hover:bg-[#00ab7a] text-white text-xs font-extrabold shadow-md transition flex items-center justify-center gap-1.5 cursor-pointer">
+                <i class="fa-solid fa-check"></i> ${isProfileUpdate ? 'Approve Changes' : 'Approve'}
+              </button>
+            </div>
+
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function approveStudent(studentId, name) {
+      const res = await API.approveStudent(studentId);
+      if (res.success) {
+        API.showToast(`Approved ${name}! Student can now log in.`, 'success');
+        allRequests = allRequests.filter(s => s.id !== studentId);
+        renderRequests();
+      } else {
+        API.showToast(res.message || "Approval failed", 'error');
+      }
+    }
+
+    async function rejectStudent(studentId) {
+      const res = await API.rejectStudent(studentId);
+      if (res.success) {
+        API.showToast(`Request rejected.`, 'info');
+        allRequests = allRequests.filter(s => s.id !== studentId);
+        renderRequests();
+      } else {
+        API.showToast(res.message || "Rejection failed", 'error');
+      }
+    }
+
+    function filterRequests() {
+      renderRequests();
+    }
+
+    window.onload = loadRequests;
+  </script>
+</body>
+</html>

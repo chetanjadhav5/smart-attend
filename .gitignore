@@ -1,0 +1,40 @@
+# Environment variables and sensitive credentials
+.env
+.env.*
+!.env.example
+
+# Large archives and binaries
+project.zip
+*.zip
+*.tar.gz
+*.rar
+
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.mypy_cache/
+
+# Virtual Environments
+venv/
+env/
+ENV/
+.venv/
+
+# IDE and Editor configs
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Operating System files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs and scratch files
+*.log
+scratch/
+tmp/

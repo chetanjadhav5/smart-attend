@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Teacher Profile - RaiSakshya</title>
+  <!-- Tailwind CSS v3 with Plugins -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .soft-card-shadow {
+      box-shadow: 0 4px 20px -2px rgba(148, 163, 184, 0.12);
+    }
+  </style>
+</head>
+<body class="relative min-h-screen text-slate-700 antialiased flex flex-col justify-start overflow-x-hidden bg-[#edf4fb]">
+
+<!-- Background mesh -->
+<div class="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
+  <div class="absolute -top-32 -left-32 w-96 h-96 bg-cyan-200/50 rounded-full blur-3xl"></div>
+  <div class="absolute top-1/4 -right-24 w-[32rem] h-[32rem] bg-indigo-200/40 rounded-full blur-3xl"></div>
+  <div class="absolute bottom-10 left-1/3 w-[28rem] h-[28rem] bg-rose-100/50 rounded-full blur-3xl"></div>
+</div>
+
+<!-- Fixed Top Global Navbar (Stretched to corners) -->
+<div id="global-navbar" class="sticky top-0 z-[99999] w-full"></div>
+
+<!-- Page Content Wrapper -->
+<div class="w-full max-w-[1480px] mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 flex flex-col">
+  <!-- Main Container -->
+  <div class="w-full bg-white/95 backdrop-blur-xl rounded-[32px] shadow-2xl border border-white/80 overflow-hidden flex flex-col min-h-[900px]">
+    
+    <!-- Main Content Area -->
+    <main class="flex-1 p-5 sm:p-6 flex flex-col gap-6 relative z-10">
+    
+    <!-- Breadcrumbs & Navigation Back Bar -->
+    <div class="flex items-center justify-between flex-wrap gap-4">
+      <nav class="flex items-center gap-2 text-sm font-semibold">
+        <a class="text-teal-600 hover:text-teal-700 transition" href="/student/teachers">Teachers</a>
+        <span class="text-slate-400">&gt;</span>
+        <span class="text-slate-600">Teacher Profile</span>
+      </nav>
+      <!-- Back Button -->
+      <a class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition shadow-sm" href="/student/teachers">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span>Back to Teachers Directory</span>
+      </a>
+    </div>
+
+    <!-- Main Two-Column Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      
+      <!-- Left Profile Sidebar (4 cols) -->
+      <aside class="lg:col-span-4 xl:col-span-3.5 flex flex-col gap-4">
+        
+        <!-- Main Profile Card -->
+        <div class="bg-white rounded-3xl p-5 soft-card-shadow border border-slate-100 flex flex-col items-center">
+          
+          <!-- Character Avatar Box -->
+          <div class="relative w-full aspect-square rounded-2xl bg-gradient-to-br from-teal-100 via-sky-50 to-indigo-50 flex items-end justify-center overflow-hidden mb-5 shadow-inner">
+            <img id="prof-avatar" alt="Teacher Avatar" class="w-full h-full object-contain object-bottom select-none drop-shadow-sm transform translate-y-1" src="/static/teacher_faces/20bb28b4-f54a-4a3c-9630-e75ad391e672.png">
+          </div>
+
+          <!-- Teacher Metadata List -->
+          <div class="w-full space-y-3 text-xs text-slate-600 px-1 font-medium">
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-8 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-500 shrink-0">
+                <i class="fa-regular fa-envelope"></i>
+              </span>
+              <span id="prof-email" class="truncate font-semibold text-slate-700">priya.sharma@college.edu</span>
+            </div>
+            
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-8 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-500 shrink-0">
+                <i class="fa-solid fa-id-badge"></i>
+              </span>
+              <span id="prof-emp-id" class="font-bold text-slate-800">Faculty ID: EMP-3041</span>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-8 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-500 shrink-0">
+                <i class="fa-solid fa-door-open"></i>
+              </span>
+              <span id="prof-cabin" class="font-semibold text-slate-700">Room 401 - IT Block</span>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-8 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-500 shrink-0">
+                <i class="fa-solid fa-graduation-cap"></i>
+              </span>
+              <span id="prof-dept" class="font-semibold text-slate-700">Computer Engineering</span>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-8 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-500 shrink-0">
+                <i class="fa-solid fa-shield-halved"></i>
+              </span>
+              <span class="font-bold text-emerald-600">Biometric Verified · AWS Rekognition</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Campus Presence Health Summary -->
+        <div class="bg-gradient-to-br from-teal-50 to-emerald-50 rounded-3xl p-5 soft-card-shadow border border-emerald-100 flex flex-col gap-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-extrabold uppercase text-teal-800">Campus Status</span>
+            <span id="health-tag" class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800">PRESENT</span>
+          </div>
+          <p id="health-desc" class="text-xs text-slate-600 mt-1">
+            Faculty checked-in at campus via biometric facial recognition at <strong id="prof-checkin-time">08:45 AM</strong>. Available during cabin hours.
+          </p>
+        </div>
+
+      </aside>
+
+      <!-- Right Dashboard Area (8 cols) -->
+      <div class="lg:col-span-8 xl:col-span-8.5 flex flex-col gap-5">
+        
+        <!-- Top Teacher Header Banner -->
+        <div class="bg-white rounded-3xl p-6 soft-card-shadow border border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <div class="flex items-center gap-3 mb-1">
+              <span id="prof-emp-badge" class="px-3 py-1 rounded-full bg-teal-100 text-teal-800 text-xs font-black">EMP-3041</span>
+              <h2 id="prof-name" class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Prof. Priya Sharma</h2>
+            </div>
+            <p id="prof-designation" class="text-xs sm:text-sm text-slate-500 font-semibold">
+              Assistant Professor · Department of Computer Engineering
+            </p>
+            <div id="prof-class-teacher-pill" class="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
+              <i class="fa-solid fa-user-tie"></i>
+              <span id="prof-class-teacher-text">Class Teacher: SE Computer - Div A</span>
+            </div>
+          </div>
+
+          <!-- Punctuality / Presence Metric -->
+          <div class="flex items-center gap-4 bg-slate-50 p-3 rounded-2xl border border-slate-200 shrink-0">
+            <div class="text-right">
+              <span id="prof-attendance-rate" class="text-3xl font-black text-slate-900 block leading-none">96%</span>
+              <span class="text-[10px] font-bold text-slate-400 uppercase mt-1 block">Campus Presence</span>
+            </div>
+            <div class="w-12 h-12 rounded-xl bg-emerald-500 text-white flex items-center justify-center font-bold text-lg shadow-sm">
+              <i class="fa-solid fa-calendar-check"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Monthly Attendance Curve -->
+        <div class="bg-white rounded-3xl p-6 soft-card-shadow border border-slate-100 flex flex-col gap-3">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-base font-extrabold text-slate-900">Monthly Presence Curve</h3>
+              <p class="text-xs text-slate-400 font-medium">Faculty attendance and on-campus consistency over previous months</p>
+            </div>
+            <span class="text-xs font-bold text-teal-600 bg-teal-50 px-3 py-1 rounded-xl">Semester Consistency</span>
+          </div>
+
+          <div class="w-full h-52 relative mt-2">
+            <canvas id="monthlyTrendCanvas"></canvas>
+          </div>
+        </div>
+
+        <!-- Courses & Subjects Taught -->
+        <div class="bg-white rounded-3xl p-6 soft-card-shadow border border-slate-100 flex flex-col gap-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-base font-extrabold text-slate-900">Teaching Subjects & Coursework</h3>
+              <p class="text-xs text-slate-400 font-medium">Courses administered by this faculty this academic term</p>
+            </div>
+            <span id="subjects-count-badge" class="text-xs font-bold text-teal-600 bg-teal-50 px-3 py-1 rounded-xl">2 Courses</span>
+          </div>
+          <div id="prof-subjects-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <!-- Populated from data -->
+          </div>
+        </div>
+
+        <!-- Today's Teaching Schedule -->
+        <div class="bg-white rounded-3xl p-6 soft-card-shadow border border-slate-100 flex flex-col gap-3">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-base font-extrabold text-slate-900">Today's Teaching Schedule</h3>
+              <p class="text-xs text-slate-400 font-medium">Lectures and laboratory sessions scheduled for today</p>
+            </div>
+            <span class="text-xs font-bold text-slate-600 bg-slate-100 px-3 py-1 rounded-xl">Live Timetable</span>
+          </div>
+          <div id="prof-schedule-container" class="flex flex-col gap-2.5">
+            <!-- Populated from data -->
+          </div>
+        </div>
+
+        <!-- Recent Biometric Punch-In History -->
+        <div class="bg-white rounded-3xl p-6 soft-card-shadow border border-slate-100 flex flex-col gap-3">
+          <h3 class="text-base font-extrabold text-slate-900">Recent Facial Biometric Campus Check-ins</h3>
+          <div id="prof-punch-container" class="flex flex-col gap-2">
+            <!-- Populated from data -->
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  </div>
+</div>
+
+<script src="/static/js/api.js"></script>
+<script src="/static/js/navbar.js"></script>
+<script>
+  renderGlobalNavbar('student', 'teachers');
+
+  let trendChart = null;
+
+  async function loadTeacherProfile() {
+    const params = new URLSearchParams(window.location.search);
+    const teacherId = params.get('teacher_id') || 'teacher_1';
+
+    try {
+      const data = await API.getTeacherProfile(teacherId);
+      if (!data || !data.teacher) return;
+
+      const t = data.teacher;
+
+      // Populate left sidebar
+      document.getElementById('prof-avatar').src = t.avatar || '/static/teacher_faces/20bb28b4-f54a-4a3c-9630-e75ad391e672.png';
+      document.getElementById('prof-email').textContent = t.email;
+      document.getElementById('prof-emp-id').textContent = `Faculty ID: ${t.employee_id}`;
+      document.getElementById('prof-cabin').textContent = t.cabin || 'Faculty Cabin';
+      document.getElementById('prof-dept').textContent = t.department;
+
+      const isPresent = t.status_college === 'PRESENT';
+      const healthTag = document.getElementById('health-tag');
+      const healthDesc = document.getElementById('health-desc');
+      const checkinTime = t.check_in_time || '08:45 AM';
+      document.getElementById('prof-checkin-time').textContent = checkinTime;
+
+      if (isPresent) {
+        healthTag.textContent = "PRESENT";
+        healthTag.className = "px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800";
+        healthDesc.innerHTML = `Faculty checked-in at campus via biometric facial recognition at <strong>${checkinTime}</strong>. Available during cabin hours.`;
+      } else {
+        healthTag.textContent = "ABSENT";
+        healthTag.className = "px-2.5 py-0.5 rounded-full text-[10px] font-black bg-rose-100 text-rose-800";
+        healthDesc.innerHTML = `Faculty is not on campus today. Please reach out via email or schedule an appointment.`;
+      }
+
+      // Populate header
+      document.getElementById('prof-emp-badge').textContent = t.employee_id;
+      document.getElementById('prof-name').textContent = t.name;
+      document.getElementById('prof-designation').textContent = `${t.designation || 'Faculty'} · Department of ${t.department}`;
+      document.getElementById('prof-attendance-rate').textContent = `${t.attendance_rate || 96}%`;
+
+      const ctPill = document.getElementById('prof-class-teacher-pill');
+      if (t.is_class_teacher && t.class_assigned) {
+        ctPill.classList.remove('hidden');
+        document.getElementById('prof-class-teacher-text').textContent = `Class Teacher: ${t.class_assigned}`;
+      } else {
+        ctPill.classList.add('hidden');
+      }
+
+      // Render Monthly Trend Chart
+      const monthly = data.monthly_presence || [];
+      const ctx = document.getElementById('monthlyTrendCanvas').getContext('2d');
+      if (trendChart) trendChart.destroy();
+      trendChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: monthly.map(m => m.month),
+          datasets: [{
+            label: 'Monthly Punctuality Rate',
+            data: monthly.map(m => m.rate),
+            borderColor: '#00C48C',
+            backgroundColor: 'rgba(0, 196, 140, 0.1)',
+            fill: true,
+            tension: 0.35,
+            borderWidth: 3,
+            pointBackgroundColor: '#00C48C',
+            pointRadius: 5
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: { min: 60, max: 100, ticks: { callback: v => v + '%' } },
+            x: { grid: { display: false } }
+          },
+          plugins: {
+            legend: { display: false }
+          }
+        }
+      });
+
+      // Render Subjects Taught
+      const subCont = document.getElementById('prof-subjects-container');
+      const subjects = data.subjects || [];
+      document.getElementById('subjects-count-badge').textContent = `${subjects.length} Courses`;
+      subCont.innerHTML = subjects.map(sub => `
+        <div class="bg-slate-50/80 p-4 rounded-2xl border border-slate-200/80 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="text-xs font-bold text-slate-800">${sub.name}</span>
+              <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-teal-100 text-teal-800">${sub.code}</span>
+            </div>
+            <p class="text-[11px] text-slate-500 line-clamp-2 leading-relaxed mb-3">${sub.description}</p>
+          </div>
+          <div class="flex items-center justify-between text-[10px] font-semibold text-slate-400 pt-2 border-t border-slate-200/60">
+            <span><i class="fa-regular fa-building mr-1"></i>${sub.cabin}</span>
+            <span><i class="fa-solid fa-users mr-1"></i>${sub.classes_handled.join(', ')}</span>
+          </div>
+        </div>
+      `).join('');
+
+      // Render Today's Schedule
+      const schedCont = document.getElementById('prof-schedule-container');
+      const schedule = data.today_schedule || [];
+      if (schedule.length === 0) {
+        schedCont.innerHTML = `<div class="p-4 text-center text-slate-400 text-xs">No lectures scheduled for today.</div>`;
+      } else {
+        schedCont.innerHTML = schedule.map(sc => `
+          <div class="flex items-center justify-between p-3.5 rounded-2xl bg-slate-50/80 border border-slate-100 text-xs">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center font-bold text-sm shrink-0">
+                <i class="fa-solid fa-clock"></i>
+              </div>
+              <div>
+                <span class="font-extrabold text-slate-800 block text-xs sm:text-sm">${sc.subject}</span>
+                <span class="text-[11px] text-slate-400">${sc.class_code} · <strong>${sc.room}</strong></span>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="font-bold text-slate-700 block">${sc.time}</span>
+              <span class="inline-block mt-0.5 text-[10px] font-extrabold px-2 py-0.5 rounded-full ${sc.status === 'COMPLETED' ? 'bg-emerald-100 text-emerald-800' : 'bg-blue-100 text-blue-800'}">${sc.status}</span>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      // Render Recent Punch-Ins
+      const punchCont = document.getElementById('prof-punch-container');
+      const punches = data.recent_punch_ins || [];
+      punchCont.innerHTML = punches.map(p => `
+        <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50/80 border border-slate-100 text-xs">
+          <div class="flex items-center gap-3">
+            <span class="w-8 h-8 rounded-xl ${p.status === 'PRESENT' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'} flex items-center justify-center font-bold">
+              <i class="fa-solid ${p.status === 'PRESENT' ? 'fa-check' : 'fa-xmark'}"></i>
+            </span>
+            <div>
+              <span class="font-bold text-slate-800 block">${p.location}</span>
+              <span class="text-[11px] text-slate-400">${p.mode}</span>
+            </div>
+          </div>
+          <div class="text-right">
+            <span class="font-bold text-slate-700 block">${p.date}</span>
+            <span class="text-[10px] text-slate-400">${p.time}</span>
+          </div>
+        </div>
+      `).join('');
+
+    } catch (e) {
+      console.error("Error loading teacher profile:", e);
+    }
+  }
+
+  window.onload = loadTeacherProfile;
+</script>
+</body>
+</html>

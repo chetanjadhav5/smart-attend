@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>RaiSakshya - Students Attendance Management</title>
+  <!-- Tailwind CSS v3 CDN with forms and container queries -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <!-- Chart.js for interactive analytics -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          boxShadow: {
+            'dashboard': '0 25px 60px -15px rgba(22, 36, 68, 0.12), 0 10px 25px -10px rgba(22, 36, 68, 0.06)',
+            'card': '0 2px 10px rgba(0, 0, 0, 0.02)',
+            'pill': '0 2px 6px rgba(0, 0, 0, 0.06)'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #E8EEF5;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(214, 233, 255, 0.7) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(254, 235, 226, 0.6) 0px, transparent 50%),
+        radial-gradient(at 50% 100%, rgba(220, 248, 238, 0.5) 0px, transparent 50%);
+      background-attachment: fixed;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 5px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #e2e8f0;
+      border-radius: 9999px;
+    }
+    .blurred-date {
+      opacity: 0.28;
+      filter: blur(0.6px);
+      pointer-events: none;
+      cursor: not-allowed;
+      text-decoration: line-through;
+      background-color: #f1f5f9;
+      color: #94a3b8;
+    }
+    /* Completely free select dropdown - no rectangular/square focus borders */
+    select, select:focus, select:active, select:hover {
+      border: none !important;
+      outline: none !important;
+      box-shadow: none !important;
+      -webkit-appearance: none !important;
+      -moz-appearance: none !important;
+      appearance: none !important;
+      --tw-ring-shadow: none !important;
+      --tw-ring-offset-shadow: none !important;
+      --tw-ring-color: transparent !important;
+    }
+  </style>
+</head>
+<body class="min-h-screen text-slate-800 antialiased flex flex-col justify-start">
+
+  <!-- Fixed Top Global Navbar -->
+  <div id="global-navbar" class="sticky top-0 z-[99999] w-full"></div>
+
+  <!-- Main Content Page Wrapper -->
+  <div class="w-full max-w-[1480px] mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 flex flex-col">
+    <!-- Main Dashboard Container -->
+    <div class="w-full bg-white/95 rounded-[32px] shadow-dashboard overflow-hidden border border-white/80 backdrop-blur-xl flex flex-col">
+      
+      <!-- Main Content Wrapper -->
+      <main class="flex-1 p-5 sm:p-6 flex flex-col gap-6 bg-gradient-to-b from-[#FBFDFF] to-[#F4F7FB] relative z-10">
+    
+    <!-- Header Row & View Switcher -->
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+      
+      <!-- Left: Title & Mode Tabs -->
+      <div>
+        <div class="flex items-center gap-3">
+          <h2 class="text-3xl font-black tracking-tight text-slate-900 leading-none">Students</h2>
+          <span id="header-count-badge" class="px-3 py-1 rounded-full text-xs font-extrabold bg-teal-100 text-teal-800 border border-teal-200">
+            13 Students Enrolled
+          </span>
+        </div>
+        <p class="text-xs sm:text-sm text-slate-500 font-medium mt-1">
+          Pick a date from the calendar (from Oct 21 onwards) to view daily student attendance and subject rankings.
+        </p>
+
+        <!-- In-Page Tab Switcher: Attendance vs Sign-up Requests -->
+        <div class="flex items-center gap-2 mt-3">
+          <button onclick="switchViewMode('attendance')" id="tab-attendance-btn" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#0B1522] text-white transition shadow-sm flex items-center gap-2">
+            <i class="fa-solid fa-users"></i>
+            <span>Attendance Records</span>
+          </button>
+          <button onclick="switchViewMode('requests')" id="tab-requests-btn" class="px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 transition flex items-center gap-2">
+            <i class="fa-solid fa-user-plus text-indigo-500"></i>
+            <span>Student Sign-ups</span>
+            <span id="requests-badge" class="px-1.5 py-0.2 rounded-full text-[10px] bg-rose-500 text-white font-extrabold">2</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Right: Academic Filter Bar (Tied to Teacher's Allotted Class & Subject) -->
+      <div class="flex flex-wrap items-center gap-3">
+        
+        <!-- Academic Filter Selectors (Class, Subject, Calendar & All Days Toggle) -->
+        <div id="filters-container" class="flex flex-wrap items-center gap-2.5 bg-white px-3.5 py-2.5 rounded-2xl border border-slate-200/90 shadow-sm relative">
+          
+          <!-- Class Selector Dropdown (Teacher's Allotted Class) -->
+          <div class="flex items-center gap-1.5">
+            <div class="flex flex-col">
+              <span class="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider pl-1">Class</span>
+              <select id="sel-class" onchange="onFilterChange()" class="text-xs font-bold text-slate-800 bg-transparent border-0 border-none outline-none ring-0 focus:ring-0 focus:border-0 focus:outline-none cursor-pointer appearance-none pr-3">
+                <option value="SE Computer - Div A" selected>SE Computer - Div A</option>
+              </select>
+            </div>
+            <i class="fa-solid fa-check text-[9px] text-teal-600 pointer-events-none -ml-1"></i>
+          </div>
+
+          <div class="h-6 w-px bg-slate-200 mx-1"></div>
+
+          <!-- Subject Selector Dropdown (Teacher's Allotted Subject) -->
+          <div class="flex items-center gap-1.5">
+            <div class="flex flex-col">
+              <span class="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider pl-1">Subject</span>
+              <select id="sel-subject" onchange="onFilterChange()" class="text-xs font-bold text-slate-800 bg-transparent border-0 border-none outline-none ring-0 focus:ring-0 focus:border-0 focus:outline-none cursor-pointer appearance-none pr-3">
+                <option value="Operating Systems" selected>Operating Systems</option>
+              </select>
+            </div>
+            <i class="fa-solid fa-check text-[9px] text-teal-600 pointer-events-none -ml-1"></i>
+          </div>
+
+          <div class="h-6 w-px bg-slate-200 mx-1"></div>
+
+
+
+          <!-- PROPER CALENDAR SELECTOR DROPDOWN -->
+          <div class="flex flex-col relative" id="calendar-selector-wrapper">
+            <span class="text-[9px] font-extrabold text-teal-600 uppercase tracking-wider pl-1">Select Date</span>
+            
+            <button id="calendar-trigger-btn" onclick="toggleCalendarDropdown()" type="button" class="flex items-center gap-2 text-xs font-extrabold text-teal-900 bg-teal-50 hover:bg-teal-100 border border-teal-200/80 rounded-xl px-3 py-1 transition cursor-pointer shadow-sm">
+              <i class="fa-regular fa-calendar-days text-teal-600"></i>
+              <span id="selected-date-display">26 Oct 2026 (Today)</span>
+              <i class="fa-solid fa-chevron-down text-[10px] text-teal-600 ml-1"></i>
+            </button>
+
+            <!-- Calendar Popover Widget -->
+            <div id="calendar-popover" class="hidden absolute top-full right-0 mt-2 z-50 w-80 bg-white rounded-3xl p-4 shadow-2xl border border-slate-200 flex flex-col gap-3">
+              
+              <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+                <div class="flex items-center gap-2">
+                  <span class="font-extrabold text-sm text-slate-900">October 2026</span>
+                  <span class="text-[10px] px-2 py-0.5 rounded-full bg-teal-100 text-teal-800 font-extrabold">Live System</span>
+                </div>
+                <button type="button" onclick="toggleCalendarDropdown()" class="w-6 h-6 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 text-xs">
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
+              </div>
+
+              <div class="p-2 rounded-xl bg-amber-50 border border-amber-200 text-[11px] text-amber-800 flex items-center gap-2">
+                <i class="fa-solid fa-circle-info text-amber-600 shrink-0"></i>
+                <span>Dates before <strong>Oct 21</strong> are blurred out. Pick Oct 21 to Oct 26.</span>
+              </div>
+
+              <!-- Day Names Header -->
+              <div class="grid grid-cols-7 gap-1 text-center text-[10px] font-extrabold text-slate-400 uppercase">
+                <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+              </div>
+
+              <!-- Interactive Days Grid for October 2026 (Oct 1 = Thursday) -->
+              <div class="grid grid-cols-7 gap-1 text-center text-xs">
+                <!-- Padding days before Oct 1 -->
+                <span class="p-1"></span><span class="p-1"></span><span class="p-1"></span><span class="p-1"></span>
+
+                <!-- Oct 1 to Oct 20 (BLURRED OUT BY REQUIREMENT) -->
+                <span class="blurred-date p-1 rounded-lg">1</span>
+                <span class="blurred-date p-1 rounded-lg">2</span>
+                <span class="blurred-date p-1 rounded-lg">3</span>
+                <span class="blurred-date p-1 rounded-lg">4</span>
+                <span class="blurred-date p-1 rounded-lg">5</span>
+                <span class="blurred-date p-1 rounded-lg">6</span>
+                <span class="blurred-date p-1 rounded-lg">7</span>
+                <span class="blurred-date p-1 rounded-lg">8</span>
+                <span class="blurred-date p-1 rounded-lg">9</span>
+                <span class="blurred-date p-1 rounded-lg">10</span>
+                <span class="blurred-date p-1 rounded-lg">11</span>
+                <span class="blurred-date p-1 rounded-lg">12</span>
+                <span class="blurred-date p-1 rounded-lg">13</span>
+                <span class="blurred-date p-1 rounded-lg">14</span>
+                <span class="blurred-date p-1 rounded-lg">15</span>
+                <span class="blurred-date p-1 rounded-lg">16</span>
+                <span class="blurred-date p-1 rounded-lg">17</span>
+                <span class="blurred-date p-1 rounded-lg">18</span>
+                <span class="blurred-date p-1 rounded-lg">19</span>
+                <span class="blurred-date p-1 rounded-lg">20</span>
+
+                <!-- Oct 21 onwards (ACTIVE, CLICKABLE & LOADABLE DATA UP TO 26 OCT) -->
+                <button type="button" onclick="selectCalendarDate('2026-10-21', '21 Oct 2026')" class="cal-day-btn p-1.5 rounded-xl font-bold text-slate-700 hover:bg-teal-500 hover:text-white transition cursor-pointer" data-date="2026-10-21">
+                  21
+                </button>
+                <button type="button" onclick="selectCalendarDate('2026-10-22', '22 Oct 2026')" class="cal-day-btn p-1.5 rounded-xl font-bold text-slate-700 hover:bg-teal-500 hover:text-white transition cursor-pointer" data-date="2026-10-22">
+                  22
+                </button>
+                <button type="button" onclick="selectCalendarDate('2026-10-23', '23 Oct 2026')" class="cal-day-btn p-1.5 rounded-xl font-bold text-slate-700 hover:bg-teal-500 hover:text-white transition cursor-pointer" data-date="2026-10-23">
+                  23
+                </button>
+                <button type="button" onclick="selectCalendarDate('2026-10-24', '24 Oct 2026')" class="cal-day-btn p-1.5 rounded-xl font-bold text-slate-700 hover:bg-teal-500 hover:text-white transition cursor-pointer" data-date="2026-10-24">
+                  24
+                </button>
+                <button type="button" onclick="selectCalendarDate('2026-10-25', '25 Oct 2026')" class="cal-day-btn p-1.5 rounded-xl font-bold text-slate-700 hover:bg-teal-500 hover:text-white transition cursor-pointer" data-date="2026-10-25">
+                  25
+                </button>
+                <button type="button" onclick="selectCalendarDate('2026-10-26', '26 Oct 2026 (Today)')" class="cal-day-btn p-1.5 rounded-xl font-extrabold bg-[#00C48C] text-white shadow-sm ring-2 ring-teal-300" data-date="2026-10-26">
+                  26
+                </button>
+                <span class="blurred-date p-1 rounded-lg">27</span>
+              </div>
+
+              <!-- Native HTML5 Date Picker Sync with min="2026-10-21" -->
+              <div class="pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
+                <span class="text-[10px] font-bold text-slate-400">Other Date:</span>
+                <input type="date" id="native-date-input" min="2026-10-21" max="2026-10-26" value="2026-10-26" onchange="onNativeDateChange(this.value)" class="px-2 py-1 rounded-lg bg-slate-50 border border-slate-200 text-xs font-bold text-slate-700 outline-none">
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Live Search Bar -->
+    <div id="search-bar-row" class="flex items-center justify-between gap-4">
+      <div class="relative flex-1 max-w-md">
+        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+          <i class="fa-solid fa-magnifying-glass text-xs"></i>
+        </span>
+        <input id="student-search-input" oninput="onSearchInput()" class="w-full bg-white pl-10 pr-4 py-2.5 rounded-2xl text-xs font-semibold text-slate-700 placeholder-slate-400 border border-slate-200/80 shadow-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-200/40 outline-none transition" placeholder="Search by name or roll number..." type="text">
+      </div>
+      <div id="mode-summary-pill" class="text-xs font-extrabold text-slate-600 hidden sm:block bg-white px-3.5 py-1.5 rounded-full border border-slate-200 shadow-sm">
+        Showing: Daily Attendance (26 Oct 2026)
+      </div>
+    </div>
+
+    <!-- VIEW 1: ATTENDANCE SECTION (Daily or All Days) -->
+    <div id="view-attendance" class="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
+      
+      <!-- Student Cards Deck (8 cols on XL) -->
+      <div class="xl:col-span-8 flex flex-col gap-4">
+        
+        <!-- Daily Presence Cards Grid (Rendered when specific date selected) -->
+        <div id="daily-cards-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          <!-- Populated dynamically via JS -->
+        </div>
+
+        <!-- Pagination Controls Bar -->
+        <div id="pagination-controls" class="flex items-center justify-between pt-2 text-xs text-slate-400 font-medium px-1 select-none" data-purpose="pagination-controls">
+          <span id="pagination-info-text">Showing 1 - 12 of 28 students</span>
+          <div id="pagination-buttons" class="flex items-center gap-1 font-bold text-slate-600">
+            <!-- Buttons dynamically generated -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Column: Interactive Analytics & Overview (4 cols on XL, Fixed/Sticky in place) -->
+      <aside class="xl:col-span-4 flex flex-col gap-5 xl:sticky xl:top-6 self-start">
+        
+        <!-- Attendance Overview Card -->
+        <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm flex flex-col gap-4">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center font-bold text-sm">
+              <i class="fa-solid fa-chart-pie"></i>
+            </div>
+            <h3 class="text-base font-extrabold text-slate-900 tracking-tight">Class Overview</h3>
+          </div>
+
+          <!-- Donut Chart & Statistics -->
+          <div class="flex items-center justify-between gap-4 py-1">
+            <div class="relative w-36 h-36 shrink-0">
+              <canvas id="classDonutCanvas"></canvas>
+              <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                <span id="overview-rate-text" class="text-xl font-black text-slate-900 leading-none">0%</span>
+                <span class="text-[9px] font-extrabold uppercase tracking-wider text-slate-400 mt-0.5">Rate</span>
+              </div>
+            </div>
+
+            <!-- Legend and Details -->
+            <div class="flex-1 flex flex-col gap-2.5">
+              <div class="flex items-center justify-between p-2 rounded-xl bg-[#E7F8EE] border border-emerald-100">
+                <div class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-[#10B981]"></span>
+                  <span class="text-xs font-bold text-slate-700">Present</span>
+                </div>
+                <span id="overview-present-count" class="text-xs font-black text-emerald-800">0</span>
+              </div>
+
+              <div class="flex items-center justify-between p-2 rounded-xl bg-[#FDEFEF] border border-rose-100">
+                <div class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-[#F43F5E]"></span>
+                  <span class="text-xs font-bold text-slate-700">Absent</span>
+                </div>
+                <span id="overview-absent-count" class="text-xs font-black text-rose-800">0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Notice -->
+          <p class="text-[11px] text-slate-400 font-medium text-center border-t border-slate-100 pt-3">
+            Real-time biometric attendance verified via AWS Rekognition.
+          </p>
+        </div>
+
+        <!-- Subject Attendance Breakdown Card -->
+        <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm flex flex-col gap-3">
+          <div class="flex items-center justify-between">
+            <h4 class="text-xs font-black uppercase text-slate-400 tracking-wider">Subject Analytics</h4>
+            <span class="text-xs font-extrabold text-teal-700">Current Semester</span>
+          </div>
+
+          <div class="flex flex-col gap-2.5">
+            <div>
+              <div class="flex justify-between text-xs font-bold text-slate-700 mb-1">
+                <span>Operating Systems</span>
+                <span class="text-teal-700">92%</span>
+              </div>
+              <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                <div class="bg-teal-500 h-2 rounded-full" style="width: 92%"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs font-bold text-slate-700 mb-1">
+                <span>Computer Networks</span>
+                <span class="text-indigo-600">88%</span>
+              </div>
+              <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                <div class="bg-indigo-500 h-2 rounded-full" style="width: 88%"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs font-bold text-slate-700 mb-1">
+                <span>Database Management</span>
+                <span class="text-amber-600">84%</span>
+              </div>
+              <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                <div class="bg-amber-500 h-2 rounded-full" style="width: 84%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </aside>
+
+    </div>
+
+    <!-- VIEW 2: STUDENT SIGN-UPS SECTION -->
+    <div id="view-requests" class="hidden flex flex-col gap-4">
+      <div class="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm flex flex-col gap-4">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+          <div>
+            <h3 class="text-lg font-black text-slate-900">Student Sign-up &amp; Biometric Approvals</h3>
+            <p class="text-xs text-slate-500 mt-0.5">Review newly registered students and approve their face verification profile.</p>
+          </div>
+          <span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800">
+            Pending Teacher Review
+          </span>
+        </div>
+
+        <div id="requests-list-container" class="flex flex-col gap-3">
+          <div class="p-8 text-center text-slate-400 text-xs">Loading sign-up requests...</div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+    </div>
+  </div>
+
+<script src="/static/js/api.js"></script>
+<script src="/static/js/navbar.js"></script>
+<script>
+  renderGlobalNavbar('teacher', 'students');
+
+  let currentView = 'attendance';
+  let selectedDate = '2026-10-26';
+  let selectedDateLabel = '26 Oct 2026 (Today)';
+  let studentsData = [];
+  let classDonut = null;
+  let currentPage = 1;
+  const PAGE_SIZE = 12;
+
+  async function initPage() {
+    await loadStudentsAttendance();
+    loadStudentRequests();
+  }
+
+  function toggleCalendarDropdown() {
+    const pop = document.getElementById('calendar-popover');
+    pop.classList.toggle('hidden');
+  }
+
+  function selectCalendarDate(dateStr, label) {
+    if (dateStr < '2026-10-21') {
+      API.showToast("Attendance history is available starting from 21 October 2026.", 'info');
+      return;
+    }
+    selectedDate = dateStr;
+    selectedDateLabel = label || dateStr;
+    document.getElementById('selected-date-display').textContent = selectedDateLabel;
+    document.getElementById('native-date-input').value = dateStr;
+    document.getElementById('mode-summary-pill').textContent = `Showing: Daily Attendance (${selectedDateLabel})`;
+
+    // Highlight active day in grid
+    document.querySelectorAll('.cal-day-btn').forEach(btn => {
+      if (btn.getAttribute('data-date') === dateStr) {
+        btn.className = "cal-day-btn p-1.5 rounded-xl font-extrabold bg-[#00C48C] text-white shadow-sm ring-2 ring-teal-300";
+      } else {
+        btn.className = "cal-day-btn p-1.5 rounded-xl font-bold text-slate-700 hover:bg-teal-500 hover:text-white transition cursor-pointer";
+      }
+    });
+
+    document.getElementById('calendar-popover').classList.add('hidden');
+    loadStudentsAttendance();
+  }
+
+  function onNativeDateChange(val) {
+    if (!val) return;
+    if (val < '2026-10-21') {
+      API.showToast("Dates before 21 Oct 2026 are blurred/disabled.", 'info');
+      document.getElementById('native-date-input').value = '2026-10-21';
+      selectCalendarDate('2026-10-21', '21 Oct 2026');
+      return;
+    }
+    const d = new Date(val);
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const label = `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+    selectCalendarDate(val, label);
+  }
+
+  async function loadStudentsAttendance() {
+    const cls = document.getElementById('sel-class').value;
+    const sub = document.getElementById('sel-subject').value;
+    const searchVal = document.getElementById('student-search-input').value || '';
+
+    try {
+      const res = await API.getTeacherStudentsAttendance(cls, selectedDate, sub, searchVal);
+      studentsData = res.students || [];
+
+      // Update Header badge
+      document.getElementById('header-count-badge').textContent = `${studentsData.length} Students Enrolled`;
+
+      // Update Overview stats (Only Present and Absent)
+      const s = res.summary || {};
+      const presCount = s.present || 0;
+      const absCount = (s.absent || 0) + (s.not_marked || 0);
+      document.getElementById('overview-present-count').textContent = presCount;
+      document.getElementById('overview-absent-count').textContent = absCount;
+      const calcRate = (presCount + absCount) > 0 ? Math.round((presCount / (presCount + absCount)) * 100) : 0;
+      document.getElementById('overview-rate-text').textContent = `${calcRate}%`;
+
+      // Render chart (Only Present and Absent)
+      renderDonutChart(presCount, absCount);
+
+      renderDailyCards();
+
+    } catch (e) {
+      console.error("Error loading students attendance:", e);
+    }
+  }
+
+  function renderDailyCards() {
+    const grid = document.getElementById('daily-cards-grid');
+    const paginationControls = document.getElementById('pagination-controls');
+    const infoText = document.getElementById('pagination-info-text');
+    const buttonsCont = document.getElementById('pagination-buttons');
+    const sub = document.getElementById('sel-subject').value;
+
+    if (!studentsData || studentsData.length === 0) {
+      grid.innerHTML = `<div class="col-span-full py-16 text-center text-slate-400 text-sm">No students found matching search.</div>`;
+      if (paginationControls) paginationControls.style.display = 'none';
+      return;
+    }
+
+    if (paginationControls) paginationControls.style.display = 'flex';
+
+    const totalStudents = studentsData.length;
+    const totalPages = Math.ceil(totalStudents / PAGE_SIZE) || 1;
+    if (currentPage > totalPages) currentPage = totalPages;
+    if (currentPage < 1) currentPage = 1;
+
+    const startIdx = (currentPage - 1) * PAGE_SIZE;
+    const endIdx = Math.min(startIdx + PAGE_SIZE, totalStudents);
+    const pageStudents = studentsData.slice(startIdx, endIdx);
+
+    // Update Showing info text
+    if (infoText) {
+      infoText.textContent = `Showing ${startIdx + 1} - ${endIdx} of ${totalStudents} students`;
+    }
+
+    // Render pagination buttons matching the reference
+    if (buttonsCont) {
+      let btnsHtml = '';
+
+      // Prev Button (‹)
+      const prevDisabled = currentPage === 1;
+      btnsHtml += `
+        <button onclick="goToPage(${currentPage - 1})" ${prevDisabled ? 'disabled' : ''} class="w-6 h-6 flex items-center justify-center rounded-lg text-slate-400 ${prevDisabled ? 'opacity-30 cursor-not-allowed' : 'hover:bg-slate-100 hover:text-slate-700 transition-colors'}">‹</button>
+      `;
+
+      // Page Number Pills
+      for (let p = 1; p <= totalPages; p++) {
+        if (p === currentPage) {
+          btnsHtml += `<button class="w-6 h-6 flex items-center justify-center rounded-full bg-teal-400 text-white shadow-sm text-xs font-bold">${p}</button>`;
+        } else {
+          btnsHtml += `<button onclick="goToPage(${p})" class="w-6 h-6 flex items-center justify-center rounded-full hover:bg-slate-100 text-slate-600 transition-colors text-xs font-bold">${p}</button>`;
+        }
+      }
+
+      // Next Button (›)
+      const nextDisabled = currentPage === totalPages;
+      btnsHtml += `
+        <button onclick="goToPage(${currentPage + 1})" ${nextDisabled ? 'disabled' : ''} class="w-6 h-6 flex items-center justify-center rounded-lg text-slate-400 ${nextDisabled ? 'opacity-30 cursor-not-allowed' : 'hover:bg-slate-100 hover:text-slate-700'} transition-colors">›</button>
+      `;
+
+      buttonsCont.innerHTML = btnsHtml;
+    }
+
+    grid.innerHTML = pageStudents.map((s, idx) => {
+      const isPresent = s.daily_status === 'PRESENT';
+      const isAbsent = !isPresent;
+
+      const bgClass = isPresent ? 'bg-[#E7F8EE] border-emerald-200' : 'bg-[#FDEFEF] border-rose-200';
+      const badgeText = isPresent ? 'Present' : 'Absent';
+      const badgeClass = isPresent ? 'bg-[#10B981] text-white' : 'bg-[#F43F5E] text-white';
+
+      // Subject-specific attendance rate and rank
+      const subRate = Math.round(s.subject_attendance_rate != null ? s.subject_attendance_rate : 0);
+      const subRank = s.subject_rank || (startIdx + idx + 1);
+      
+      // Calculate SVG stroke parameters for circular pie chart / progress gauge
+      const circumference = 2 * Math.PI * 13; // ~81.68
+      const strokeDashoffset = Math.max(0, circumference - (subRate / 100) * circumference);
+      const ringColor = subRate >= 75 ? '#10B981' : (subRate >= 60 ? '#F59E0B' : (subRate > 0 ? '#F43F5E' : '#CBD5E1'));
+
+      return `
+        <div onclick="openStudentProfile('${s.id}')" class="relative ${bgClass} rounded-3xl p-3 flex items-center gap-3 border shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer group overflow-hidden min-h-[132px]">
+          <!-- 3D Character Avatar -->
+          <div class="h-24 w-20 shrink-0 flex items-end justify-center">
+            <img alt="${s.name}" class="h-full w-full object-contain object-bottom select-none group-hover:scale-105 transition-transform" src="${s.avatar || '/static/student_faces/268e4791-61db-45cb-b948-2a40ce6e5374.png'}">
+          </div>
+
+          <!-- Student Information -->
+          <div class="flex-1 min-w-0 pr-1 py-1 flex flex-col justify-between h-full">
+            <div>
+              <div class="flex items-center justify-between gap-1">
+                <span class="text-[11px] font-black text-slate-500">${s.roll_no}</span>
+                <span class="text-[10px] font-black px-2 py-0.5 rounded-full ${badgeClass}">
+                  <i class="fa-solid ${isPresent ? 'fa-check' : 'fa-xmark'} text-[8px] mr-0.5"></i>${badgeText}
+                </span>
+              </div>
+              <h3 class="text-xs font-extrabold text-slate-800 truncate leading-snug group-hover:text-teal-700 mt-0.5">${s.name}</h3>
+            </div>
+
+            <!-- Subject Rank & Mini Pie Chart -->
+            <div class="mt-2 pt-2 border-t border-slate-200/60 flex items-center justify-between gap-2">
+              <div class="flex flex-col">
+                <span class="text-[9px] uppercase font-bold text-slate-400 tracking-wider">Rank</span>
+                <span class="text-xs font-black text-indigo-700">#${subRank}</span>
+              </div>
+
+              <!-- Mini Circular Pie Chart / Gauge -->
+              <div class="flex items-center gap-1.5" title="${sub}: ${subRate}% Attendance">
+                <div class="relative w-8 h-8 flex items-center justify-center shrink-0">
+                  <svg class="w-8 h-8 -rotate-90" viewBox="0 0 32 32">
+                    <circle cx="16" cy="16" r="13" fill="none" stroke="#E2E8F0" stroke-width="3" />
+                    <circle cx="16" cy="16" r="13" fill="none" stroke="${ringColor}" stroke-width="3" stroke-dasharray="${circumference.toFixed(2)}" stroke-dashoffset="${strokeDashoffset.toFixed(2)}" stroke-linecap="round" />
+                  </svg>
+                  <span class="absolute text-[8px] font-black text-slate-800 leading-none">${subRate}%</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function goToPage(p) {
+    currentPage = p;
+    renderDailyCards();
+    const grid = document.getElementById('daily-cards-grid');
+    if (grid) {
+      grid.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }
+
+  function renderDonutChart(present, absent) {
+    const canvas = document.getElementById('classDonutCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (classDonut) classDonut.destroy();
+
+    classDonut = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Present', 'Absent'],
+        datasets: [{
+          data: [present, absent],
+          backgroundColor: ['#00D2AA', '#FF5C60'],
+          borderWidth: 2,
+          borderColor: '#FFFFFF',
+          hoverOffset: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '72%',
+        plugins: {
+          legend: { display: false }
+        }
+      }
+    });
+  }
+
+  function openStudentProfile(studentId) {
+    window.location.href = `/teacher/student-profile?student_id=${studentId}`;
+  }
+
+  function onFilterChange() {
+    currentPage = 1;
+    loadStudentsAttendance();
+  }
+
+  function onSearchInput() {
+    currentPage = 1;
+    loadStudentsAttendance();
+  }
+
+  async function switchViewMode(mode) {
+    currentView = mode;
+    const attView = document.getElementById('view-attendance');
+    const reqView = document.getElementById('view-requests');
+    const attBtn = document.getElementById('tab-attendance-btn');
+    const reqBtn = document.getElementById('tab-requests-btn');
+    const filters = document.getElementById('filters-container');
+    const searchBar = document.getElementById('search-bar-row');
+
+    if (mode === 'attendance') {
+      attView.classList.remove('hidden');
+      attView.style.display = 'grid';
+      reqView.classList.add('hidden');
+      reqView.style.display = 'none';
+      filters.classList.remove('hidden');
+      searchBar.classList.remove('hidden');
+      attBtn.className = "px-4 py-2 rounded-xl text-xs font-bold bg-[#0B1522] text-white transition shadow-sm flex items-center gap-2";
+      reqBtn.className = "px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 transition flex items-center gap-2";
+      loadStudentsAttendance();
+    } else {
+      attView.classList.add('hidden');
+      attView.style.display = 'none';
+      reqView.classList.remove('hidden');
+      reqView.style.display = 'flex';
+      filters.classList.add('hidden');
+      searchBar.classList.add('hidden');
+      reqBtn.className = "px-4 py-2 rounded-xl text-xs font-bold bg-[#0B1522] text-white transition shadow-sm flex items-center gap-2";
+      attBtn.className = "px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 transition flex items-center gap-2";
+      loadStudentRequests();
+    }
+  }
+
+  async function loadStudentRequests() {
+    const cont = document.getElementById('requests-list-container');
+    try {
+      const res = await API.getTeacherStudentRequests();
+      const reqs = res.requests || [];
+      document.getElementById('requests-badge').textContent = reqs.length;
+
+      if (reqs.length === 0) {
+        cont.innerHTML = `
+          <div class="py-12 text-center text-slate-400 text-xs flex flex-col items-center gap-2">
+            <i class="fa-solid fa-circle-check text-2xl text-emerald-500"></i>
+            <span>No pending student sign-up requests. All students are approved.</span>
+          </div>
+        `;
+        return;
+      }
+
+      cont.innerHTML = reqs.map(r => {
+        const isProfileUpdate = r.profile_change_pending || r.change_request_type === 'PROFILE_UPDATE' || !!r.pending_changes;
+        const ch = r.pending_changes || {};
+
+        return `
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-2xl border ${isProfileUpdate ? 'border-amber-200 bg-amber-50/40' : 'border-slate-200 bg-slate-50/50'} hover:bg-white transition gap-4">
+            <div class="flex items-center gap-3 min-w-0">
+              <img src="${(isProfileUpdate && ch.avatar) ? ch.avatar : (r.avatar || '/static/student_faces/268e4791-61db-45cb-b948-2a40ce6e5374.png')}" class="w-12 h-12 rounded-2xl object-cover bg-amber-100 border border-slate-200 shrink-0">
+              <div class="min-w-0">
+                <div class="flex items-center gap-2">
+                  <h4 class="font-extrabold text-sm text-slate-900 truncate">${isProfileUpdate && ch.name ? ch.name : r.name}</h4>
+                  <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full ${isProfileUpdate ? 'bg-amber-100 text-amber-800 border border-amber-300' : 'bg-indigo-100 text-indigo-700'}">
+                    ${isProfileUpdate ? 'Profile Update' : 'New Sign-up'}
+                  </span>
+                </div>
+                <p class="text-xs text-slate-500 font-medium truncate mt-0.5">
+                  ${r.email} · Roll: <strong>${isProfileUpdate && ch.roll_no ? ch.roll_no : r.roll_no}</strong> · ${isProfileUpdate && ch.division ? ch.division : r.class_code}
+                </p>
+                ${isProfileUpdate ? `
+                  <p class="text-[11px] text-amber-900 font-semibold mt-1">
+                    Requested Changes: <strong>${ch.name ? 'Name: ' + ch.name + ' · ' : ''}${ch.roll_no ? 'Roll: ' + ch.roll_no + ' · ' : ''}${ch.phone ? 'Phone: ' + ch.phone : ''}</strong>
+                  </p>
+                ` : `
+                  <span class="text-[10px] text-teal-600 font-bold">AWS Rekognition biometric enrolled</span>
+                `}
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2 shrink-0 self-end sm:self-center">
+              <button onclick="approveStudent('${r.id}')" type="button" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1.5 shadow transition cursor-pointer">
+                <i class="fa-solid fa-check"></i> ${isProfileUpdate ? 'Approve Changes' : 'Approve'}
+              </button>
+              <button onclick="rejectStudent('${r.id}')" type="button" class="px-3 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs flex items-center gap-1.5 transition cursor-pointer">
+                <i class="fa-solid fa-xmark"></i> ${isProfileUpdate ? 'Decline' : 'Reject'}
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    } catch (e) {
+      cont.innerHTML = `<div class="p-6 text-center text-slate-400 text-xs">Error loading requests.</div>`;
+    }
+  }
+
+  async function approveStudent(studentId) {
+    const res = await API.approveStudent(studentId);
+    if (res.success) {
+      API.showToast("Student approved successfully!", 'success');
+      loadStudentRequests();
+    }
+  }
+
+  async function rejectStudent(studentId) {
+    const res = await API.rejectStudent(studentId);
+    if (res.success) {
+      API.showToast("Student sign-up rejected.", 'info');
+      loadStudentRequests();
+    }
+  }
+
+  // Close calendar popover on outside click
+  document.addEventListener('click', (e) => {
+    const wrapper = document.getElementById('calendar-selector-wrapper');
+    const popover = document.getElementById('calendar-popover');
+    if (wrapper && popover && !wrapper.contains(e.target)) {
+      popover.classList.add('hidden');
+    }
+  });
+
+  window.onload = initPage;
+</script>
+</body>
+</html>

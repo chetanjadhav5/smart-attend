@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RaiSakshya - Face Verification Dashboard</title>
+<!-- Google Fonts: Plus Jakarta Sans -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              dark: '#111820',
+              teal: '#133336',
+              'teal-hover': '#0e2628',
+              accent: '#38A169',
+              verified: '#eaf8f0',
+              pending: '#fdeeed'
+            }
+          }
+        }
+      }
+    }
+  </script>
+<!-- Custom CSS for specific layout and decorative elements -->
+<style data-purpose="custom-styling">
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #0f141c;
+      color: #1e293b;
+      -webkit-font-smoothing: antialiased;
+    }
+    /* Reticle & Scanner animation/styling */
+    .reticle-ring {
+      border: 3.5px solid rgba(255, 255, 255, 0.65);
+      border-radius: 50%;
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 5px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #e2e8f0;
+      border-radius: 9999px;
+    }
+    .camera-bg-sim {
+      background: linear-gradient(135deg, #dfbf9f 0%, #ecd5be 35%, #c8ab8d 70%, #b39779 100%);
+    }
+  </style>
+</head>
+<body class="min-h-screen p-2 sm:p-4 md:p-6 lg:p-7 flex flex-col justify-start items-center">
+<!-- BEGIN: MainContainer -->
+<div class="w-full max-w-[1520px] flex flex-col gap-4">
+<!-- BEGIN: TopNavigationBar -->
+<header class="w-full bg-[#11161d] text-white rounded-2xl px-6 py-3.5 flex items-center justify-between shadow-2xl border border-gray-800/60" data-purpose="main-navigation">
+<!-- Brand Logo & Motto -->
+<div class="flex items-center gap-3.5">
+<div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-white">
+<!-- Graduation Cap Icon -->
+<svg class="w-6 h-6 fill-current" viewbox="0 0 24 24">
+<path d="M12 3L1 9L12 15L21 10.09V17H23V9M5 13.18V17.18L12 21L19 17.18V13.18L12 17L5 13.18Z"></path>
+</svg>
+</div>
+<div>
+<h1 class="text-xl font-bold tracking-tight text-white leading-none">RaiSakshya</h1>
+<p class="text-[11px] font-medium text-gray-400 mt-1">Smart Attendance for Brighter Futures</p>
+</div>
+</div>
+<!-- Navigation Tabs -->
+<nav class="hidden md:flex items-center gap-10">
+<!-- Attendance (Active) -->
+<a class="flex flex-col items-center group relative text-white" href="#">
+<div class="flex items-center gap-2">
+<svg class="w-5 h-5 fill-current" viewbox="0 0 24 24">
+<path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path>
+</svg>
+<span class="text-sm font-semibold tracking-wide">Attendance</span>
+</div>
+<span class="w-1.5 h-1.5 bg-white rounded-full mt-1.5"></span>
+</a>
+<!-- Students -->
+<a class="flex items-center gap-2 text-gray-400 hover:text-white transition" href="#">
+<svg class="w-5 h-5 fill-current" viewbox="0 0 24 24">
+<path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"></path>
+</svg>
+<span class="text-sm font-medium tracking-wide">Students</span>
+</a>
+<!-- Reports -->
+<a class="flex items-center gap-2 text-gray-400 hover:text-white transition" href="#">
+<svg class="w-5 h-5 fill-current" viewbox="0 0 24 24">
+<path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z"></path>
+</svg>
+<span class="text-sm font-medium tracking-wide">Reports</span>
+</a>
+<!-- Schedule -->
+<a class="flex items-center gap-2 text-gray-400 hover:text-white transition" href="#">
+<svg class="w-5 h-5 fill-current" viewbox="0 0 24 24">
+<path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"></path>
+</svg>
+<span class="text-sm font-medium tracking-wide">Schedule</span>
+</a>
+</nav>
+<!-- Right User & Notifications Section -->
+<div class="flex items-center gap-5">
+<!-- Notification Bell with red dot -->
+<button aria-label="Notifications" class="relative p-2 text-gray-300 hover:text-white transition" type="button">
+<svg class="w-6 h-6 fill-none stroke-current stroke-2" viewbox="0 0 24 24">
+<path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-[#11161d]"></span>
+</button>
+<!-- User Profile Pill -->
+<div class="flex items-center gap-3 pl-2 cursor-pointer group">
+<img alt="Aarav Sharma Avatar" class="w-10 h-10 rounded-full object-cover bg-amber-100 ring-2 ring-gray-700/60" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCqOT9g0UDTJEEgDxehgZ7rkqKHpU8agfUZvSv-HmUq9Vi1845o1JcokDerjeApqMD7IW2ucVLZPVxdET0q-f6AIsAxhqqGtwDM4ZbR8fHTkOkRCljV6DaisPBdnMRkNoqKSmqbfVxq5TzFR97dsOdxwHFEfyRtj6jVEfEA73wnALCFr5F5XLp1lAxeZZ623IgI5ojVFugogPhKC6BgyufMWR5d_1BoUeaSGyCSxO_2DWltmflFN1M6D_keyasFVw3mrA"/>
+<div class="text-left hidden sm:block">
+<p class="text-sm font-bold text-white leading-tight">Aarav Sharma</p>
+<p class="text-xs text-gray-400">Computer Engineering</p>
+</div>
+<!-- Dropdown Chevron -->
+<svg class="w-4 h-4 text-gray-400 group-hover:text-white transition ml-0.5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+</div>
+</div>
+</header>
+<!-- END: TopNavigationBar -->
+<!-- BEGIN: MainContentCard -->
+<main class="w-full bg-[#f8fafc] rounded-[32px] p-6 lg:p-8 shadow-2xl border border-white/80" data-purpose="verification-body">
+<!-- Top Title Area -->
+<div class="mb-7 flex items-start gap-4">
+<!-- Smiling Face Icon in Circle -->
+<div class="w-12 h-12 rounded-full border-2 border-gray-900 flex items-center justify-center shrink-0">
+<svg class="w-7 h-7 text-gray-900" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="10"></circle>
+<path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+<line x1="9" x2="9.01" y1="9" y2="9"></line>
+<line x1="15" x2="15.01" y1="9" y2="9"></line>
+</svg>
+</div>
+<div>
+<div class="flex items-center gap-3">
+<h2 class="text-3xl font-extrabold text-[#111820] tracking-tight">Face Verification</h2>
+<!-- Sunburst Ray Decorative Character -->
+<div class="w-8 h-8 flex items-center justify-center">
+<svg class="w-8 h-8 text-[#111820]" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" viewbox="0 0 32 32">
+<circle cx="16" cy="17" r="7"></circle>
+<path d="M13 18a3 3 0 0 0 6 0"></path>
+<circle cx="13.5" cy="15" fill="currentColor" r="0.8"></circle>
+<circle cx="18.5" cy="15" fill="currentColor" r="0.8"></circle>
+<line x1="16" x2="16" y1="5" y2="8"></line>
+<line x1="10" x2="11.5" y1="7" y2="9.5"></line>
+<line x1="22" x2="20.5" y1="7" y2="9.5"></line>
+<line x1="6" x2="8.5" y1="12" y2="13"></line>
+<line x1="26" x2="23.5" y1="12" y2="13"></line>
+</svg>
+</div>
+</div>
+<p class="text-base font-medium text-gray-500 mt-1">Select a student from the list and verify their face</p>
+</div>
+</div>
+<!-- Two-Column Grid: Left Verification & Right Students List -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- BEGIN: LeftVerificationSection -->
+<section class="lg:col-span-7 flex flex-col items-center">
+<!-- Outer Row containing Camera Viewport & Right Side Icons -->
+<div class="w-full flex flex-col md:flex-row items-center gap-6">
+<!-- Camera Viewfinder Card -->
+<div class="relative w-full aspect-[4/3] rounded-[28px] overflow-hidden shadow-lg border border-gray-100 flex items-center justify-center bg-[#f2e6d9]">
+<!-- Realistic warm blurred classroom background image -->
+<div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCtj4LZOFw8Ykw9JDc8QROUcn5dOjCjkndDlBLoWREVGk2uynBsMJsIfvxZ-l5yvksMDk8Gh93NWgwlJQZIqJLfrrxG4866JrOpVD2Vx9qN3f33vWeyDXUMyZkmEeRuROvuM1MG6xzrmZtnRcQ-hrewBRxKZtz-u3_FdX-cSOJQaMWLarHdxSPEX29wdUMC_196xY3j6kY9fEYO9LW1zNS1IHWS-YPJFkkp71wjlnDbNxDoH0x5AL-R'); filter: blur(12px) brightness(0.95); transform: scale(1.1);"></div>
+<div class="absolute inset-0 bg-amber-900/10 mix-blend-multiply"></div>
+<!-- Top-Right Status Badge -->
+<div class="absolute top-5 right-5 z-20 flex items-center gap-2 bg-white/90 backdrop-blur-md px-3.5 py-1.5 rounded-full shadow-sm">
+<span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+<span class="text-xs font-bold text-gray-800">Camera ready</span>
+</div>
+<!-- Centered 3D Character Avatar -->
+<div class="relative z-10 w-full h-full flex items-end justify-center pt-8">
+<img alt="Student Face to Verify" class="h-[96%] object-contain object-bottom drop-shadow-xl select-none pointer-events-none transform translate-y-2" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCqOT9g0UDTJEEgDxehgZ7rkqKHpU8agfUZvSv-HmUq9Vi1845o1JcokDerjeApqMD7IW2ucVLZPVxdET0q-f6AIsAxhqqGtwDM4ZbR8fHTkOkRCljV6DaisPBdnMRkNoqKSmqbfVxq5TzFR97dsOdxwHFEfyRtj6jVEfEA73wnALCFr5F5XLp1lAxeZZ623IgI5ojVFugogPhKC6BgyufMWR5d_1BoUeaSGyCSxO_2DWltmflFN1M6D_keyasFVw3mrA"/>
+</div>
+<!-- Circular Alignment Reticle & Corner Brackets Overlay -->
+<div class="absolute inset-0 z-20 flex items-center justify-center pointer-events-none">
+<!-- Circular Target Line -->
+<div class="reticle-ring w-[290px] h-[290px] relative flex items-center justify-center">
+<!-- Dotted facial landmarks points -->
+<span class="absolute w-1.5 h-1.5 bg-white/80 rounded-full top-[138px] left-[115px]"></span>
+<span class="absolute w-1.5 h-1.5 bg-white/80 rounded-full top-[138px] right-[115px]"></span>
+<span class="absolute w-1.5 h-1.5 bg-white/80 rounded-full top-[162px] left-[142px]"></span>
+<span class="absolute w-1.5 h-1.5 bg-white/80 rounded-full top-[182px] left-[134px]"></span>
+<span class="absolute w-1.5 h-1.5 bg-white/80 rounded-full top-[182px] right-[134px]"></span>
+</div>
+<!-- 4 Corner Framing Target Brackets -->
+<div class="absolute w-[360px] h-[320px] pointer-events-none">
+<!-- Top-Left -->
+<div class="absolute top-0 left-0 w-9 h-9 border-t-4 border-l-4 border-white rounded-tl-2xl"></div>
+<!-- Top-Right -->
+<div class="absolute top-0 right-0 w-9 h-9 border-t-4 border-r-4 border-white rounded-tr-2xl"></div>
+<!-- Bottom-Left -->
+<div class="absolute bottom-0 left-0 w-9 h-9 border-b-4 border-l-4 border-white rounded-bl-2xl"></div>
+<!-- Bottom-Right -->
+<div class="absolute bottom-0 right-0 w-9 h-9 border-b-4 border-r-4 border-white rounded-br-2xl"></div>
+</div>
+</div>
+</div>
+<!-- Vertical Instruction Guidance Column -->
+<div class="flex md:flex-col items-center justify-around gap-6 md:gap-7 shrink-0 py-2">
+<!-- Guideline 1: Look at camera -->
+<div class="flex flex-col items-center text-center max-w-[105px] group">
+<div class="w-12 h-12 rounded-xl flex items-center justify-center text-gray-800 transition">
+<svg class="w-10 h-10" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" viewbox="0 0 36 36">
+<path d="M7 11V7h4M25 7h4v4M29 25v4h-4M11 29H7v-4"></path>
+<circle cx="18" cy="18" r="6"></circle>
+<circle cx="18" cy="18" fill="currentColor" r="2.5"></circle>
+</svg>
+</div>
+<span class="text-xs font-semibold text-gray-500 mt-2 leading-tight">Look at the camera</span>
+</div>
+<!-- Guideline 2: Keep face lit -->
+<div class="flex flex-col items-center text-center max-w-[105px] group">
+<div class="w-12 h-12 rounded-xl flex items-center justify-center text-gray-800 transition">
+<svg class="w-10 h-10" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" viewbox="0 0 36 36">
+<circle cx="18" cy="18" r="9"></circle>
+<path d="M14 20a4 4 0 0 0 8 0"></path>
+<circle cx="15" cy="16" fill="currentColor" r="1"></circle>
+<circle cx="21" cy="16" fill="currentColor" r="1"></circle>
+<line x1="25" x2="28" y1="12" y2="10"></line>
+<line x1="26" x2="29" y1="16" y2="16"></line>
+</svg>
+</div>
+<span class="text-xs font-semibold text-gray-500 mt-2 leading-tight">Keep your face well lit</span>
+</div>
+<!-- Guideline 3: Remove glasses/mask -->
+<div class="flex flex-col items-center text-center max-w-[105px] group">
+<div class="w-12 h-12 rounded-xl flex items-center justify-center text-gray-800 transition">
+<svg class="w-10 h-10" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" viewbox="0 0 36 36">
+<circle cx="18" cy="18" r="5"></circle>
+<line x1="18" x2="18" y1="5" y2="9"></line>
+<line x1="18" x2="18" y1="27" y2="31"></line>
+<line x1="5" x2="9" y1="18" y2="18"></line>
+<line x1="27" x2="31" y1="18" y2="18"></line>
+<line x1="9" x2="12" y1="9" y2="12"></line>
+<line x1="24" x2="27" y1="24" y2="27"></line>
+<line x1="9" x2="12" y1="27" y2="24"></line>
+<line x1="24" x2="27" y1="12" y2="9"></line>
+</svg>
+</div>
+<span class="text-xs font-semibold text-gray-500 mt-2 leading-tight">Remove mask and glasses</span>
+</div>
+</div>
+</div>
+<!-- Instruction Pill below camera -->
+<div class="mt-4 flex items-center justify-center gap-2 bg-[#e5f4f8] text-[#1c6677] px-6 py-2.5 rounded-full font-semibold text-sm">
+<svg class="w-4 h-4 shrink-0 fill-current" viewbox="0 0 20 20">
+<path clip-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" fill-rule="evenodd"></path>
+</svg>
+<span>Position your face inside the frame</span>
+</div>
+<!-- Bottom Action Button -->
+<button class="mt-6 w-full max-w-[460px] bg-[#143336] hover:bg-[#0c2427] active:scale-[0.99] text-white py-3.5 px-8 rounded-2xl flex items-center justify-center gap-3.5 shadow-xl transition font-bold text-base" type="button">
+<!-- Focus Face Scan Icon -->
+<svg class="w-6 h-6 stroke-current stroke-2 fill-none" viewbox="0 0 24 24">
+<path d="M4 8V6a2 2 0 012-2h2M4 16v2a2 2 0 002 2h2m8-16h2a2 2 0 012 2v2m-2 12h2a2 2 0 002-2v-2M9 10h.01M15 10h.01M9 14s1.5 2 3 2 3-2 3-2" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>Verify Face</span>
+<svg class="w-5 h-5 stroke-current stroke-2 fill-none" viewbox="0 0 24 24">
+<path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</section>
+<!-- END: LeftVerificationSection -->
+<!-- BEGIN: RightStudentListSection -->
+<section class="lg:col-span-5 bg-white/70 backdrop-blur-sm rounded-[24px] p-2 flex flex-col border border-gray-100">
+<!-- Header and Search -->
+<div class="flex items-center justify-between gap-3 px-3 py-2 mb-3">
+<div class="flex items-center gap-2">
+<svg class="w-6 h-6 text-gray-800" fill="currentColor" viewbox="0 0 24 24">
+<path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"></path>
+</svg>
+<h3 class="text-xl font-extrabold text-gray-900 tracking-tight">Students</h3>
+</div>
+<!-- Search input pill -->
+<div class="relative w-56 sm:w-64">
+<span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-gray-400">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewbox="0 0 24 24">
+<path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</span>
+<input class="w-full bg-[#f1f4f8] text-gray-700 text-xs font-semibold rounded-full pl-10 pr-4 py-2 border-none focus:ring-2 focus:ring-gray-300 placeholder-gray-400" placeholder="Search student name..." type="text"/>
+</div>
+</div>
+<!-- Students List Cards -->
+<div class="flex flex-col gap-2.5 max-h-[640px] overflow-y-auto custom-scroll pr-1">
+<!-- Student 01 - Kameron Porter (Verified) -->
+<div class="flex items-center justify-between p-2.5 rounded-2xl bg-[#eaf8f0] border border-emerald-100/70 hover:shadow-sm transition">
+<div class="flex items-center gap-3.5">
+<img alt="Kameron Porter" class="w-12 h-12 rounded-full object-cover bg-amber-100 shrink-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCqOT9g0UDTJEEgDxehgZ7rkqKHpU8agfUZvSv-HmUq9Vi1845o1JcokDerjeApqMD7IW2ucVLZPVxdET0q-f6AIsAxhqqGtwDM4ZbR8fHTkOkRCljV6DaisPBdnMRkNoqKSmqbfVxq5TzFR97dsOdxwHFEfyRtj6jVEfEA73wnALCFr5F5XLp1lAxeZZ623IgI5ojVFugogPhKC6BgyufMWR5d_1BoUeaSGyCSxO_2DWltmflFN1M6D_keyasFVw3mrA"/>
+<div class="flex items-center gap-2">
+<span class="font-bold text-gray-900 text-sm">Kameron Porter</span>
+<!-- Green Checkmark Circle -->
+<span class="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0">
+<svg class="w-3.5 h-3.5 stroke-current stroke-3 fill-none" viewbox="0 0 24 24">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</span>
+</div>
+</div>
+<span class="text-xs font-extrabold text-emerald-800 bg-[#d8f2e2] px-3 py-1.5 rounded-xl">01</span>
+</div>
+<!-- Student 02 - Michael Kopfler -->
+<div class="flex items-center justify-between p-2.5 rounded-2xl bg-white hover:bg-gray-50 border border-gray-100 hover:shadow-sm transition">
+<div class="flex items-center gap-3.5">
+<img alt="Michael Kopfler" class="w-12 h-12 rounded-full object-cover bg-amber-100 shrink-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnI_aGmVvty0DBZaOiltlIJz2AwDMS3U4OAvxRspCEkkRy0_0FLmn8aekvYcoeq3NIbPI5yJcgHKrFC3Y_ATGp3luEoxF5z3VTkqXgdX0UgzBPsAUw1_VE9_-TpoVbFm4yVMNLYUU8j_VE_VjvgMR1JH3T04Sshcbtm5gJEnajlJOdSKdQFRyRgiFlCZJzBAZ5xSLqhd_-nFF3JAoicvUjnr9sQ_ZqLL5fxnbavOvg2hbb-8fJzuKd9drOsEsCUO0Xcg"/>
+<div class="flex items-center gap-2">
+<span class="font-bold text-gray-900 text-sm">Michael Kopfler</span>
+</div>
+</div>
+<span class="text-xs font-extrabold text-gray-600 bg-gray-100 px-3 py-1.5 rounded-xl">02</span>
+</div>
+<!-- Student 03 - Alice Koller (Verified) -->
+<div class="flex items-center justify-between p-2.5 rounded-2xl bg-[#eaf8f0] border border-emerald-100/70 hover:shadow-sm transition">
+<div class="flex items-center gap-3.5">
+<img alt="Alice Koller" class="w-12 h-12 rounded-full object-cover bg-amber-100 shrink-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBXwCxVSPPuPezbQH69oQHmkKBFHfW79ebtweae9n7nadbomjT55UHUTDagcojbzXhgT3sM6YbmlZ-1M0VTsOXU4Z49d-0yb_eaWCUjl5rkrKkzHpahYTD0rOr1_jliRL2xfvL305TVKsH6BR2mXRLXt8pS1abm-QwYykjJOsprIOAkcq17xtxUW0deNS1kMD71MNdnPIPzORNQsDNlDuHOpPXotVbafkXByc9_0pl7DIm7aB6JGouWFqDSSz6I1LsR1A"/>
+<div class="flex items-center gap-2">
+<span class="font-bold text-gray-900 text-sm">Alice Koller</span>
+<span class="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0">
+<svg class="w-3.5 h-3.5 stroke-current stroke-3 fill-none" viewbox="0 0 24 24">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</span>
+</div>
+</div>
+<span class="text-xs font-extrabold text-emerald-800 bg-[#d8f2e2] px-3 py-1.5 rounded-xl">03</span>
+</div>
+<!-- Student 04 - Peter Dinklage -->
+<div class="flex items-center justify-between p-2.5 rounded-2xl bg-white hover:bg-gray-50 border border-gray-100 hover:shadow-sm transition">
+<div class="flex items-center gap-3.5">
+<img alt="Peter Dinklage" class="w-12 h-12 rounded-full object-cover bg-amber-100 shrink-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZq5JLU6TL0MKzdY86F0dioqZ3RA2n9sxjYD_j0OL4JEwKCZI814AcKwKbGTubAFBpkimNIREETSG1-s_6dLXBKRU1jR8LEwP0jaKFoLZgFEsg5Z4Zg1hSQnofJmBcLdXBU4CLwQpxNMoANygIKw48IDqRb54iu3RtxG_AC7N7kyoTTEyiThqWNdTXQgBk42gH4yAF0oIhpo9v_eWZTkFqb-eKDfwDr-u3K3PgW2ZEgY9AkXdAh5QZtCrIn6IN4FdNig"/>
+<div class="flex items-center gap-2">
+<span class="font-bold text-gray-900 text-sm">Peter Dinklage</span>
+</div>
+</div>
+<span class="text-xs font-extrabold text-gray-600 bg-gray-100 px-3 py-1.5 rounded-xl">04</span>
+</div>
+<!-- Student 05 - Julia Berger (Verified) -->
+<div class="flex items-center justify-between p-2.5 rounded-2xl bg-[#eaf8f0] border border-emerald-100/70 hover:shadow-sm transition">
+<div class="flex items-center gap-3.5">
+<img alt="Julia Berger" class="w-12 h-12 rounded-full object-cover bg-amber-100 shrink-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCYDqx1kQeOBo2wCdkCPVbxZZUhDnYGbRFhCpSs0S3HyTjyMDzzen5lKZLAmCaWXitphC9BxOOn8YFekmne8rS0sihMBSzbK9TqJe9moqTWpQErYTsopnr6BZh0yAxCdsLFKzomXempnLPvju_nhh19UGEY4cv1KyoYhbh6M8DEYtwRk0OUPutg1cbkFNaVrfxKunFBEurkG1iSRCg5d75PtSKtYvG0VuNDo92x45NKEnW6nSDQEQV2Oss5BcGWJz4sAg"/>
+<div class="flex items-center gap-2">
+<span class="font-bold text-gray-900 text-sm">Julia Berger</span>
+<span class="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0">
+<svg class="w-3.5 h-3.5 stroke-current stroke-3 fill-none" viewbox="0 0 24 24">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</span>
+</div>
+</div>
+<span class="text-xs font-extrabold text-emerald-800 bg-[#d8f2e2] px-3 py-1.5 rounded-xl">05</span>
+</div>
+<!-- Student 06 - John Wick (Orange/Warning Roll Badge) -->
+<div class="flex items-center justify-between p-2.5 rounded-2xl bg-white hover:bg-gray-50 border border-gray-100 hover:shadow-sm transition">
+<div class="flex items-center gap-3.5">
+<img alt="John Wick" class="w-12 h-12 rounded-full object-cover bg-amber-100 shrink-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCI-aorNnVVTmthWqFKK86H9L7xPpD4LPR_FBYsbEQGNNEP80Yv0Wt2Xx5u1aZAvPsBwIcamxO4lYclXlu4gXn5gyPFtjICoVmewzEyEvOsiOGgoYV1dlZBRWLS7wqfrVQT-CcxBCufcO7Kl5r2bBv3dMXmaoHen8tw8ofSsRkeo5C5lR6oxsl7xk_bq3gt7m8W7V8JGTyfp9qz7G1F5k3WjxfSmK-edjXx63hwTJrFuaPyIe9isEsdJUSCRnBENOuZKA"/>
+<div class="flex items-center gap-2">
+<span class="font-bold text-gray-900 text-sm">John Wick</span>
+</div>
+</div>
+<span class="text-xs font-extrabold text-rose-700 bg-rose-100 px-3 py-1.5 rounded-xl">06</span>
+</div>
+<!-- Student 07 - George Limbaf -->
+<div class="flex items-center justify-between p-2.5 rounded-2xl bg-white hover:bg-gray-50 border border-gray-100 hover:shadow-sm transition">
+<div class="flex items-center gap-3.5">
+<img alt="George Limbaf" class="w-12 h-12 rounded-full object-cover bg-amber-100 shrink-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCqOT9g0UDTJEEgDxehgZ7rkqKHpU8agfUZvSv-HmUq9Vi1845o1JcokDerjeApqMD7IW2ucVLZPVxdET0q-f6AIsAxhqqGtwDM4ZbR8fHTkOkRCljV6DaisPBdnMRkNoqKSmqbfVxq5TzFR97dsOdxwHFEfyRtj6jVEfEA73wnALCFr5F5XLp1lAxeZZ623IgI5ojVFugogPhKC6BgyufMWR5d_1BoUeaSGyCSxO_2DWltmflFN1M6D_keyasFVw3mrA"/>
+<div class="flex items-center gap-2">
+<span class="font-bold text-gray-900 text-sm">George Limbaf</span>
+</div>
+</div>
+<span class="text-xs font-extrabold text-gray-600 bg-gray-100 px-3 py-1.5 rounded-xl">07</span>
+</div>
+<!-- Student 08 - Dave Johnson -->
+<div class="flex items-center justify-between p-2.5 rounded-2xl bg-white hover:bg-gray-50 border border-gray-100 hover:shadow-sm transition">
+<div class="flex items-center gap-3.5">
+<img alt="Dave Johnson" class="w-12 h-12 rounded-full object-cover bg-amber-100 shrink-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnI_aGmVvty0DBZaOiltlIJz2AwDMS3U4OAvxRspCEkkRy0_0FLmn8aekvYcoeq3NIbPI5yJcgHKrFC3Y_ATGp3luEoxF5z3VTkqXgdX0UgzBPsAUw1_VE9_-TpoVbFm4yVMNLYUU8j_VE_VjvgMR1JH3T04Sshcbtm5gJEnajlJOdSKdQFRyRgiFlCZJzBAZ5xSLqhd_-nFF3JAoicvUjnr9sQ_ZqLL5fxnbavOvg2hbb-8fJzuKd9drOsEsCUO0Xcg"/>
+<div class="flex items-center gap-2">
+<span class="font-bold text-gray-900 text-sm">Dave Johnson</span>
+</div>
+</div>
+<span class="text-xs font-extrabold text-gray-600 bg-gray-100 px-3 py-1.5 rounded-xl">08</span>
+</div>
+</div>
+</section>
+<!-- END: RightStudentListSection -->
+</div>
+</main>
+<!-- END: MainContentCard -->
+</div>
+<!-- END: MainContainer -->
+</body></html>

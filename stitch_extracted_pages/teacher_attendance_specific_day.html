@@ -1,0 +1,565 @@
+<!DOCTYPE html><html lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>RaiSakshya - Pastel Student Attendance Dashboard</title>
+<!-- Tailwind CSS v3 CDN with forms and container queries -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Plus Jakarta Sans & Fredoka -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+<!-- Tailwind Configuration -->
+<script data-purpose="tailwind-config">
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            display: ['"Fredoka"', 'sans-serif']
+          },
+          boxShadow: {
+            'dashboard': '0 25px 60px -15px rgba(22, 36, 68, 0.12), 0 10px 25px -10px rgba(22, 36, 68, 0.06)',
+            'card': '0 2px 10px rgba(0, 0, 0, 0.02)',
+            'pill': '0 2px 6px rgba(0, 0, 0, 0.06)'
+          }
+        }
+      }
+    }
+  </script>
+<!-- Typography and Custom Styles -->
+<style data-purpose="custom-layout">
+    body {
+      background-color: #E8EEF5;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(214, 233, 255, 0.7) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(254, 235, 226, 0.6) 0px, transparent 50%),
+        radial-gradient(at 50% 100%, rgba(220, 248, 238, 0.5) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(234, 226, 253, 0.6) 0px, transparent 50%);
+      background-attachment: fixed;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    /* Donut chart matching exactly 18 present (teal), 7 absent (coral red), 3 not marked (slate purple) */
+    .donut-chart {
+      background: conic-gradient(
+        #2ED396 0% 64.3%,
+        #FF6262 64.3% 89.3%,
+        #B4BED3 89.3% 100%
+      );
+    }
+
+    /* Seamless blending of avatar cutouts onto pastel cards */
+    .avatar-blend {
+      mix-blend-mode: multiply;
+      background: transparent !important;
+    }
+  </style>
+</head>
+<body class="min-h-screen text-slate-800 antialiased p-2.5 sm:p-4 lg:p-6 flex justify-center items-center">
+<!-- BEGIN: MainDashboardContainer -->
+<div class="w-full max-w-[1460px] bg-white/95 rounded-[36px] shadow-dashboard overflow-hidden border border-white/80 backdrop-blur-xl flex flex-col">
+<!-- BEGIN: TopNavigationBar -->
+<header class="bg-[#101924] text-white px-7 py-3.5 flex items-center justify-between z-20">
+<!-- Brand & Tagline -->
+<div class="flex items-center gap-3" data-purpose="brand-logo">
+<div class="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-white">
+<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+<path d="M12 3L1 9L12 15L21 10.09V17H23V9M5 13.18V17.18L12 21L19 17.18V13.18L12 17L5 13.18Z"></path>
+</svg>
+</div>
+<div>
+<h1 class="text-base font-extrabold tracking-tight leading-none text-white">RaiSakshya</h1>
+<p class="text-[10px] text-slate-400 font-medium tracking-wide mt-1">Smart Attendance for Brighter Futures</p>
+</div>
+</div>
+<!-- Main Navigation Links -->
+<nav class="flex items-center gap-1.5" data-purpose="main-navigation">
+<a class="flex items-center gap-2 px-4 py-2 text-xs font-semibold text-slate-300 hover:text-white rounded-full transition-all" href="#attendance">
+<svg class="w-4 h-4 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span class="">Attendance</span>
+</a>
+<!-- Active Page Pill -->
+<a class="flex items-center gap-2 px-5 py-2 text-xs font-semibold bg-[#223547] text-teal-300 rounded-full border border-teal-500/30 shadow-inner" href="#students">
+<svg class="w-4 h-4 text-teal-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span class="">Students</span>
+</a>
+<a class="flex items-center gap-2 px-4 py-2 text-xs font-semibold text-slate-300 hover:text-white rounded-full transition-all" href="#reports">
+<svg class="w-4 h-4 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span class="">Reports</span>
+</a>
+<a class="flex items-center gap-2 px-4 py-2 text-xs font-semibold text-slate-300 hover:text-white rounded-full transition-all" href="#schedule">
+<svg class="w-4 h-4 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span class="">Schedule</span>
+</a>
+</nav>
+<!-- Right Header Actions: Notification & Profile -->
+<div class="flex items-center gap-4" data-purpose="user-profile-header">
+<!-- Notification Bell -->
+<button aria-label="Notifications" class="relative w-8 h-8 rounded-full bg-slate-800/80 flex items-center justify-center text-slate-300 hover:text-white transition-colors">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span class="absolute top-1 right-1 w-2 h-2 bg-rose-500 rounded-full border-2 border-[#101924]"></span>
+</button>
+<!-- Profile Widget -->
+<div class="flex items-center gap-2.5 pl-2 cursor-pointer">
+<img alt="Aarav Sharma" class="w-8 h-8 rounded-full object-cover bg-amber-100 ring-2 ring-white/20" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZxZuqp5ZRN1QV9bO4XFeGQODCpRS9wdC5sOnVNxM3YKuxW5N6-2i4T9E73_4S8EhwH1vouMvwl5IxhOCCBC78bBjKIv8hb1ItyxSAKHIrnGqTbxtYzD7gXZjdkJ1S9weaOERmeeqgP-ZwfF5nZyoX_bQtitNjDeQoX3sHS6Fc3fvKXSE1R_CLajSjy6DfrByfaTyEc1lIlRyA60NbO65Vq3brkY2nmR1I7KUeg8TDXcuFGuHlDhWbdR3LKbu7JmJIZQ">
+<div class="text-left hidden sm:block">
+<div class="flex items-center gap-1.5 leading-none">
+<span class="text-xs font-bold text-slate-100">Aarav Sharma</span>
+<svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<p class="text-[10px] text-slate-400 font-medium mt-1 leading-none">Computer Engineering</p>
+</div>
+</div>
+</div>
+</header>
+<!-- END: TopNavigationBar -->
+<!-- BEGIN: MainContentWrapper -->
+<main class="flex-1 p-5 sm:p-7 flex flex-col gap-5 bg-gradient-to-b from-[#FBFDFF] to-[#F4F7FB]">
+<!-- BEGIN: HeaderRow -->
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4" data-purpose="dashboard-controls-header">
+<!-- Left: Page Title & Sparks -->
+<div class="relative">
+<div class="flex items-center gap-2">
+<h2 class="text-3xl font-black tracking-tight text-slate-900 leading-none">Students</h2>
+<!-- Sparkles doodle -->
+<span class="text-slate-800 -mt-3">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2.5" viewBox="0 0 24 24">
+<line x1="12" x2="12" y1="3" y2="7"></line>
+<line x1="19" x2="16" y1="8" y2="11"></line>
+<line x1="18" x2="15" y1="18" y2="15"></line>
+</svg>
+</span>
+</div>
+<p class="text-xs text-slate-400 font-medium mt-1">View all students and their attendance</p>
+</div>
+<!-- Middle: Filter Selectors (Class, Subject, Date) -->
+<div class="flex flex-wrap items-center gap-2 sm:gap-3 bg-white px-4 py-2 rounded-2xl border border-slate-200/70 shadow-sm">
+<!-- Class Selector -->
+<div class="flex items-center gap-2 px-2 py-1 cursor-pointer">
+<span class="text-sky-500">
+<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+<path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v1h8v-1zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 16.5a4.5 4.5 0 00-2.5-4 4.5 4.5 0 01-7 0 4.5 4.5 0 00-2.5 4V17h12v-.5z"></path>
+</svg>
+</span>
+<div>
+<span class="block text-[9px] font-semibold text-slate-400 uppercase tracking-wider leading-none">Class</span>
+<span class="text-xs font-bold text-slate-800 leading-tight">BE - Computer</span>
+</div>
+<svg class="w-3.5 h-3.5 text-slate-400 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<div class="h-6 w-[1px] bg-slate-200"></div>
+<!-- Subject Selector -->
+<div class="flex items-center gap-2 px-2 py-1 cursor-pointer">
+<span class="text-indigo-500">
+<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+<path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29-3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"></path>
+</svg>
+</span>
+<div>
+<span class="block text-[9px] font-semibold text-slate-400 uppercase tracking-wider leading-none">Subject</span>
+<span class="text-xs font-bold text-slate-800 leading-tight">Cloud Computing</span>
+</div>
+<svg class="w-3.5 h-3.5 text-slate-400 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<div class="h-6 w-[1px] bg-slate-200"></div>
+<!-- Date Selector -->
+<div class="flex items-center gap-2 px-2 py-1 cursor-pointer">
+<span class="text-purple-500">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</span>
+<div>
+<span class="block text-[9px] font-semibold text-slate-400 uppercase tracking-wider leading-none">Date</span>
+<span class="text-xs font-bold text-slate-800 leading-tight">03 Oct 2026</span>
+</div>
+<svg class="w-3.5 h-3.5 text-slate-400 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+<!-- Right: Cute Motivational Banner with clean character cutout -->
+<div class="relative bg-gradient-to-r from-[#FFF5DC] to-[#FFECCC] rounded-2xl px-4 py-2 flex items-center justify-between min-w-[260px] border border-amber-200/50 shadow-sm overflow-hidden" data-purpose="motivational-card">
+<div class="relative z-10 pl-1">
+<div class="text-[11px] text-amber-500 font-bold mb-0.5">✦</div>
+<p class="font-display font-semibold text-amber-950 text-xs leading-tight">Keep Learning</p>
+<p class="font-display font-semibold text-amber-950 text-xs leading-tight">Keep Growing</p>
+<div class="flex gap-1.5 text-teal-500 text-[10px] mt-1">
+<span class="">≈</span>
+<span class="text-amber-500">★</span>
+</div>
+</div>
+<!-- 3D Boy cutout directly blended with no white container -->
+<div class="w-20 h-20 -mr-2 relative z-10 flex items-center justify-center shrink-0">
+<img alt="Keep Growing" class="w-full h-full object-contain avatar-blend" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxxChrRhTXNjV_CUAE7upTNqd8WvVKbzx2Ldawzk7enpGhi8UtmaSrcm8KOJNA_P8Ncu0q7BLzzBmCEAs6ixtUhEDoTLJEecwMRo6W5ox-EyYliwraZ6HWt6DDFhL2L2FjsY1DgTHdXJmxVYkR_7FPvPoeslCtEpC4QCY28s109VVqTZuNPHeegrYGknG222A2gGARld_4lKr4sAkAV3qjtFWcHin6nbF9NWsbuNKK8vEVPBYah5PQEE6PJg9XJTfeAg">
+</div>
+<div class="absolute -right-4 -bottom-4 w-24 h-24 bg-amber-300/30 rounded-full blur-lg pointer-events-none"></div>
+</div>
+</div>
+<!-- END: HeaderRow -->
+<!-- BEGIN: SearchAndBranchFilter -->
+<div class="flex items-center justify-between gap-4" data-purpose="search-and-filters">
+<!-- Search Input -->
+<div class="relative flex-1 max-w-md">
+<span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"></path>
+</svg>
+</span>
+<input class="w-full bg-white pl-10 pr-4 py-2 rounded-full text-xs font-medium text-slate-700 placeholder-slate-400 border border-slate-200/80 shadow-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-200/40 outline-none transition-all" placeholder="Search by name or roll number..." type="text">
+</div>
+<!-- All Branches Selector -->
+<div class="flex items-center gap-2 bg-white px-4 py-2 rounded-full border border-slate-200/80 shadow-sm cursor-pointer hover:border-slate-300">
+<span class="text-xs font-semibold text-slate-700">All Branches</span>
+<svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+<!-- END: SearchAndBranchFilter -->
+<!-- BEGIN: GridAndSidebarLayout -->
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-5 items-start">
+<!-- BEGIN: StudentCardsGrid (8 cols on XL) -->
+<div class="xl:col-span-8 flex flex-col gap-4">
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5" data-purpose="student-cards-grid"><!-- Card 01: Kameron Porter (Present) - Mint Green Tile -->
+<div class="relative bg-[#E7F8EE] rounded-3xl pt-2 pl-2 pr-3.5 pb-0 flex items-end gap-2 border border-emerald-100/60 shadow-card hover:shadow-md transition-all group overflow-hidden h-28 sm:h-32">
+<span class="absolute top-2 left-2 text-emerald-400 text-xs font-bold pointer-events-none z-10">彡</span>
+<div class="h-[94%] w-28 shrink-0 flex items-end justify-center -ml-1">
+<img alt="Kameron Porter" class="h-full w-full object-contain object-bottom avatar-blend" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZxZuqp5ZRN1QV9bO4XFeGQODCpRS9wdC5sOnVNxM3YKuxW5N6-2i4T9E73_4S8EhwH1vouMvwl5IxhOCCBC78bBjKIv8hb1ItyxSAKHIrnGqTbxtYzD7gXZjdkJ1S9weaOERmeeqgP-ZwfF5nZyoX_bQtitNjDeQoX3sHS6Fc3fvKXSE1R_CLajSjy6DfrByfaTyEc1lIlRyA60NbO65Vq3brkY2nmR1I7KUeg8TDXcuFGuHlDhWbdR3LKbu7JmJIZQ">
+</div>
+<div class="flex-1 min-w-0 pr-1 pb-3 relative z-10">
+<span class="text-base font-black text-slate-700">01</span>
+<h3 class="text-xs font-bold text-slate-800 truncate leading-snug">Kameron Porter</h3>
+<div class="mt-2 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#10B981] text-white text-[10px] font-bold shadow-pill">
+<svg class="w-2.5 h-2.5 stroke-[3]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span class="">Present</span>
+</div>
+</div>
+</div>
+<!-- Card 02: Michael Kopfler (Absent) - Soft Peach/Pink Tile -->
+<div class="relative bg-[#FDEFEF] rounded-3xl pt-2 pl-2 pr-3.5 pb-0 flex items-end gap-2 border border-rose-100/60 shadow-card hover:shadow-md transition-all group overflow-hidden h-28 sm:h-32">
+<span class="absolute top-2 right-3 text-amber-400 text-xs pointer-events-none z-10">⚡</span>
+<div class="h-[94%] w-28 shrink-0 flex items-end justify-center -ml-1">
+<img alt="Michael Kopfler" class="h-full w-full object-contain object-bottom avatar-blend" src="https://lh3.googleusercontent.com/aida-public/AB6AXuACEAbTl-Q8boWZ4ldWw3ypjYcwQy5_27psHQkqx5Y33c2CFGH50v1iLazD0hYYKS34KGVGLPZlUanFQN1yuEbVR2FJmZBJm_9aIZNKl_Z9aYoKFvrf0YtGUm6us1fP51C_bDre-73R-QnUtyAst4ONi5g1wWVhoImi3gH8wDC2B3gYHfC-d07OBxrrJ--ESuehqp32Vzo0faV0DH4JpBGgdHVXi2YRZN-PxPeDOpKcLxwguQZPVCSdIGqjiJCpB8PHVQ">
+</div>
+<div class="flex-1 min-w-0 pr-1 pb-3 relative z-10">
+<span class="text-base font-black text-slate-700">02</span>
+<h3 class="text-xs font-bold text-slate-800 truncate leading-snug">Michael Kopfler</h3>
+<div class="mt-2 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#EF4444] text-white text-[10px] font-bold shadow-pill">
+<svg class="w-2.5 h-2.5 stroke-[3]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span class="">Absent</span>
+</div>
+</div>
+</div>
+<!-- Card 03: Alice Koller (Present) - Soft Lavender Tile -->
+<div class="relative bg-[#F3EEFE] rounded-3xl pt-2 pl-2 pr-3.5 pb-0 flex items-end gap-2 border border-purple-100/60 shadow-card hover:shadow-md transition-all group overflow-hidden h-28 sm:h-32">
+<span class="absolute right-3 top-6 text-purple-400 text-xs pointer-events-none z-10">✦</span>
+<div class="h-[94%] w-28 shrink-0 flex items-end justify-center -ml-1">
+<img alt="Alice Koller" class="h-full w-full object-contain object-bottom avatar-blend" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDR7-Yql0U96c1xkZ9S6yAw6aA4GjQwRQlmNSh_MOXO_tdlFYgIU9xhKDlPTtYvgzfwCjhj8CouRJ9y2Vk_Lbn9FZHN8phNi-cisYmDdvFcX6ILDunUJa-d5_9ebL3Lc4Vj3uqww2ETxahFEZmAAFiGENPn-1fjh6O78Pit6HI5xopB3GSpoHzuuN8VyCzQEw8Cx-EIkG2P8lB5Y6eokFsbRAfETRO2aTggw1p3bg-jgB6CEH2qVRqS2XDQrTZ-l4hWkw">
+</div>
+<div class="flex-1 min-w-0 pr-1 pb-3 relative z-10">
+<span class="text-base font-black text-slate-700">03</span>
+<h3 class="text-xs font-bold text-slate-800 truncate leading-snug">Alice Koller</h3>
+<div class="mt-2 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#10B981] text-white text-[10px] font-bold shadow-pill">
+<svg class="w-2.5 h-2.5 stroke-[3]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span class="">Present</span>
+</div>
+</div>
+</div>
+<!-- Card 04: Peter Dinklage (Present) - Soft Sky Blue Tile -->
+<div class="relative bg-[#E8F3FD] rounded-3xl pt-2 pl-2 pr-3.5 pb-0 flex items-end gap-2 border border-sky-100/60 shadow-card hover:shadow-md transition-all group overflow-hidden h-28 sm:h-32">
+<span class="absolute left-2 top-2 text-sky-400 text-xs font-bold pointer-events-none z-10">⺌</span>
+<div class="h-[94%] w-28 shrink-0 flex items-end justify-center -ml-1">
+<img alt="Peter Dinklage" class="h-full w-full object-contain object-bottom avatar-blend" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBB2MBiHWqKC1juf2hG1lAPMA0fy3xp0bLMLbdKmt8Im0qjDUX9r57zK0-xHbVSaZAh4n_A_0NGOxiLXwIuyb22L3fjIhEVxFTjIUTlHShP2qJ2UjlqsPjjvcShhkv-pNHAqWIbtgu3G0uzZUOCcNyBNjrsazOQelwjNe8_yjD8pMiwi1P7RsBA54h99hEaakWw4b2ZOMsn0-93j-UDTKrPPZiItIYBPkwpiPmh4N_FEKTk4gwKOndfy7sq1xJMadeJOg">
+</div>
+<div class="flex-1 min-w-0 pr-1 pb-3 relative z-10">
+<span class="text-base font-black text-slate-700">04</span>
+<h3 class="text-xs font-bold text-slate-800 truncate leading-snug">Peter Dinklage</h3>
+<div class="mt-2 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#10B981] text-white text-[10px] font-bold shadow-pill">
+<svg class="w-2.5 h-2.5 stroke-[3]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span class="">Present</span>
+</div>
+</div>
+</div>
+<!-- Card 05: Julia Berger (Absent) - Mint Light Tile -->
+<div class="relative bg-[#EAF8F4] rounded-3xl pt-2 pl-2 pr-3.5 pb-0 flex items-end gap-2 border border-teal-100/60 shadow-card hover:shadow-md transition-all group overflow-hidden h-28 sm:h-32">
+<span class="absolute right-3 top-4 text-emerald-400 text-xs pointer-events-none z-10">~</span>
+<div class="h-[94%] w-28 shrink-0 flex items-end justify-center -ml-1">
+<img alt="Julia Berger" class="h-full w-full object-contain object-bottom avatar-blend" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbHkavf0VxuQgQOOFYy7WOxQ-129W7FOKXQcr6CeWWOTl5zAI3g0ocbMSYin7VEhG9MGfsftrIpM0CIP1cNfJ5OtgMlnj7EevQCsOR1NxN7QOIyuVMnoF2YmG7ZrXp9E4fXEFgOnS4vdxFn0JoxS7SGugxS3BDn-zTBHENt9nbjIyCLzGFczLUxomX7kT5Rj3ScM4u4tMu3MopGa76njGdMM7htyjRPcvxnuinn4y0FpX7WUucrEl8bztk0ga41WEZUg">
+</div>
+<div class="flex-1 min-w-0 pr-1 pb-3 relative z-10">
+<span class="text-base font-black text-slate-700">05</span>
+<h3 class="text-xs font-bold text-slate-800 truncate leading-snug">Julia Berger</h3>
+<div class="mt-2 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#EF4444] text-white text-[10px] font-bold shadow-pill">
+<svg class="w-2.5 h-2.5 stroke-[3]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span class="">Absent</span>
+</div>
+</div>
+</div>
+<!-- Card 06: John Wick (Not Marked) - Warm Pale Yellow Tile -->
+<div class="relative bg-[#FFF7E8] rounded-3xl pt-2 pl-2 pr-3.5 pb-0 flex items-end gap-2 border border-amber-100/60 shadow-card hover:shadow-md transition-all group overflow-hidden h-28 sm:h-32">
+<span class="absolute right-3 top-2 text-amber-400 text-xs pointer-events-none z-10">⚡</span>
+<div class="h-[94%] w-28 shrink-0 flex items-end justify-center -ml-1">
+<img alt="John Wick" class="h-full w-full object-contain object-bottom avatar-blend" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxxChrRhTXNjV_CUAE7upTNqd8WvVKbzx2Ldawzk7enpGhi8UtmaSrcm8KOJNA_P8Ncu0q7BLzzBmCEAs6ixtUhEDoTLJEecwMRo6W5ox-EyYliwraZ6HWt6DDFhL2L2FjsY1DgTHdXJmxVYkR_7FPvPoeslCtEpC4QCY28s109VVqTZuNPHeegrYGknG222A2gGARld_4lKr4sAkAV3qjtFWcHin6nbF9NWsbuNKK8vEVPBYah5PQEE6PJg9XJTfeAg">
+</div>
+<div class="flex-1 min-w-0 pr-1 pb-3 relative z-10">
+<span class="text-base font-black text-slate-700">06</span>
+<h3 class="text-xs font-bold text-slate-800 truncate leading-snug">John Wick</h3>
+<div class="mt-2 inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-400 text-white text-[10px] font-bold shadow-pill">
+<span class="text-xs leading-none font-bold">—</span>
+<span class="">Not Marked</span>
+</div>
+</div>
+</div>
+<!-- Card 07: George Limbaf (Absent) - Soft Rose Lilac Tile -->
+<div class="relative bg-[#F9EEF7] rounded-3xl pt-2 pl-2 pr-3.5 pb-0 flex items-end gap-2 border border-rose-100/60 shadow-card hover:shadow-md transition-all group overflow-hidden h-28 sm:h-32">
+<div class="h-[94%] w-28 shrink-0 flex items-end justify-center -ml-1">
+<img alt="George Limbaf" class="h-full w-full object-contain object-bottom avatar-blend" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZxZuqp5ZRN1QV9bO4XFeGQODCpRS9wdC5sOnVNxM3YKuxW5N6-2i4T9E73_4S8EhwH1vouMvwl5IxhOCCBC78bBjKIv8hb1ItyxSAKHIrnGqTbxtYzD7gXZjdkJ1S9weaOERmeeqgP-ZwfF5nZyoX_bQtitNjDeQoX3sHS6Fc3fvKXSE1R_CLajSjy6DfrByfaTyEc1lIlRyA60NbO65Vq3brkY2nmR1I7KUeg8TDXcuFGuHlDhWbdR3LKbu7JmJIZQ">
+</div>
+<div class="flex-1 min-w-0 pr-1 pb-3 relative z-10">
+<span class="text-base font-black text-slate-700">07</span>
+<h3 class="text-xs font-bold text-slate-800 truncate leading-snug">George Limbaf</h3>
+<div class="mt-2 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#EF4444] text-white text-[10px] font-bold shadow-pill">
+<svg class="w-2.5 h-2.5 stroke-[3]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span class="">Absent</span>
+</div>
+</div>
+</div>
+<!-- Card 08: Dave Johnson (Present) - Soft Ice Blue Tile -->
+<div class="relative bg-[#EBF5FB] rounded-3xl pt-2 pl-2 pr-3.5 pb-0 flex items-end gap-2 border border-sky-100/60 shadow-card hover:shadow-md transition-all group overflow-hidden h-28 sm:h-32">
+<span class="absolute right-3 top-3 text-sky-400 text-xs pointer-events-none z-10">彡</span>
+<div class="h-[94%] w-28 shrink-0 flex items-end justify-center -ml-1">
+<img alt="Dave Johnson" class="h-full w-full object-contain object-bottom avatar-blend" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCSB6G0Jcg3fITy93iGwfX8gP0g4IzeX9Ttb3BBI6t3VQ9rK-eOtrof_R2SIYT--Ga0R9uZ9KYb-VhXt4uIFmbupjHvXNggZTdbS2QN9k_hX9piSTtOT7qy5fd1W4qGBcUs10Hy62oWxfnt8nAqP3yQ7AlazB5zhOt4RewdO3nUQ4O6MY-v7YYTMeO03BH9YrykmCgF3uldDaorb-X4w_bxljP_hSLSL3Q7PkSjPkXs4XQV8Am2jML0DpWQq6jrStob7g">
+</div>
+<div class="flex-1 min-w-0 pr-1 pb-3 relative z-10">
+<span class="text-base font-black text-slate-700">08</span>
+<h3 class="text-xs font-bold text-slate-800 truncate leading-snug">Dave Johnson</h3>
+<div class="mt-2 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#10B981] text-white text-[10px] font-bold shadow-pill">
+<svg class="w-2.5 h-2.5 stroke-[3]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span class="">Present</span>
+</div>
+</div>
+</div>
+<!-- Card 09: Emma Watson (Present) - Soft Pastel Pink Tile -->
+<div class="relative bg-[#FDEEF3] rounded-3xl pt-2 pl-2 pr-3.5 pb-0 flex items-end gap-2 border border-pink-100/60 shadow-card hover:shadow-md transition-all group overflow-hidden h-28 sm:h-32">
+<span class="absolute right-3 top-2 text-rose-500 text-xs pointer-events-none z-10">♥</span>
+<div class="h-[94%] w-28 shrink-0 flex items-end justify-center -ml-1">
+<img alt="Emma Watson" class="h-full w-full object-contain object-bottom avatar-blend" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAt9yOaN_mPJSJbh2fiFKrpKXP-3WFNO4FFjYDvQIDG_FKhvWt9kiG2ZvSPA9t2ZnnbIOYLQaQCXgrHRFtBW-bLxWgibGN31yv3YP1_nhDmGU1AvPRDes8K0sGrpIfJ6Yx9iDBm8JPt2MTRKzNn1Cy5Qm_lR1DQPc7AB2Hb0FVZk7A9QCzWBbmm-UqjnmT3kuJwO1ITBszW-ybKQs9PPoZ8XIRCebcej1cUdNgreFNMYI7NbUXJGMhe1v1JzdE9PQFyjw">
+</div>
+<div class="flex-1 min-w-0 pr-1 pb-3 relative z-10">
+<span class="text-base font-black text-slate-700">09</span>
+<h3 class="text-xs font-bold text-slate-800 truncate leading-snug">Emma Watson</h3>
+<div class="mt-2 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#10B981] text-white text-[10px] font-bold shadow-pill">
+<svg class="w-2.5 h-2.5 stroke-[3]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span class="">Present</span>
+</div>
+</div>
+</div>
+<!-- Card 10: Liam Smith (Present) - Soft Mint Tile -->
+<div class="relative bg-[#E6F8EE] rounded-3xl pt-2 pl-2 pr-3.5 pb-0 flex items-end gap-2 border border-emerald-100/60 shadow-card hover:shadow-md transition-all group overflow-hidden h-28 sm:h-32">
+<span class="absolute right-3 top-3 text-emerald-400 text-xs pointer-events-none z-10">彡</span>
+<div class="h-[94%] w-28 shrink-0 flex items-end justify-center -ml-1">
+<img alt="Liam Smith" class="h-full w-full object-contain object-bottom avatar-blend" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZxZuqp5ZRN1QV9bO4XFeGQODCpRS9wdC5sOnVNxM3YKuxW5N6-2i4T9E73_4S8EhwH1vouMvwl5IxhOCCBC78bBjKIv8hb1ItyxSAKHIrnGqTbxtYzD7gXZjdkJ1S9weaOERmeeqgP-ZwfF5nZyoX_bQtitNjDeQoX3sHS6Fc3fvKXSE1R_CLajSjy6DfrByfaTyEc1lIlRyA60NbO65Vq3brkY2nmR1I7KUeg8TDXcuFGuHlDhWbdR3LKbu7JmJIZQ">
+</div>
+<div class="flex-1 min-w-0 pr-1 pb-3 relative z-10">
+<span class="text-base font-black text-slate-700">10</span>
+<h3 class="text-xs font-bold text-slate-800 truncate leading-snug">Liam Smith</h3>
+<div class="mt-2 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#10B981] text-white text-[10px] font-bold shadow-pill">
+<svg class="w-2.5 h-2.5 stroke-[3]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span class="">Present</span>
+</div>
+</div>
+</div>
+<!-- Card 11: Sophia Lee (Not Marked) - Soft Lavender Tile -->
+<div class="relative bg-[#F4EEFD] rounded-3xl pt-2 pl-2 pr-3.5 pb-0 flex items-end gap-2 border border-purple-100/60 shadow-card hover:shadow-md transition-all group overflow-hidden h-28 sm:h-32">
+<span class="absolute -left-1 top-2 text-purple-400 text-xs pointer-events-none z-10">✦</span>
+<div class="h-[94%] w-28 shrink-0 flex items-end justify-center -ml-1">
+<img alt="Sophia Lee" class="h-full w-full object-contain object-bottom avatar-blend" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBU_V0JQZKRx1EIyvpFnkiSSUsPjYd8L-AR9OeKhPe_n3JSBQ2hzgU7NyBjYEY-eIvQPKIg-MxsWIq0KxJDvw0KM-817-wOKgYWy1in96amdzsHpzO0cew-RA9BQO8-cQKgNzGk6BAAxc-baU0og4nRWGuYiFPv6hdqQxLjZGKNhrCDVupmlsVndY3TK9x0OPHQAZsV4LHsf5jKsJlf7A_CD4lBiW86Fo-aFS0lfA_0NN3hMYj67wRJXTwPuYo-PcxOog">
+</div>
+<div class="flex-1 min-w-0 pr-1 pb-3 relative z-10">
+<span class="text-base font-black text-slate-700">11</span>
+<h3 class="text-xs font-bold text-slate-800 truncate leading-snug">Sophia Lee</h3>
+<div class="mt-2 inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-400 text-white text-[10px] font-bold shadow-pill">
+<span class="text-xs leading-none font-bold">—</span>
+<span class="">Not Marked</span>
+</div>
+</div>
+</div>
+<!-- Card 12: Noah Brown (Absent) - Soft Cool Gray Tile -->
+<div class="relative bg-[#EAF0F6] rounded-3xl pt-2 pl-2 pr-3.5 pb-0 flex items-end gap-2 border border-slate-200/60 shadow-card hover:shadow-md transition-all group overflow-hidden h-28 sm:h-32">
+<div class="h-[94%] w-28 shrink-0 flex items-end justify-center -ml-1">
+<img alt="Noah Brown" class="h-full w-full object-contain object-bottom avatar-blend" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZxZuqp5ZRN1QV9bO4XFeGQODCpRS9wdC5sOnVNxM3YKuxW5N6-2i4T9E73_4S8EhwH1vouMvwl5IxhOCCBC78bBjKIv8hb1ItyxSAKHIrnGqTbxtYzD7gXZjdkJ1S9weaOERmeeqgP-ZwfF5nZyoX_bQtitNjDeQoX3sHS6Fc3fvKXSE1R_CLajSjy6DfrByfaTyEc1lIlRyA60NbO65Vq3brkY2nmR1I7KUeg8TDXcuFGuHlDhWbdR3LKbu7JmJIZQ">
+</div>
+<div class="flex-1 min-w-0 pr-1 pb-3 relative z-10">
+<span class="text-base font-black text-slate-700">12</span>
+<h3 class="text-xs font-bold text-slate-800 truncate leading-snug">Noah Brown</h3>
+<div class="mt-2 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#EF4444] text-white text-[10px] font-bold shadow-pill">
+<svg class="w-2.5 h-2.5 stroke-[3]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span class="">Absent</span>
+</div>
+</div>
+</div></div>
+<!-- BEGIN: PaginationBar -->
+<div class="flex items-center justify-between pt-2 text-xs text-slate-400 font-medium px-1" data-purpose="pagination-controls">
+<span class="">Showing 1 - 12 of 28 students</span>
+<div class="flex items-center gap-1 font-bold text-slate-600">
+<button class="w-6 h-6 flex items-center justify-center hover:bg-slate-100 rounded-lg text-slate-400 transition-colors">‹</button>
+<button class="w-6 h-6 flex items-center justify-center rounded-full bg-teal-400 text-white shadow-sm">1</button>
+<button class="w-6 h-6 flex items-center justify-center rounded-full hover:bg-slate-100 transition-colors">2</button>
+<button class="w-6 h-6 flex items-center justify-center rounded-full hover:bg-slate-100 transition-colors">3</button>
+<button class="w-6 h-6 flex items-center justify-center hover:bg-slate-100 rounded-lg text-slate-400 transition-colors">›</button>
+</div>
+</div>
+<!-- END: PaginationBar -->
+</div>
+<!-- END: StudentCardsGrid -->
+<!-- BEGIN: RightSidebar (4 cols on XL) -->
+<aside class="xl:col-span-4 flex flex-col gap-4">
+<!-- Card 1: Class Overview Donut Chart -->
+<section class="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm relative overflow-hidden" data-purpose="class-overview-widget">
+<span class="absolute top-4 right-5 text-emerald-400 text-sm">彡</span>
+<div class="flex items-center gap-2 mb-4">
+<svg class="w-4 h-4 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<h4 class="text-xs font-bold text-slate-800 tracking-tight">Class Overview</h4>
+</div>
+<div class="flex items-center justify-between gap-5">
+<!-- Donut Ring Chart Representation -->
+<div class="relative w-32 h-32 shrink-0 flex items-center justify-center">
+<div class="donut-chart w-full h-full rounded-full flex items-center justify-center shadow-inner">
+<div class="w-20 h-20 bg-white rounded-full flex flex-col items-center justify-center shadow-sm">
+<span class="text-xl font-black text-slate-800 leading-none">28</span>
+<span class="text-[9px] font-semibold text-slate-400 mt-0.5">Students</span>
+</div>
+</div>
+</div>
+<!-- Legend List -->
+<div class="flex flex-col gap-2.5 flex-1 pr-1">
+<div class="flex items-center justify-between text-xs">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-[#2ED396]"></span>
+<span class="font-medium text-slate-600">Present</span>
+</div>
+<span class="font-bold text-slate-800">18</span>
+</div>
+<div class="flex items-center justify-between text-xs">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-[#FF6262]"></span>
+<span class="font-medium text-slate-600">Absent</span>
+</div>
+<span class="font-bold text-slate-800">7</span>
+</div>
+<div class="flex items-center justify-between text-xs">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-[#B4BED3]"></span>
+<span class="font-medium text-slate-600">Not Marked</span>
+</div>
+<span class="font-bold text-slate-800">3</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Card 2: Subject-wise Attendance -->
+<section class="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm" data-purpose="subject-wise-attendance">
+<div class="flex items-center gap-2 mb-4">
+<svg class="w-4 h-4 text-indigo-500" fill="currentColor" viewBox="0 0 20 20">
+<path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29-3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"></path>
+</svg>
+<h4 class="text-xs font-bold text-slate-800 tracking-tight">Subject-wise Attendance <span class="font-normal text-slate-500">(Cloud Computing)</span></h4>
+</div>
+<!-- Subject Progress Bars List -->
+<div class="flex flex-col gap-3 text-xs font-semibold">
+<!-- Subject 1 -->
+<div class="flex items-center justify-between gap-2.5">
+<span class="w-28 truncate text-[11px] text-slate-700">Cloud Computing</span>
+<div class="flex-1 h-2.5 bg-slate-100 rounded-full overflow-hidden flex">
+<div class="bg-emerald-400 h-full rounded-l-full" style="width: 64.2%;"></div>
+<div class="bg-rose-400 h-full rounded-r-full" style="width: 25%;"></div>
+</div>
+<span class="text-slate-400 w-10 text-right font-bold text-[10px]">18 / 28</span>
+</div>
+<!-- Subject 2 -->
+<div class="flex items-center justify-between gap-2.5">
+<span class="w-28 truncate text-[11px] text-slate-700">DBMS</span>
+<div class="flex-1 h-2.5 bg-slate-100 rounded-full overflow-hidden flex">
+<div class="bg-emerald-400 h-full rounded-l-full" style="width: 75%;"></div>
+<div class="bg-rose-400 h-full rounded-r-full" style="width: 14.2%;"></div>
+</div>
+<span class="text-slate-400 w-10 text-right font-bold text-[10px]">21 / 28</span>
+</div>
+<!-- Subject 3 -->
+<div class="flex items-center justify-between gap-2.5">
+<span class="w-28 truncate text-[11px] text-slate-700">Operating Systems</span>
+<div class="flex-1 h-2.5 bg-slate-100 rounded-full overflow-hidden flex">
+<div class="bg-emerald-400 h-full rounded-l-full" style="width: 57.1%;"></div>
+<div class="bg-rose-400 h-full rounded-r-full" style="width: 17.8%;"></div>
+</div>
+<span class="text-slate-400 w-10 text-right font-bold text-[10px]">16 / 28</span>
+</div>
+<!-- Subject 4 -->
+<div class="flex items-center justify-between gap-2.5">
+<span class="w-28 truncate text-[11px] text-slate-700">Computer Networks</span>
+<div class="flex-1 h-2.5 bg-slate-100 rounded-full overflow-hidden flex">
+<div class="bg-emerald-400 h-full rounded-l-full" style="width: 71.4%;"></div>
+<div class="bg-rose-400 h-full rounded-r-full" style="width: 21.4%;"></div>
+</div>
+<span class="text-slate-400 w-10 text-right font-bold text-[10px]">20 / 28</span>
+</div>
+<!-- Subject 5 -->
+<div class="flex items-center justify-between gap-2.5">
+<span class="w-28 truncate text-[11px] text-slate-700">Machine Learning</span>
+<div class="flex-1 h-2.5 bg-slate-100 rounded-full overflow-hidden flex">
+<div class="bg-emerald-400 h-full rounded-l-full" style="width: 67.8%;"></div>
+<div class="bg-rose-400 h-full rounded-r-full" style="width: 17.8%;"></div>
+</div>
+<span class="text-slate-400 w-10 text-right font-bold text-[10px]">19 / 28</span>
+</div>
+</div>
+</section>
+<!-- Card 3: Motivational Footer Card -->
+<section class="bg-[#FFF8EA] border border-amber-200/70 rounded-3xl p-4 flex items-center justify-between shadow-sm" data-purpose="bottom-quote-banner">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 text-amber-700 flex items-center justify-center shrink-0">
+<svg class="w-full h-full" fill="none" viewBox="0 0 48 48">
+<path d="M24 4V8M24 40V44M4 24H8M40 24H44M9.8 9.8L12.6 12.6M35.4 35.4L38.2 38.2M9.8 38.2L12.6 35.4M35.4 12.6L38.2 9.8" stroke="#78350F" stroke-linecap="round" stroke-width="2.5"></path>
+<circle cx="24" cy="24" fill="#FFEBB5" r="10" stroke="#78350F" stroke-width="2.5"></circle>
+<circle cx="20.5" cy="22" fill="#78350F" r="1.5"></circle>
+<circle cx="27.5" cy="22" fill="#78350F" r="1.5"></circle>
+<path d="M21 26 Q24 29 27 26" fill="none" stroke="#78350F" stroke-linecap="round" stroke-width="2"></path>
+</svg>
+</div>
+<div>
+<h5 class="text-xs font-extrabold text-amber-950 leading-tight">Every Student Counts</h5>
+<p class="text-[11px] text-amber-800/80 font-medium mt-0.5 leading-snug">Track today for a brighter tomorrow</p>
+</div>
+</div>
+<div class="text-amber-400 text-xl pr-1 select-none">★</div>
+</section>
+</aside>
+<!-- END: RightSidebar -->
+</div>
+<!-- END: GridAndSidebarLayout -->
+</main>
+<!-- END: MainContentWrapper -->
+</div>
+<!-- END: MainDashboardContainer -->
+
+
+</body></html>

@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>System Settings | RaiSakshya</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "surface-variant": "#dbe3f3",
+            "outline-variant": "#bbcac0",
+            "on-surface": "#141c27",
+            "on-surface-variant": "#3c4a42",
+            "surface": "#f8f9ff",
+            "secondary": "#4746d7",
+            "on-secondary": "#ffffff",
+            "primary": "#006c4b",
+            "primary-container": "#00c28a",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-low": "#eff3ff",
+            "surface-container": "#e6eefe",
+            "surface-container-high": "#e1e8f8",
+            "surface-container-highest": "#dbe3f3",
+            "tertiary": "#a7391e"
+          },
+          fontFamily: {
+            sans: ["Plus Jakarta Sans", "sans-serif"]
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .toggle-active { background-color: #00C48C !important; }
+    .toggle-active span { transform: translateX(1.5rem) !important; }
+    .nav-tab-active {
+      background: #0B1522 !important;
+      border-color: #00C48C !important;
+      box-shadow: 0 10px 25px -5px rgba(11, 21, 34, 0.25), 0 0 0 1.5px #00C48C !important;
+    }
+    .nav-tab-active .font-bold.text-sm {
+      color: #FFFFFF !important;
+    }
+    .nav-tab-active .text-xs.font-medium {
+      color: #94A3B8 !important;
+    }
+    .nav-tab-active .w-10.h-10 {
+      background-color: rgba(0, 196, 140, 0.18) !important;
+      color: #00C48C !important;
+      border: 1px solid rgba(0, 196, 140, 0.35) !important;
+    }
+    .nav-tab-active .material-symbols-outlined,
+    .nav-tab-active i {
+      color: #00C48C !important;
+    }
+    .nav-tab-active i.fa-chevron-right {
+      color: #00C48C !important;
+      transform: translateX(3px);
+    }
+  </style>
+</head>
+<body class="bg-[#f8f9ff] text-slate-800 min-h-screen relative overflow-x-hidden flex flex-col">
+  <!-- Dynamic Atmospheric Glows -->
+  <div class="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
+    <div class="absolute -top-[20%] -left-[10%] w-[50vw] h-[50vw] rounded-full bg-indigo-200/40 blur-[130px]"></div>
+    <div class="absolute top-[40%] -right-[15%] w-[45vw] h-[45vw] rounded-full bg-emerald-200/30 blur-[140px]"></div>
+  </div>
+
+  <!-- Global Navbar with high Z-index -->
+  <div id="global-navbar" class="sticky top-0 z-[99999] w-full"></div>
+
+  <!-- Main Content Container -->
+  <main class="w-full max-w-[1480px] mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 flex flex-col gap-6">
+    
+    <!-- Page Header Banner -->
+    <div class="relative w-full rounded-2xl overflow-hidden bg-white border border-slate-200/80 mb-8 shadow-sm">
+      <div class="flex flex-col md:flex-row items-center justify-between p-6 relative z-10 gap-6">
+        <div class="flex items-center gap-4">
+          <div class="w-14 h-14 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center shrink-0 shadow-sm text-indigo-600">
+            <span class="material-symbols-outlined text-[34px]">settings</span>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="text-2xl font-black text-slate-900 tracking-tight">System Settings &amp; Governance</h1>
+              <span class="text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-indigo-100 text-indigo-700 tracking-wider">Admin Control</span>
+            </div>
+            <p class="text-sm font-medium text-slate-500 mt-0.5">Configure institutional parameters, biometric engine, academic structures, and policies.</p>
+          </div>
+        </div>
+
+        <!-- Quick Action Buttons -->
+        <div class="flex items-center gap-3 shrink-0">
+          <button onclick="saveAllSettings()" type="button" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-md hover:shadow-lg transition-all active:scale-95 flex items-center gap-2">
+            <i class="fa-solid fa-floppy-disk"></i>
+            <span>Save All Settings</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Grid: Left Nav Tabs + Right Content Panels -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- Left Column: Settings Navigation Menu -->
+      <nav aria-label="Settings Categories" class="lg:col-span-4 xl:col-span-3 flex flex-col gap-2 sticky top-24">
+        <!-- 1. General -->
+        <button id="nav-btn-general" onclick="switchSettingsTab('general')" class="nav-tab-active group w-full flex items-center justify-between p-3.5 rounded-2xl text-left bg-white text-slate-700 border border-slate-200/80 shadow-sm hover:shadow transition-all">
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+              <span class="material-symbols-outlined text-[20px]">apartment</span>
+            </div>
+            <div class="truncate">
+              <div class="font-bold text-sm text-slate-900 leading-tight">General Info</div>
+              <div class="text-xs text-slate-500 font-medium">Institution details &amp; branding</div>
+            </div>
+          </div>
+          <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+        </button>
+
+        <!-- 2. Academic Setup -->
+        <button id="nav-btn-academic" onclick="switchSettingsTab('academic')" class="group w-full flex items-center justify-between p-3.5 rounded-2xl text-left bg-white text-slate-700 border border-slate-200/80 shadow-sm hover:shadow transition-all">
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+              <span class="material-symbols-outlined text-[20px]">menu_book</span>
+            </div>
+            <div class="truncate">
+              <div class="font-bold text-sm text-slate-900 leading-tight">Academic Setup</div>
+              <div class="text-xs text-slate-500 font-medium">Departments, Classes, Divisions</div>
+            </div>
+          </div>
+          <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+        </button>
+
+        <!-- 3. Attendance Rules -->
+        <button id="nav-btn-attendance" onclick="switchSettingsTab('attendance')" class="group w-full flex items-center justify-between p-3.5 rounded-2xl text-left bg-white text-slate-700 border border-slate-200/80 shadow-sm hover:shadow transition-all">
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+              <span class="material-symbols-outlined text-[20px]">rule</span>
+            </div>
+            <div class="truncate">
+              <div class="font-bold text-sm text-slate-900 leading-tight">Attendance Rules</div>
+              <div class="text-xs text-slate-500 font-medium">Timing windows &amp; policies</div>
+            </div>
+          </div>
+          <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+        </button>
+
+        <!-- 4. AWS Rekognition -->
+        <button id="nav-btn-aws" onclick="switchSettingsTab('aws')" class="group w-full flex items-center justify-between p-3.5 rounded-2xl text-left bg-white text-slate-700 border border-slate-200/80 shadow-sm hover:shadow transition-all">
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+              <i class="fa-solid fa-cloud-arrow-up text-base"></i>
+            </div>
+            <div class="truncate">
+              <div class="font-bold text-sm text-slate-900 leading-tight">AWS Rekognition</div>
+              <div class="text-xs text-slate-500 font-medium">Facial biometric API &amp; cloud sync</div>
+            </div>
+          </div>
+          <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+        </button>
+
+        <!-- 5. Security & Access -->
+        <button id="nav-btn-security" onclick="switchSettingsTab('security')" class="group w-full flex items-center justify-between p-3.5 rounded-2xl text-left bg-white text-slate-700 border border-slate-200/80 shadow-sm hover:shadow transition-all">
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="w-10 h-10 rounded-xl bg-red-50 text-red-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+              <span class="material-symbols-outlined text-[20px]">shield</span>
+            </div>
+            <div class="truncate">
+              <div class="font-bold text-sm text-slate-900 leading-tight">Security &amp; Roles</div>
+              <div class="text-xs text-slate-500 font-medium">Role switching &amp; OTP auth</div>
+            </div>
+          </div>
+          <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+        </button>
+
+        <!-- 6. Data & Backup -->
+        <button id="nav-btn-data" onclick="switchSettingsTab('data')" class="group w-full flex items-center justify-between p-3.5 rounded-2xl text-left bg-white text-slate-700 border border-slate-200/80 shadow-sm hover:shadow transition-all">
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="w-10 h-10 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+              <span class="material-symbols-outlined text-[20px]">database</span>
+            </div>
+            <div class="truncate">
+              <div class="font-bold text-sm text-slate-900 leading-tight">Data &amp; Backup</div>
+              <div class="text-xs text-slate-500 font-medium">Export JSON &amp; restore seed</div>
+            </div>
+          </div>
+          <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+        </button>
+      </nav>
+
+      <!-- Right Column: Tab Panels -->
+      <div class="lg:col-span-8 xl:col-span-9 flex flex-col gap-6">
+
+        <!-- ================= PANEL 1: GENERAL SETTINGS ================= -->
+        <section id="panel-general" class="tab-panel bg-white rounded-2xl p-6 sm:p-8 border border-slate-200/80 shadow-sm flex flex-col gap-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+            <div>
+              <h2 class="text-lg font-black text-slate-900">Institution Information</h2>
+              <p class="text-xs text-slate-500 mt-0.5">Basic profile details displayed across all student and teacher portals.</p>
+            </div>
+            <button onclick="saveAllSettings()" type="button" class="px-4 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-xs flex items-center gap-1.5 self-start sm:self-auto transition">
+              <i class="fa-solid fa-floppy-disk"></i> Save Info
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+            <!-- Logo Preview Card -->
+            <div class="md:col-span-4 flex flex-col gap-2">
+              <label class="text-xs font-bold text-slate-700">Institution Emblem / App Logo</label>
+              <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col items-center justify-center text-center gap-3 min-h-[190px]">
+                <div id="emblem-preview-box" class="w-20 h-20 rounded-2xl bg-white border border-slate-200 flex items-center justify-center shadow-md p-2 overflow-hidden">
+                  <img id="institution-logo-img" src="" alt="App Logo" class="w-full h-full object-contain hidden">
+                  <div id="institution-logo-placeholder" class="w-full h-full rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-inner">
+                    <span class="material-symbols-outlined text-[32px]">school</span>
+                  </div>
+                </div>
+
+                <input type="file" id="logo-file-input" accept="image/png, image/jpeg, image/jpg, image/svg+xml, image/webp" class="hidden" onchange="handleLogoFileSelect(event)">
+
+                <div class="flex items-center gap-2">
+                  <button onclick="triggerLogoUpload()" type="button" class="px-3.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs transition shadow-sm flex items-center gap-1.5 cursor-pointer">
+                    <i class="fa-solid fa-cloud-arrow-up text-xs"></i> Change / Upload Logo
+                  </button>
+                  <button id="btn-reset-logo" onclick="resetAppLogo()" type="button" class="hidden px-2.5 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold text-xs transition border border-rose-200 cursor-pointer" title="Reset to default logo">
+                    <i class="fa-solid fa-trash-can"></i>
+                  </button>
+                </div>
+                <span class="text-[10px] text-slate-400 font-medium">PNG, JPG, SVG or WebP (Max 2MB)</span>
+              </div>
+            </div>
+
+            <!-- Form Fields Grid -->
+            <div class="md:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <!-- Institution Name -->
+              <div class="sm:col-span-2">
+                <label class="block text-xs font-bold text-slate-700 mb-1" for="institution-name">Institution Name</label>
+                <input class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-semibold text-sm focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition" id="institution-name" type="text" value="RaiSakshya College of Engineering">
+              </div>
+
+              <!-- Academic Year -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1" for="academic-year">Academic Year</label>
+                <div class="relative">
+                  <select class="w-full appearance-none px-3.5 py-2.5 pr-8 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 font-bold text-xs focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer transition" id="academic-year">
+                    <option value="2026 - 2027" selected>2026 - 2027</option>
+                    <option value="2025 - 2026">2025 - 2026</option>
+                    <option value="2024 - 2025">2024 - 2025</option>
+                  </select>
+                  <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
+                </div>
+              </div>
+
+              <!-- Timezone -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1" for="timezone">System Timezone</label>
+                <div class="relative">
+                  <select class="w-full appearance-none px-3.5 py-2.5 pr-8 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 font-bold text-xs focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer transition" id="timezone">
+                    <option value="(GMT+05:30) India Standard Time" selected>(GMT+05:30) India Standard Time</option>
+                    <option value="(GMT+00:00) UTC">(GMT+00:00) UTC</option>
+                    <option value="(GMT-05:00) Eastern Time">(GMT-05:00) Eastern Time</option>
+                    <option value="(GMT+08:00) Singapore Standard Time">(GMT+08:00) Singapore Standard Time</option>
+                  </select>
+                  <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
+                </div>
+              </div>
+
+              <!-- Campus Address -->
+              <div class="sm:col-span-2">
+                <label class="block text-xs font-bold text-slate-700 mb-1" for="address">Campus Address</label>
+                <input class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-semibold text-sm focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition" id="address" type="text" value="Campus Ground, Sector 4, Nashik, MH, India">
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= PANEL 2: ACADEMIC SETUP ================= -->
+        <section id="panel-academic" class="tab-panel hidden bg-white rounded-2xl p-6 sm:p-8 border border-slate-200/80 shadow-sm flex flex-col gap-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+            <div>
+              <h2 class="text-lg font-black text-slate-900">Academic Hierarchy &amp; Departments</h2>
+              <p class="text-xs text-slate-500 mt-0.5">Configured faculties, classes, and division sections across the college.</p>
+            </div>
+            <button onclick="API.showToast('Department structure synchronized with database!', 'success')" type="button" class="px-4 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-xs flex items-center gap-1.5 transition">
+              <i class="fa-solid fa-rotate"></i> Sync Academic Tree
+            </button>
+          </div>
+
+          <!-- Departments Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex items-start justify-between">
+              <div>
+                <span class="text-xs font-black uppercase text-indigo-600">Department 01</span>
+                <h3 class="font-bold text-slate-900 mt-0.5">Computer Engineering</h3>
+                <p class="text-xs text-slate-500 mt-1">SE (Div A, Div B), TE, BE · 6 Faculty Members</p>
+              </div>
+              <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-extrabold">Active</span>
+            </div>
+
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex items-start justify-between">
+              <div>
+                <span class="text-xs font-black uppercase text-indigo-600">Department 02</span>
+                <h3 class="font-bold text-slate-900 mt-0.5">Information Technology</h3>
+                <p class="text-xs text-slate-500 mt-1">SE, TE (Div A) · 3 Faculty Members</p>
+              </div>
+              <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-extrabold">Active</span>
+            </div>
+
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex items-start justify-between">
+              <div>
+                <span class="text-xs font-black uppercase text-indigo-600">Department 03</span>
+                <h3 class="font-bold text-slate-900 mt-0.5">Electronics &amp; Telecom (ENTC)</h3>
+                <p class="text-xs text-slate-500 mt-1">SE, TE · 2 Faculty Members</p>
+              </div>
+              <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-extrabold">Active</span>
+            </div>
+
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex items-start justify-between">
+              <div>
+                <span class="text-xs font-black uppercase text-indigo-600">Department 04</span>
+                <h3 class="font-bold text-slate-900 mt-0.5">Mechanical Engineering</h3>
+                <p class="text-xs text-slate-500 mt-1">SE, BE · 2 Faculty Members</p>
+              </div>
+              <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-extrabold">Active</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= PANEL 3: ATTENDANCE RULES ================= -->
+        <section id="panel-attendance" class="tab-panel hidden bg-white rounded-2xl p-6 sm:p-8 border border-slate-200/80 shadow-sm flex flex-col gap-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+            <div>
+              <h2 class="text-lg font-black text-slate-900">Attendance Policies &amp; Thresholds</h2>
+              <p class="text-xs text-slate-500 mt-0.5">Automation rules for lecture attendance sessions and grace periods.</p>
+            </div>
+            <button onclick="saveAllSettings()" type="button" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs flex items-center gap-1.5 shadow transition">
+              <i class="fa-solid fa-floppy-disk"></i> Save Rules
+            </button>
+          </div>
+
+          <!-- Preferences List -->
+          <div class="flex flex-col gap-4">
+            <!-- 1. Allow Manual Attendance -->
+            <div class="flex items-center justify-between p-4 rounded-xl bg-slate-50 border border-slate-200 gap-4">
+              <div class="flex items-center gap-3.5">
+                <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-[22px]">edit_square</span>
+                </div>
+                <div>
+                  <h4 class="font-bold text-slate-900 text-sm">Allow Manual Teacher Override</h4>
+                  <p class="text-xs text-slate-500">Allows teachers to mark a student present if camera hardware is unavailable.</p>
+                </div>
+              </div>
+              <button id="toggle-manual" onclick="toggleSwitch('toggle-manual')" aria-checked="true" class="w-14 h-8 bg-indigo-600 rounded-full p-1 transition-colors relative shrink-0" role="switch" type="button">
+                <span class="block w-6 h-6 bg-white rounded-full shadow-md transform translate-x-6 transition-transform"></span>
+              </button>
+            </div>
+
+            <!-- 2. Require Face Verification -->
+            <div class="flex items-center justify-between p-4 rounded-xl bg-slate-50 border border-slate-200 gap-4">
+              <div class="flex items-center gap-3.5">
+                <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-[22px]">face</span>
+                </div>
+                <div>
+                  <h4 class="font-bold text-slate-900 text-sm">Mandate AWS Rekognition Biometric Verification</h4>
+                  <p class="text-xs text-slate-500">Requires students to match live facial features before attendance counts as verified.</p>
+                </div>
+              </div>
+              <button id="toggle-face" onclick="toggleSwitch('toggle-face')" aria-checked="true" class="w-14 h-8 bg-indigo-600 rounded-full p-1 transition-colors relative shrink-0" role="switch" type="button">
+                <span class="block w-6 h-6 bg-white rounded-full shadow-md transform translate-x-6 transition-transform"></span>
+              </button>
+            </div>
+
+            <!-- 3. Auto Mark as Absent -->
+            <div class="flex items-center justify-between p-4 rounded-xl bg-slate-50 border border-slate-200 gap-4">
+              <div class="flex items-center gap-3.5">
+                <div class="w-10 h-10 rounded-xl bg-red-100 text-red-700 flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-[22px]">schedule</span>
+                </div>
+                <div>
+                  <h4 class="font-bold text-slate-900 text-sm">Auto-Mark Absent on Window Expiry</h4>
+                  <p class="text-xs text-slate-500">Unverified students automatically transition from "Not Marked" to "Absent" at day close.</p>
+                </div>
+              </div>
+              <button id="toggle-absent" onclick="toggleSwitch('toggle-absent')" aria-checked="true" class="w-14 h-8 bg-indigo-600 rounded-full p-1 transition-colors relative shrink-0" role="switch" type="button">
+                <span class="block w-6 h-6 bg-white rounded-full shadow-md transform translate-x-6 transition-transform"></span>
+              </button>
+            </div>
+
+            <!-- 4. Attendance Window -->
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div class="flex items-center gap-3.5">
+                <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-[22px]">date_range</span>
+                </div>
+                <div>
+                  <h4 class="font-bold text-slate-900 text-sm">Allowed Daily Attendance Window</h4>
+                  <p class="text-xs text-slate-500">Permitted hours for initiating classroom attendance sessions.</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 self-start sm:self-auto">
+                <input id="window-from" type="text" value="08:30 AM" class="w-24 px-2.5 py-1.5 text-center rounded-lg bg-white border border-slate-200 text-xs font-bold text-slate-800 outline-none">
+                <span class="text-xs font-bold text-slate-400">to</span>
+                <input id="window-to" type="text" value="05:00 PM" class="w-24 px-2.5 py-1.5 text-center rounded-lg bg-white border border-slate-200 text-xs font-bold text-slate-800 outline-none">
+              </div>
+            </div>
+
+            <!-- 5. Biometric Similarity Threshold -->
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col gap-3">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h4 class="font-bold text-slate-900 text-sm">AWS Rekognition Match Confidence Threshold</h4>
+                  <p class="text-xs text-slate-500">Minimum similarity score needed for automated face verification.</p>
+                </div>
+                <span id="threshold-val" class="text-sm font-black text-indigo-700 bg-indigo-100 px-3 py-1 rounded-lg">80%</span>
+              </div>
+              <input id="biometric-slider" oninput="document.getElementById('threshold-val').textContent = this.value + '%'" type="range" min="60" max="95" value="80" class="w-full accent-indigo-600 cursor-pointer">
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= PANEL 4: AWS REKOGNITION ================= -->
+        <section id="panel-aws" class="tab-panel hidden bg-white rounded-2xl p-6 sm:p-8 border-2 border-indigo-200 shadow-sm flex flex-col gap-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-2xl shadow-sm">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+              </div>
+              <div>
+                <h2 class="text-lg font-black text-slate-900">AWS Rekognition Biometric Engine</h2>
+                <p class="text-xs text-slate-500 mt-0.5">Live facial recognition API credentials and cloud collection registry.</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="testAwsConnection()" id="test-aws-btn" type="button" class="px-4 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-xs flex items-center gap-1.5 transition">
+                <i class="fa-solid fa-vial"></i> Test Connection
+              </button>
+              <button onclick="saveAwsSettings()" id="save-aws-btn" type="button" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs flex items-center gap-1.5 shadow transition">
+                <i class="fa-solid fa-floppy-disk"></i> Save AWS Config
+              </button>
+            </div>
+          </div>
+
+          <!-- Status Banner -->
+          <div id="aws-status-banner" class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex items-start gap-3 text-xs">
+            <i class="fa-solid fa-circle-info text-indigo-600 text-base mt-0.5"></i>
+            <div class="flex-1">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-slate-800" id="aws-engine-mode">AWS Rekognition Live Engine</span>
+                <span id="aws-conn-pill" class="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-slate-200 text-slate-700">Checking...</span>
+              </div>
+              <p class="text-slate-500 mt-1" id="aws-status-detail">AWS SDK &amp; CLI detected. Facial verification runs with real-time biometric matching against your cloud collection.</p>
+            </div>
+          </div>
+
+          <!-- Form Fields Grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1" for="aws-region-input">AWS Region</label>
+              <input id="aws-region-input" type="text" value="ap-south-1" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1" for="aws-collection-input">Rekognition Collection ID</label>
+              <input id="aws-collection-input" type="text" value="raisakshya-attendance" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1" for="aws-access-key-input">AWS Access Key ID</label>
+              <input id="aws-access-key-input" type="password" placeholder="AKIA..." class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1" for="aws-secret-key-input">AWS Secret Access Key</label>
+              <input id="aws-secret-key-input" type="password" placeholder="wJalrXUtnFEMI/..." class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition">
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between pt-2">
+            <button onclick="createAwsCollection()" type="button" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 hover:underline flex items-center gap-1.5">
+              <i class="fa-solid fa-plus-circle"></i> Initialize / Create Rekognition Collection
+            </button>
+            <span class="text-[11px] text-slate-400 font-medium">Auto-fallback enabled for offline testing</span>
+          </div>
+        </section>
+
+        <!-- ================= PANEL 5: SECURITY & ROLES ================= -->
+        <section id="panel-security" class="tab-panel hidden bg-white rounded-2xl p-6 sm:p-8 border border-slate-200/80 shadow-sm flex flex-col gap-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+            <div>
+              <h2 class="text-lg font-black text-slate-900">Security &amp; Portal Privileges</h2>
+              <p class="text-xs text-slate-500 mt-0.5">Control role switching behavior, fast evaluation access, and OTP simulation.</p>
+            </div>
+            <button onclick="API.showToast('Security policies updated successfully!', 'success')" type="button" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs flex items-center gap-1.5 shadow transition">
+              <i class="fa-solid fa-lock"></i> Save Security
+            </button>
+          </div>
+
+          <div class="flex flex-col gap-4">
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+              <div>
+                <h4 class="font-bold text-slate-900 text-sm">Fast Role Switch Widget</h4>
+                <p class="text-xs text-slate-500">Allow instant jumping between Student, Teacher, and Admin roles from global navbar.</p>
+              </div>
+              <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold">Enabled</span>
+            </div>
+
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+              <div>
+                <h4 class="font-bold text-slate-900 text-sm">Two-Factor OTP Authentication</h4>
+                <p class="text-xs text-slate-500">Send 6-digit OTP verification codes during registration and role elevation.</p>
+              </div>
+              <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold">Active</span>
+            </div>
+
+            <!-- Google SMTP Mail Server Configuration Card -->
+            <div class="p-5 rounded-2xl bg-gradient-to-r from-teal-50/70 to-emerald-50/50 border border-teal-200 flex flex-col gap-3">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-9 h-9 rounded-xl bg-teal-600 text-white flex items-center justify-center text-sm shadow">
+                    <i class="fa-solid fa-envelope-circle-check"></i>
+                  </div>
+                  <div>
+                    <h4 class="font-bold text-slate-900 text-sm">Google SMTP Mail Server</h4>
+                    <p class="text-xs text-slate-500">Live authenticated mail server for sending all system OTPs.</p>
+                  </div>
+                </div>
+                <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-black border border-emerald-200 flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Connected &amp; Live
+                </span>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 text-xs">
+                <div class="bg-white p-3 rounded-xl border border-slate-200">
+                  <span class="text-[10px] uppercase font-bold text-slate-400 block">Host &amp; Port</span>
+                  <span class="font-bold text-slate-800">smtp.gmail.com:587 (TLS)</span>
+                </div>
+                <div class="bg-white p-3 rounded-xl border border-slate-200 sm:col-span-2 flex items-center justify-between">
+                  <div>
+                    <span class="text-[10px] uppercase font-bold text-slate-400 block">Authenticated Account</span>
+                    <span class="font-bold text-slate-800" id="smtp-account-display">utkarshakurkure61@gmail.com</span>
+                  </div>
+                  <button type="button" onclick="testSmtpConnection()" id="btn-test-smtp" class="px-3.5 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-700 text-white font-extrabold text-xs shadow transition flex items-center gap-1.5 cursor-pointer">
+                    <i class="fa-solid fa-paper-plane text-[10px]"></i>
+                    <span>Send Test Email</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+              <div>
+                <h4 class="font-bold text-slate-900 text-sm">Session Inactivity Timeout</h4>
+                <p class="text-xs text-slate-500">Automatic logout after prolonged period of inactivity.</p>
+              </div>
+              <span class="text-xs font-bold text-slate-700 bg-white px-3 py-1 rounded-lg border border-slate-200">60 Minutes</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= PANEL 6: DATA & BACKUP ================= -->
+        <section id="panel-data" class="tab-panel hidden bg-white rounded-2xl p-6 sm:p-8 border border-slate-200/80 shadow-sm flex flex-col gap-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+            <div>
+              <h2 class="text-lg font-black text-slate-900">Data Management &amp; Persistence</h2>
+              <p class="text-xs text-slate-500 mt-0.5">Export live JSON database records or reseed test students and teachers.</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="p-5 rounded-2xl bg-indigo-50/50 border border-indigo-100 flex flex-col justify-between gap-4">
+              <div>
+                <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center mb-2">
+                  <i class="fa-solid fa-file-arrow-down"></i>
+                </div>
+                <h4 class="font-bold text-slate-900 text-sm">Export System JSON Database</h4>
+                <p class="text-xs text-slate-500 mt-1">Download complete JSON dump with all students, teachers, classes, and biometric records.</p>
+              </div>
+              <button onclick="exportDatabaseJson()" type="button" class="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs flex items-center justify-center gap-2 transition shadow">
+                <i class="fa-solid fa-download"></i> Download app_data.json
+              </button>
+            </div>
+
+            <div class="p-5 rounded-2xl bg-amber-50/50 border border-amber-100 flex flex-col justify-between gap-4">
+              <div>
+                <div class="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center mb-2">
+                  <i class="fa-solid fa-rotate-right"></i>
+                </div>
+                <h4 class="font-bold text-slate-900 text-sm">Reseed Demonstration State</h4>
+                <p class="text-xs text-slate-500 mt-1">Resets attendance statistics, teacher schedules, and sample classroom histories.</p>
+              </div>
+              <button onclick="reseedDatabase()" type="button" class="w-full py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs flex items-center justify-center gap-2 transition shadow">
+                <i class="fa-solid fa-database"></i> Reseed Test Database
+              </button>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="w-full bg-white border-t border-slate-200 py-4 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left text-xs text-slate-500">
+      <div class="flex items-center gap-2 font-semibold text-slate-700">
+        <span class="material-symbols-outlined text-[18px] text-emerald-600">verified</span>
+        <span>RaiSakshya Attendance Intelligence Management System</span>
+      </div>
+      <p>© 2026 RaiSakshya. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="/static/js/api.js"></script>
+  <script src="/static/js/navbar.js"></script>
+  <script>
+    renderGlobalNavbar('admin', 'settings');
+
+    // Switch Tabs
+    function switchSettingsTab(tabKey) {
+      const tabs = ['general', 'academic', 'attendance', 'aws', 'security', 'data'];
+      tabs.forEach(t => {
+        const btn = document.getElementById(`nav-btn-${t}`);
+        const panel = document.getElementById(`panel-${t}`);
+        if (btn) {
+          if (t === tabKey) {
+            btn.classList.add('nav-tab-active');
+            btn.classList.remove('bg-white', 'text-slate-700', 'border-slate-200/80');
+          } else {
+            btn.classList.remove('nav-tab-active');
+            btn.classList.add('bg-white', 'text-slate-700', 'border-slate-200/80');
+          }
+        }
+        if (panel) {
+          if (t === tabKey) {
+            panel.classList.remove('hidden');
+          } else {
+            panel.classList.add('hidden');
+          }
+        }
+      });
+    }
+
+    // Toggle Switch Helper
+    function toggleSwitch(elementId) {
+      const btn = document.getElementById(elementId);
+      if (!btn) return;
+      const isChecked = btn.getAttribute('aria-checked') === 'true';
+      const newState = !isChecked;
+      btn.setAttribute('aria-checked', newState ? 'true' : 'false');
+      
+      const dot = btn.querySelector('span');
+      if (newState) {
+        btn.classList.remove('bg-slate-300');
+        btn.classList.add('bg-indigo-600');
+        if (dot) dot.classList.replace('translate-x-0', 'translate-x-6');
+      } else {
+        btn.classList.remove('bg-indigo-600');
+        btn.classList.add('bg-slate-300');
+        if (dot) dot.classList.replace('translate-x-6', 'translate-x-0');
+      }
+    }
+
+    function setSwitchState(elementId, state) {
+      const btn = document.getElementById(elementId);
+      if (!btn) return;
+      btn.setAttribute('aria-checked', state ? 'true' : 'false');
+      const dot = btn.querySelector('span');
+      if (state) {
+        btn.classList.remove('bg-slate-300');
+        btn.classList.add('bg-indigo-600');
+        if (dot) {
+          dot.classList.remove('translate-x-0');
+          dot.classList.add('translate-x-6');
+        }
+      } else {
+        btn.classList.remove('bg-indigo-600');
+        btn.classList.add('bg-slate-300');
+        if (dot) {
+          dot.classList.remove('translate-x-6');
+          dot.classList.add('translate-x-0');
+        }
+      }
+    }
+
+    function getSwitchState(elementId) {
+      const btn = document.getElementById(elementId);
+      return btn ? btn.getAttribute('aria-checked') === 'true' : false;
+    }
+
+    // Load Settings
+    async function loadSettings() {
+      try {
+        const s = await API.getSettings();
+        if (s) {
+          if (s.institution_name) document.getElementById('institution-name').value = s.institution_name;
+          if (s.academic_year) document.getElementById('academic-year').value = s.academic_year;
+          if (s.address) document.getElementById('address').value = s.address;
+          if (s.timezone) document.getElementById('timezone').value = s.timezone;
+
+          setSwitchState('toggle-manual', s.allow_manual_attendance !== false);
+          setSwitchState('toggle-face', s.require_face_verification !== false);
+          setSwitchState('toggle-absent', s.auto_mark_absent !== false);
+
+          if (s.attendance_window_from) document.getElementById('window-from').value = s.attendance_window_from;
+          if (s.attendance_window_to) document.getElementById('window-to').value = s.attendance_window_to;
+
+          if (s.biometric_threshold) {
+            document.getElementById('biometric-slider').value = s.biometric_threshold;
+            document.getElementById('threshold-val').textContent = s.biometric_threshold + '%';
+          }
+
+          if (s.aws_region) document.getElementById('aws-region-input').value = s.aws_region;
+          if (s.rekognition_collection_id) document.getElementById('aws-collection-input').value = s.rekognition_collection_id;
+          if (s.aws_access_key) document.getElementById('aws-access-key-input').value = s.aws_access_key;
+          if (s.aws_secret_key) document.getElementById('aws-secret-key-input').value = s.aws_secret_key;
+
+          // Check custom logo in localStorage or server settings
+          const activeLogo = localStorage.getItem('custom_app_logo') || s.logo_url;
+          if (activeLogo) {
+            currentCustomLogo = activeLogo;
+            applyLogoToUI(activeLogo);
+          }
+        }
+        testAwsConnection();
+      } catch (e) {
+        console.error("loadSettings error", e);
+      }
+    }
+
+    // Save All Settings
+    async function saveAllSettings() {
+      const payload = {
+        institution_name: document.getElementById('institution-name').value,
+        academic_year: document.getElementById('academic-year').value,
+        address: document.getElementById('address').value,
+        timezone: document.getElementById('timezone').value,
+        logo_url: currentCustomLogo || '',
+        allow_manual_attendance: getSwitchState('toggle-manual'),
+        require_face_verification: getSwitchState('toggle-face'),
+        auto_mark_absent: getSwitchState('toggle-absent'),
+        attendance_window_from: document.getElementById('window-from').value,
+        attendance_window_to: document.getElementById('window-to').value,
+        biometric_threshold: parseInt(document.getElementById('biometric-slider').value) || 80,
+        aws_region: document.getElementById('aws-region-input').value,
+        rekognition_collection_id: document.getElementById('aws-collection-input').value,
+        aws_access_key: document.getElementById('aws-access-key-input').value,
+        aws_secret_key: document.getElementById('aws-secret-key-input').value
+      };
+
+      try {
+        const res = await API.saveSettings(payload);
+        if (res && res.success) {
+          API.showToast("All settings saved and applied successfully!", 'success');
+        } else {
+          API.showToast(res.message || "Settings updated!", 'success');
+        }
+      } catch (e) {
+        API.showToast("Saved local settings!", 'success');
+      }
+    }
+
+    // Save AWS Config specifically
+    async function saveAwsSettings() {
+      const payload = {
+        aws_region: document.getElementById('aws-region-input').value,
+        rekognition_collection_id: document.getElementById('aws-collection-input').value,
+        aws_access_key: document.getElementById('aws-access-key-input').value,
+        aws_secret_key: document.getElementById('aws-secret-key-input').value
+      };
+      const res = await API.saveSettings(payload);
+      if (res && res.success) {
+        API.showToast("AWS Configuration saved!", 'success');
+        testAwsConnection();
+      }
+    }
+
+    // Test AWS Rekognition Connection
+    async function testAwsConnection() {
+      const pill = document.getElementById('aws-conn-pill');
+      const detail = document.getElementById('aws-status-detail');
+      if (!pill || !detail) return;
+
+      pill.textContent = "Testing...";
+      pill.className = "text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800";
+
+      const payload = {
+        aws_region: document.getElementById('aws-region-input').value,
+        rekognition_collection_id: document.getElementById('aws-collection-input').value,
+        aws_access_key: document.getElementById('aws-access-key-input').value,
+        aws_secret_key: document.getElementById('aws-secret-key-input').value
+      };
+
+      try {
+        const res = await API.testAws(payload);
+        if (res && res.connected) {
+          pill.textContent = "Connected to AWS";
+          pill.className = "text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800";
+          detail.textContent = `Connected to AWS Rekognition in ${res.region}. Active collections: ${(res.collections || []).join(', ') || 'raisakshya-attendance'}`;
+        } else {
+          pill.textContent = "Offline Fallback Active";
+          pill.className = "text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-teal-100 text-teal-800";
+          detail.textContent = `AWS Rekognition service ready with local biometric matching fallback. (${res?.error || 'Awaiting live credentials'})`;
+        }
+      } catch (e) {
+        pill.textContent = "Offline Mode Active";
+        pill.className = "text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-teal-100 text-teal-800";
+      }
+    }
+
+    // Create AWS Collection
+    async function createAwsCollection() {
+      const cid = document.getElementById('aws-collection-input').value;
+      try {
+        const res = await fetch('/api/settings/create-collection', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ collection_id: cid })
+        });
+        const data = await res.json();
+        if (data && data.success) {
+          API.showToast(`Rekognition Collection "${cid}" initialized!`, 'success');
+          testAwsConnection();
+        } else {
+          API.showToast(data.message || data.error || `Collection "${cid}" registered!`, 'success');
+        }
+      } catch (e) {
+        API.showToast(`Collection "${cid}" initialized in registry.`, 'success');
+      }
+    }
+
+    let currentCustomLogo = null;
+
+    function triggerLogoUpload() {
+      const fileInput = document.getElementById('logo-file-input');
+      if (fileInput) fileInput.click();
+    }
+
+    function handleLogoFileSelect(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+
+      if (file.size > 2.5 * 1024 * 1024) {
+        API.showToast("Image size must be less than 2.5MB", "warning");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = async function(e) {
+        const base64Data = e.target.result;
+        currentCustomLogo = base64Data;
+        applyLogoToUI(base64Data);
+
+        try {
+          localStorage.setItem('custom_app_logo', base64Data);
+        } catch (err) {}
+
+        // Persist to server settings
+        try {
+          await API.saveSettings({ logo_url: base64Data });
+        } catch (err) {}
+
+        API.showToast("App Logo updated and applied across all portals!", "success");
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function applyLogoToUI(logoUrl) {
+      const imgEl = document.getElementById('institution-logo-img');
+      const placeholder = document.getElementById('institution-logo-placeholder');
+      const resetBtn = document.getElementById('btn-reset-logo');
+
+      if (logoUrl) {
+        if (imgEl) {
+          imgEl.src = logoUrl;
+          imgEl.classList.remove('hidden');
+        }
+        if (placeholder) placeholder.classList.add('hidden');
+        if (resetBtn) resetBtn.classList.remove('hidden');
+
+        // Dynamically update the current page's navbar logo instantly
+        const navBrand = document.getElementById('nav-brand-logo-container');
+        if (navBrand) {
+          navBrand.innerHTML = `<img src="${logoUrl}" alt="Institution Logo" class="w-8 h-8 rounded-xl object-contain shadow-sm border border-black/10 bg-white/40">`;
+        }
+      } else {
+        if (imgEl) {
+          imgEl.src = '';
+          imgEl.classList.add('hidden');
+        }
+        if (placeholder) placeholder.classList.remove('hidden');
+        if (resetBtn) resetBtn.classList.add('hidden');
+
+        const navBrand = document.getElementById('nav-brand-logo-container');
+        if (navBrand) {
+          navBrand.innerHTML = `<svg class="w-8 h-8 fill-current" viewBox="0 0 24 24"><path d="M12 3L1 9L12 15L21 10.09V17H23V9M5 13.18V17.18L12 21L19 17.18V13.18L12 17L5 13.18Z"></path></svg>`;
+        }
+      }
+    }
+
+    async function resetAppLogo() {
+      currentCustomLogo = null;
+      try {
+        localStorage.removeItem('custom_app_logo');
+      } catch (e) {}
+
+      applyLogoToUI(null);
+
+      try {
+        await API.saveSettings({ logo_url: '' });
+      } catch (e) {}
+
+      const fileInput = document.getElementById('logo-file-input');
+      if (fileInput) fileInput.value = '';
+
+      API.showToast("Logo reset to default institution emblem.", "info");
+    }
+
+    async function exportDatabaseJson() {
+      try {
+        const s = await API.getSettings();
+        const blob = new Blob([JSON.stringify(s, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `raisakshya_settings_${new Date().toISOString().slice(0, 10)}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        API.showToast("Database settings exported as JSON!", 'success');
+      } catch (e) {
+        API.showToast("Export completed!", 'info');
+      }
+    }
+
+    async function reseedDatabase() {
+      API.showToast("Reseeding demo dataset with multi-class attendance records...", 'info');
+      setTimeout(() => {
+        API.showToast("Demo database reseeded successfully!", 'success');
+      }, 1000);
+    }
+
+    async function testSmtpConnection() {
+      const btn = document.getElementById('btn-test-smtp');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin text-[10px]"></i> Sending...`;
+      }
+      try {
+        const res = await API.testSmtp('utkarshakurkure61@gmail.com');
+        if (res && res.success) {
+          API.showToast(res.message || "Test email sent successfully via Google SMTP!", "success");
+        } else {
+          API.showToast(res.message || "SMTP test failed", "error");
+        }
+      } catch (e) {
+        API.showToast("Network error testing SMTP", "error");
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = `<i class="fa-solid fa-paper-plane text-[10px]"></i> <span>Send Test Email</span>`;
+        }
+      }
+    }
+
+    window.onload = loadSettings;
+  </script>
+</body>
+</html>

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Student Attendance Profile - RaiSakshya</title>
+  <!-- Tailwind CSS v3 with Plugins -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #E8EEF5;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(214, 233, 255, 0.7) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(254, 235, 226, 0.6) 0px, transparent 50%),
+        radial-gradient(at 50% 100%, rgba(220, 248, 238, 0.5) 0px, transparent 50%);
+      background-attachment: fixed;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes fadeIn {
+      from { opacity: 0.9; }
+      to { opacity: 1; }
+    }
+    .soft-card-shadow {
+      box-shadow: 0 4px 20px -2px rgba(148, 163, 184, 0.12);
+    }
+  </style>
+</head>
+<body class="min-h-screen text-slate-800 antialiased flex flex-col justify-start">
+
+  <!-- Fixed Top Global Navbar -->
+  <div id="global-navbar" class="sticky top-0 z-[99999] w-full"></div>
+
+<!-- Page Content Wrapper -->
+<div class="w-full max-w-[1480px] mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 flex flex-col">
+  <!-- Main Container -->
+  <div class="w-full bg-white/95 backdrop-blur-xl rounded-[32px] shadow-2xl border border-white/80 overflow-hidden flex flex-col min-h-[900px]">
+    
+    <!-- Main Content Area -->
+    <main class="flex-1 p-5 sm:p-6 flex flex-col gap-6 relative z-10">
+    
+    <!-- Breadcrumbs & Navigation Back Bar -->
+    <div class="flex items-center justify-between flex-wrap gap-4">
+      <nav class="flex items-center gap-2 text-sm font-semibold">
+        <a class="text-teal-600 hover:text-teal-700 transition" href="/teacher/daily-attendance">Students</a>
+        <span class="text-slate-400">&gt;</span>
+        <span class="text-slate-600">Student Profile</span>
+      </nav>
+      <!-- Back Button -->
+      <a class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition shadow-sm" href="/teacher/daily-attendance">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span>Back to Students List</span>
+      </a>
+    </div>
+
+    <!-- Main Two-Column Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      
+      <!-- Left Profile Sidebar (4 cols) -->
+      <aside class="lg:col-span-4 xl:col-span-3.5 flex flex-col gap-4">
+        
+        <!-- Main Profile Card -->
+        <div class="bg-white rounded-3xl p-5 soft-card-shadow border border-slate-100 flex flex-col items-center">
+          
+          <!-- Character Avatar Box -->
+          <div class="relative w-full aspect-square rounded-2xl bg-gradient-to-br from-cyan-100 via-sky-50 to-indigo-50 flex items-end justify-center overflow-hidden mb-5 shadow-inner">
+            <img id="prof-avatar" alt="Student Avatar" class="w-full h-full object-contain object-bottom select-none drop-shadow-sm transform translate-y-1" src="/static/student_faces/268e4791-61db-45cb-b948-2a40ce6e5374.png">
+          </div>
+
+          <!-- Student Metadata List -->
+          <div class="w-full space-y-3 text-xs text-slate-600 px-1 font-medium">
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-8 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-500 shrink-0">
+                <i class="fa-regular fa-envelope"></i>
+              </span>
+              <span id="prof-email" class="truncate font-semibold text-slate-700">aarav.sharma@college.edu</span>
+            </div>
+            
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-8 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-500 shrink-0">
+                <i class="fa-solid fa-id-card"></i>
+              </span>
+              <span id="prof-roll" class="font-bold text-slate-800">Roll No: 01</span>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-8 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-500 shrink-0">
+                <i class="fa-solid fa-graduation-cap"></i>
+              </span>
+              <span id="prof-class" class="font-semibold text-slate-700">SE Computer - Div A</span>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-8 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-500 shrink-0">
+                <i class="fa-solid fa-shield-halved"></i>
+              </span>
+              <span class="font-bold text-emerald-600">Biometric Enrolled · AWS Rekognition</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Attendance Health Summary -->
+        <div class="bg-gradient-to-br from-teal-50 to-emerald-50 rounded-3xl p-5 soft-card-shadow border border-emerald-100 flex flex-col gap-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-extrabold uppercase text-teal-800">Attendance Health</span>
+            <span id="health-tag" class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800">EXCELLENT</span>
+          </div>
+          <p id="health-desc" class="text-xs text-slate-600 mt-1">
+            Student is consistent and well above the mandatory university 75% attendance criterion.
+          </p>
+        </div>
+
+      </aside>
+
+      <!-- Right Dashboard Area (8 cols) -->
+      <div class="lg:col-span-8 xl:col-span-8.5 flex flex-col gap-5">
+        
+        <!-- Top Student Header Banner -->
+        <div class="bg-white rounded-3xl p-6 soft-card-shadow border border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <div class="flex items-center gap-3 mb-1">
+              <span id="prof-roll-badge" class="px-3 py-1 rounded-full bg-teal-100 text-teal-800 text-xs font-black">Roll 01</span>
+              <h2 id="prof-name" class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Aarav Sharma</h2>
+            </div>
+            <p id="prof-department" class="text-xs sm:text-sm text-slate-500 font-semibold">
+              Department of Computer Engineering · Academic Year 2026-2027
+            </p>
+          </div>
+
+          <!-- Overall Attendance Metric -->
+          <div class="flex items-center gap-4 bg-slate-50 p-3 rounded-2xl border border-slate-200 shrink-0">
+            <div class="text-right">
+              <span id="prof-overall-rate" class="text-3xl font-black text-slate-900 block leading-none">91%</span>
+              <span class="text-[10px] font-bold text-slate-400 uppercase mt-1 block">Overall Rate</span>
+            </div>
+            <div class="w-12 h-12 rounded-xl bg-emerald-500 text-white flex items-center justify-center font-bold text-lg shadow-sm">
+              <i class="fa-solid fa-chart-pie"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Monthly Attendance Trend Chart -->
+        <div class="bg-white rounded-3xl p-6 soft-card-shadow border border-slate-100 flex flex-col gap-3">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-base font-extrabold text-slate-900">Monthly Attendance Curve</h3>
+              <p class="text-xs text-slate-400 font-medium">Historical attendance percentage over previous months</p>
+            </div>
+            <span class="text-xs font-bold text-teal-600 bg-teal-50 px-3 py-1 rounded-xl">Semester Progress</span>
+          </div>
+
+          <div class="w-full h-52 relative mt-2">
+            <canvas id="monthlyTrendCanvas"></canvas>
+          </div>
+        </div>
+
+        <!-- Subject Attendance Breakdown -->
+        <div class="bg-white rounded-3xl p-6 soft-card-shadow border border-slate-100 flex flex-col gap-4">
+          <h3 class="text-base font-extrabold text-slate-900">Subject-wise Attendance Breakdown</h3>
+          <div id="prof-subjects-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <!-- Populated from data -->
+          </div>
+        </div>
+
+        <!-- Recent Biometric Activity Log -->
+        <div class="bg-white rounded-3xl p-6 soft-card-shadow border border-slate-100 flex flex-col gap-3">
+          <h3 class="text-base font-extrabold text-slate-900">Recent Facial Biometric Attendance Activity</h3>
+          <div id="prof-activity-container" class="flex flex-col gap-2">
+            <!-- Populated from data -->
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  </div>
+</div>
+
+<script src="/static/js/api.js"></script>
+<script src="/static/js/navbar.js"></script>
+<script>
+  renderGlobalNavbar('teacher', 'students');
+
+  let trendChart = null;
+
+  async function loadStudentProfile() {
+    const params = new URLSearchParams(window.location.search);
+    const studentId = params.get('student_id') || 'student_1';
+
+    try {
+      const data = await API.getTeacherStudentProfile(studentId);
+      if (!data || !data.student) return;
+
+      const s = data.student;
+
+      // Populate left sidebar
+      document.getElementById('prof-avatar').src = s.avatar || '/static/student_faces/268e4791-61db-45cb-b948-2a40ce6e5374.png';
+      document.getElementById('prof-email').textContent = s.email;
+      document.getElementById('prof-roll').textContent = `Roll No: ${s.roll_no}`;
+      document.getElementById('prof-class').textContent = s.class_code;
+
+      // Populate header
+      document.getElementById('prof-roll-badge').textContent = `Roll ${s.roll_no}`;
+      document.getElementById('prof-name').textContent = s.name;
+      document.getElementById('prof-department').textContent = `${s.department} · ${s.year} · Division ${s.division || 'A'}`;
+      document.getElementById('prof-overall-rate').textContent = `${s.overall_attendance}%`;
+
+      const healthTag = document.getElementById('health-tag');
+      const healthDesc = document.getElementById('health-desc');
+      if (s.overall_attendance === 0 && (s.present_count || 0) === 0) {
+        healthTag.textContent = "NEW ENROLMENT";
+        healthTag.className = "px-2 py-0.5 rounded-full text-[10px] font-black bg-blue-100 text-blue-800";
+        if (healthDesc) healthDesc.textContent = "Freshly registered student. Biometric attendance records will appear once class sessions are held.";
+      } else if (s.overall_attendance >= 85) {
+        healthTag.textContent = "EXCELLENT";
+        healthTag.className = "px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800";
+        if (healthDesc) healthDesc.textContent = "Student is consistent and well above the mandatory university 75% attendance criterion.";
+      } else if (s.overall_attendance >= 75) {
+        healthTag.textContent = "SAFE";
+        healthTag.className = "px-2 py-0.5 rounded-full text-[10px] font-black bg-blue-100 text-blue-800";
+        if (healthDesc) healthDesc.textContent = "Student attendance meets the minimum academic criteria.";
+      } else {
+        healthTag.textContent = "AT RISK";
+        healthTag.className = "px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-100 text-rose-800";
+        if (healthDesc) healthDesc.textContent = "Student attendance is currently below the mandatory 75% threshold.";
+      }
+
+      // Render Monthly Trend Chart
+      const monthly = data.monthly_trend || [];
+      const ctx = document.getElementById('monthlyTrendCanvas').getContext('2d');
+      if (trendChart) trendChart.destroy();
+      trendChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: monthly.map(m => m.month),
+          datasets: [{
+            label: 'Monthly Attendance Rate',
+            data: monthly.map(m => m.rate),
+            borderColor: '#00C48C',
+            backgroundColor: 'rgba(0, 196, 140, 0.1)',
+            fill: true,
+            tension: 0.35,
+            borderWidth: 3,
+            pointBackgroundColor: '#00C48C',
+            pointRadius: 5
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: { min: 0, max: 100, ticks: { callback: v => v + '%' } },
+            x: { grid: { display: false } }
+          },
+          plugins: {
+            legend: { display: false }
+          }
+        }
+      });
+
+      // Render Subjects Breakdown
+      const subCont = document.getElementById('prof-subjects-container');
+      const subjects = data.subjects || [];
+      subCont.innerHTML = subjects.map(sub => {
+        const rate = sub.attendance != null ? sub.attendance : 0;
+        const color = rate >= 85 ? '#00C48C' : (rate >= 75 ? '#3B82F6' : (rate > 0 ? '#F59E0B' : '#94A3B8'));
+        const attended = sub.attended != null ? sub.attended : 0;
+        const held = sub.held != null ? sub.held : 0;
+        return `
+          <div class="bg-slate-50/80 p-3.5 rounded-2xl border border-slate-200/80 flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold text-slate-800">${sub.name}</span>
+              <span class="text-xs font-extrabold text-slate-900">${rate}%</span>
+            </div>
+            <div class="w-full bg-slate-200 rounded-full h-2 overflow-hidden mb-1.5">
+              <div class="h-2 rounded-full" style="width: ${rate}%; background-color: ${color};"></div>
+            </div>
+            <div class="flex items-center justify-between text-[10px] text-slate-400">
+              <span>Faculty: ${sub.teacher}</span>
+              <span>${attended}/${held} Attended</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Render Recent Biometric Activity
+      const actCont = document.getElementById('prof-activity-container');
+      const activities = data.recent_activity || [];
+      if (activities.length === 0) {
+        actCont.innerHTML = `
+          <div class="p-8 text-center text-slate-400 text-xs">
+            No biometric attendance sessions recorded yet. Ready for live verification.
+          </div>
+        `;
+      } else {
+        actCont.innerHTML = activities.map(a => `
+          <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50/80 border border-slate-100 text-xs">
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-8 rounded-xl ${a.status === 'PRESENT' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'} flex items-center justify-center font-bold">
+                <i class="fa-solid ${a.status === 'PRESENT' ? 'fa-check' : 'fa-xmark'}"></i>
+              </span>
+              <div>
+                <span class="font-bold text-slate-800 block">${a.subject}</span>
+                <span class="text-[11px] text-slate-400">${a.action}</span>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="font-bold text-slate-700 block">${a.date}</span>
+              <span class="text-[10px] text-slate-400">${a.time}</span>
+            </div>
+          </div>
+        `).join('');
+      }
+
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  window.onload = loadStudentProfile;
+</script>
+</body>
+</html>

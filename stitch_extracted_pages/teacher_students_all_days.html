@@ -1,0 +1,595 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>RaiSakshya - Students Attendance Dashboard</title>
+<!-- Tailwind CSS v3 with Forms & Container Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Plus Jakarta Sans -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Caveat:wght@600;700&amp;display=swap" rel="stylesheet">
+<script data-purpose="tailwind-config">
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            handwriting: ['"Caveat"', 'cursive']
+          },
+          colors: {
+            navDark: '#0e131f',
+            navItemHover: '#1c2438'
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-layout">
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: radial-gradient(circle at 10% 20%, #e8f0fe 0%, #f4e8fc 40%, #ffefe8 80%, #e2f4ff 100%);
+      min-height: 100vh;
+      color: #1e293b;
+    }
+
+    /* Soft curved organic pill cards */
+    .student-pill {
+      border-radius: 42px;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 18px -4px rgba(0, 0, 0, 0.04);
+    }
+    .student-pill:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 24px -6px rgba(0, 0, 0, 0.09);
+    }
+
+    /* Radial donut meter gauges */
+    .gauge-circle {
+      transform: rotate(-90deg);
+      transform-origin: 50% 50%;
+    }
+    
+    /* Scrollbar hide for clean dashboard view */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+<body class="p-3 sm:p-5 lg:p-7 flex items-center justify-center min-h-screen text-slate-800 antialiased selection:bg-teal-500 selection:text-white">
+<!-- BEGIN: DashboardContainer -->
+<div class="w-full max-w-[1580px] bg-white/95 backdrop-blur-xl rounded-[36px] shadow-2xl border border-white/60 p-4 sm:p-6 lg:p-8 flex flex-col gap-6 overflow-hidden">
+<!-- BEGIN: NavigationBar -->
+<header class="bg-[#0b101c] text-white rounded-[26px] px-6 py-3.5 flex flex-wrap items-center justify-between gap-4 shadow-xl">
+<!-- Left: Logo & Brand -->
+<div class="flex items-center gap-3.5">
+<div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-slate-700 to-slate-900 border border-slate-700/60 flex items-center justify-center text-white shadow-inner">
+<!-- Graduation Cap Icon -->
+<svg class="w-6 h-6 text-slate-100" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M12 14l9-5-9-5-9 5 9 5z" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M20 13v4.5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<div>
+<h1 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+            RaiSakshya
+          </h1>
+<p class="text-xs text-slate-400 font-medium">Smart Attendance for Brighter Futures</p>
+</div>
+</div>
+<!-- Center: Navigation Tabs -->
+<nav class="flex items-center gap-1 sm:gap-2 bg-[#141b2a] p-1.5 rounded-2xl border border-slate-800/80">
+<a class="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors" href="#">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+          Attendance
+        </a>
+<a class="flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-bold text-teal-300 bg-gradient-to-r from-teal-500/20 to-emerald-500/10 border border-teal-500/40 shadow-sm transition-all" href="#">
+<svg class="w-4 h-4 text-teal-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+          Students
+        </a>
+<a class="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors" href="#">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+          Reports
+        </a>
+<a class="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/60 transition-colors" href="#">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+          Schedule
+        </a>
+</nav>
+<!-- Right: Notifications & User Profile -->
+<div class="flex items-center gap-4">
+<!-- Notification Bell with Ping Dot -->
+<button aria-label="Notifications" class="relative p-2 text-slate-300 hover:text-white transition-colors" type="button">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-[#0b101c]"></span>
+</button>
+<!-- User Info -->
+<div class="flex items-center gap-3 pl-2 border-l border-slate-800">
+<img alt="Aarav Sharma" class="w-10 h-10 rounded-full object-cover ring-2 ring-teal-400/70 shadow-md" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCVklqxllECzGzBvliLROtcm1YgJBAbv1oiO21JTYvjGkntkIGisU9Hs7gKo9s7FApVZsWeAL5gnJsv7oS2jMNuRj7bpYpIKJVjFg7nbXYWPeWS2Z2vKQm09I2hGCEDh_lAf1FM5gJfzNsaN15U83xHGCba_5vMw2QbtbvLjWkn6h7qqPP5VMX5wkl6MUT4xip_XVL5cQp4AkQGTJG4YRUfOiL2pIz4cbfUv-F_NjJPzCxqIcCAiRHPep23c3LUnQJ6Q">
+<div class="text-left hidden sm:block">
+<div class="text-sm font-bold text-white leading-tight">Aarav Sharma</div>
+<div class="text-[11px] text-slate-400 font-medium">Computer Engineering</div>
+</div>
+<svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+</div>
+</header>
+<!-- END: NavigationBar -->
+<!-- BEGIN: SubheaderFilters -->
+<div class="flex flex-col xl:flex-row items-stretch xl:items-center justify-between gap-4">
+<!-- Title & Filters Container -->
+<div class="flex flex-wrap items-center gap-6">
+<!-- Title with Sparkle Doodles -->
+<div class="relative pr-4">
+<div class="flex items-center gap-1.5">
+<h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Students</h2>
+<!-- Doodle rays -->
+<svg class="w-5 h-5 text-slate-700" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+<path d="M12 3v3M18.5 5.5l-2 2M21 12h-3" stroke-linecap="round"></path>
+</svg>
+</div>
+<p class="text-sm text-slate-500 font-medium mt-0.5">View all students, attendance and details</p>
+</div>
+<!-- Filter Dropdown Pills Group -->
+<div class="flex flex-wrap items-center gap-3">
+<!-- Class Pill -->
+<div class="bg-slate-50/80 border border-slate-200/90 rounded-2xl px-4 py-2.5 flex items-center gap-3 shadow-sm hover:border-slate-300 transition-all">
+<span class="text-xs font-semibold text-slate-400">Class</span>
+<div class="flex items-center gap-2 text-sm font-bold text-slate-800">
+<span class="p-1 rounded-lg bg-blue-100 text-blue-600">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</span>
+              BE - Computer
+            </div>
+<svg class="w-4 h-4 text-slate-400 ml-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+<!-- Divider -->
+<div class="hidden sm:block h-6 w-px bg-slate-300"></div>
+<!-- Subject Pill -->
+<div class="bg-slate-50/80 border border-slate-200/90 rounded-2xl px-4 py-2.5 flex items-center gap-3 shadow-sm hover:border-slate-300 transition-all">
+<span class="text-xs font-semibold text-slate-400">Subject</span>
+<div class="flex items-center gap-2 text-sm font-bold text-slate-800">
+<span class="p-1 rounded-lg bg-purple-100 text-purple-600">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</span>
+              Cloud Computing
+            </div>
+<svg class="w-4 h-4 text-slate-400 ml-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+<!-- Divider -->
+<div class="hidden sm:block h-6 w-px bg-slate-300"></div>
+<!-- Date Pill -->
+<div class="bg-slate-50/80 border border-slate-200/90 rounded-2xl px-4 py-2.5 flex items-center gap-3 shadow-sm hover:border-slate-300 transition-all">
+<span class="text-xs font-semibold text-slate-400">Date</span>
+<div class="flex items-center gap-2 text-sm font-bold text-slate-800">
+<span class="p-1 rounded-lg bg-pink-100 text-purple-600">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</span>
+              All
+            </div>
+<svg class="w-4 h-4 text-slate-400 ml-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+</div>
+</div>
+<!-- Right: Whimsical Motivational Banner -->
+<div class="relative bg-gradient-to-r from-amber-50 via-rose-50/60 to-amber-100/70 border border-amber-200/70 rounded-3xl p-3 sm:px-6 flex items-center justify-between shadow-sm overflow-hidden min-w-[280px]">
+<!-- Whimsical floating spark doodads -->
+<div class="relative z-10">
+<div class="font-handwriting text-2xl leading-none text-slate-800 -rotate-3 font-bold tracking-wide">
+            Keep
+          </div>
+<div class="font-handwriting text-3xl font-extrabold text-slate-900 -rotate-1 ml-2">
+            Learning
+          </div>
+<div class="font-handwriting text-2xl font-bold text-slate-800 rotate-1">
+            Keep Growing
+          </div>
+</div>
+<!-- Decorative 3D Character waving -->
+<div class="relative w-28 h-20 flex items-end justify-end">
+<img alt="Waving Mascot" class="w-24 h-24 object-contain -mb-3 scale-110 drop-shadow-md" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcmiYDty7GboPEqmJTzB0sgOcemFlaNRNuuoUl9Sko1H-o5TlZ3AiD0AjRTf8-25mmoyHu-xAbwsYy4gncoRFTEJZpfjKoN5w_KvyUbdArK8uulPllki72zrFGiv8Ai0eK3v5PX27ooY17wsx4RF7-Aae_hKqXNtXVOTlpCA2obWYQaQUS9XGj3qfSs-h358Ze-yD4DIiUto_KVLLSZ4LoeyV3L8vypmRhUgfarMCncfSO0jcn4BGvsehtJgvIdVBggQ">
+</div>
+</div>
+</div>
+<!-- END: SubheaderFilters -->
+<!-- BEGIN: SearchAndBranchRow -->
+<div class="flex flex-col sm:flex-row items-center justify-between gap-3">
+<!-- Search Input with rounded capsule -->
+<div class="relative w-full sm:w-80">
+<span class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-slate-400">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+<path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</span>
+<input class="w-full pl-11 pr-4 py-2.5 bg-slate-100/70 hover:bg-slate-100 focus:bg-white text-sm text-slate-700 placeholder-slate-400 font-medium rounded-2xl border border-transparent focus:border-teal-500 focus:ring-2 focus:ring-teal-400/20 transition-all outline-none" placeholder="Search by name or roll number..." type="text">
+</div>
+<!-- All Branches Selector -->
+<div class="bg-slate-100/80 hover:bg-slate-200/70 border border-slate-200 text-slate-700 text-sm font-semibold rounded-2xl px-5 py-2.5 flex items-center gap-3 cursor-pointer transition-all self-end sm:self-auto">
+<span>All Branches</span>
+<svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+</div>
+<!-- END: SearchAndBranchRow -->
+<!-- BEGIN: MainContentGrid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+<!-- LEFT: 12 Students Grid (8 Cols) - Fully sized tiles, zero dead space -->
+<section class="lg:col-span-8 flex flex-col gap-4" data-purpose="students-card-grid">
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5 sm:gap-4">
+<!-- Card 01: Kameron Porter (92%) -->
+<div class="student-pill bg-[#e5f9f2] p-3 flex items-center justify-between relative overflow-hidden h-[106px] border border-[#c1f1e0]/80">
+<!-- Avatar Left (bottom aligned torso) -->
+<div class="w-20 h-full flex items-end justify-center shrink-0 -ml-1">
+<img alt="Kameron Porter" class="w-20 h-24 object-contain translate-y-1" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCVklqxllECzGzBvliLROtcm1YgJBAbv1oiO21JTYvjGkntkIGisU9Hs7gKo9s7FApVZsWeAL5gnJsv7oS2jMNuRj7bpYpIKJVjFg7nbXYWPeWS2Z2vKQm09I2hGCEDh_lAf1FM5gJfzNsaN15U83xHGCba_5vMw2QbtbvLjWkn6h7qqPP5VMX5wkl6MUT4xip_XVL5cQp4AkQGTJG4YRUfOiL2pIz4cbfUv-F_NjJPzCxqIcCAiRHPep23c3LUnQJ6Q">
+</div>
+<!-- Info Center -->
+<div class="flex-1 px-2.5 z-10">
+<span class="text-xs font-black tracking-wide text-slate-700">01</span>
+<h3 class="text-sm font-extrabold text-slate-900 leading-tight">Kameron<br>Porter</h3>
+</div>
+<!-- Radial Donut Right -->
+<div class="relative w-14 h-14 shrink-0 flex items-center justify-center">
+<svg class="w-14 h-14 gauge-circle" viewBox="0 0 36 36">
+<path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#d4f4e7" stroke-width="3.2"></path>
+<path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#00c988" stroke-dasharray="92, 100" stroke-linecap="round" stroke-width="3.2"></path>
+</svg>
+<span class="absolute text-xs font-black text-[#00a972]">92%</span>
+</div>
+</div>
+<!-- Card 02: Michael Kopfler (78%) -->
+<div class="student-pill bg-[#fdf3e2] p-3 flex items-center justify-between relative overflow-hidden h-[106px] border border-[#fde5bd]/80">
+<div class="w-20 h-full flex items-end justify-center shrink-0 -ml-1">
+<img alt="Michael Kopfler" class="w-20 h-24 object-contain translate-y-1" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBlaIiPyYc7fxBy_F-M7tFi3cWiily0aTQAzU8ve8rkf-Jh0P5_kdd061dri2naxQ_W4PpQ3sdTheTr1-XS6PzxsigluXOTW8P24cSYIlMD3-Za2QzVOlOQL9F8z3EuZ-HCHZ43en-dBJfWIjzfAoZnJGhcwv03P2EPZioWxsluCsDDDw-rygiZdFQRuzphfmrUyGU_eOKizcUqdmoGUTn3kOSn_zY6fW58sE5M5LyH2QMFBw-_J5wcKVYe8TJ7_Uf7yA">
+</div>
+<div class="flex-1 px-2.5 z-10">
+<span class="text-xs font-black tracking-wide text-slate-700">02</span>
+<h3 class="text-sm font-extrabold text-slate-900 leading-tight">Michael<br>Kopfler</h3>
+</div>
+<div class="relative w-14 h-14 shrink-0 flex items-center justify-center">
+<svg class="w-14 h-14 gauge-circle" viewBox="0 0 36 36">
+<path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#fbe8c7" stroke-width="3.2"></path>
+<path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#eab308" stroke-dasharray="78, 100" stroke-linecap="round" stroke-width="3.2"></path>
+</svg>
+<span class="absolute text-xs font-black text-[#d97706]">78%</span>
+</div>
+</div>
+<!-- Card 03: Alice Koller (96%) -->
+<div class="student-pill bg-[#f0efff] p-3 flex items-center justify-between relative overflow-hidden h-[106px] border border-[#dedbff]/80">
+<div class="w-20 h-full flex items-end justify-center shrink-0 -ml-1">
+<img alt="Alice Koller" class="w-20 h-24 object-contain translate-y-1" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPKPdE4Y0uaJFgOD7QB67_C2eWHxCQzIKostidpqNkzxJL62eE07g-HyleMBkZdFGWfEbBT907a_DGkGex_KLqh68fJ5UQcDrr8wlnQ0be3BELZEd2mOUy_t300RIRhAv0HDxt40TcXCRMk5MD847Tiy0hZkcIDn4c0EzvBJGlu56_EEPg4MwMSEYqHyUioKNI2t110Qv-6e-mDtUfzZTh8nRc96e1D1iv1rA9cvbqX7C55z58sO5CmokM96av3mbMDw">
+</div>
+<div class="flex-1 px-2.5 z-10">
+<span class="text-xs font-black tracking-wide text-slate-700">03</span>
+<h3 class="text-sm font-extrabold text-slate-900 leading-tight">Alice<br>Koller</h3>
+</div>
+<div class="relative w-14 h-14 shrink-0 flex items-center justify-center">
+<svg class="w-14 h-14 gauge-circle" viewBox="0 0 36 36">
+<path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#dedbff" stroke-width="3.2"></path>
+<path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#6366f1" stroke-dasharray="96, 100" stroke-linecap="round" stroke-width="3.2"></path>
+</svg>
+<span class="absolute text-xs font-black text-[#4f46e5]">96%</span>
+</div>
+</div>
+<!-- Card 04: Peter Dinklage (65%) -->
+<div class="student-pill bg-[#e3f4ff] p-3 flex items-center justify-between relative overflow-hidden h-[106px] border border-[#c1e6ff]/80">
+<div class="w-20 h-full flex items-end justify-center shrink-0 -ml-1">
+<img alt="Peter Dinklage" class="w-20 h-24 object-contain translate-y-1" src="https://lh3.googleusercontent.com/aida-public/AB6AXuByhsU0BrH4DIlBhS7fCNL91rZGXcVioL7l518qoqSu15cCcZdU7SCj5CS4BPA7a6rJQOv0lwJcdgF0PuiWnW-m-9rczx_pkESTncexpbXpAEwM7TdEBi6AOjjQQpvM2VOylWMEZVfmVtrOduB40sTFElg1oBojk1WIFMCPD1ffTCVE0P2VrTS0lOd5KZhssrA71bpeCWpEm_cA709lcoxDbtbwZ8X66dP5_5f6oFO0XUkxAsFnieWwxai_auIMtSzfUw">
+</div>
+<div class="flex-1 px-2.5 z-10">
+<span class="text-xs font-black tracking-wide text-slate-700">04</span>
+<h3 class="text-sm font-extrabold text-slate-900 leading-tight">Peter<br>Dinklage</h3>
+</div>
+<div class="relative w-14 h-14 shrink-0 flex items-center justify-center">
+<svg class="w-14 h-14 gauge-circle" viewBox="0 0 36 36">
+<path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#ccebfe" stroke-width="3.2"></path>
+<path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#0284c7" stroke-dasharray="65, 100" stroke-linecap="round" stroke-width="3.2"></path>
+</svg>
+<span class="absolute text-xs font-black text-[#0284c7]">65%</span>
+</div>
+</div>
+<!-- Card 05: Julia Berger (88%) -->
+<div class="student-pill bg-[#e1fbf4] p-3 flex items-center justify-between relative overflow-hidden h-[106px] border border-[#bcf2e3]/80">
+<div class="w-20 h-full flex items-end justify-center shrink-0 -ml-1">
+<img alt="Julia Berger" class="w-20 h-24 object-contain translate-y-1" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDlLY3VHirsFJeMtRUCFlkBzEjsGQ4kG6D0AQbGi1i_s91uvRu9ocKHnrYtbmMt9bjKbd1KXcLdy5yjEEru-DLSR5fuV1ipbwEv0hzIlNM2fkuW1eE7YCHyPfkNxpKCLkj5eHs7ZM4jwSaJoSrIwYnCctTSXo4h_mVESKeQceoLwKW3Udp0S3P23lzCqyKwroAetkVjm4dhDnysQvJsnAN9nU0HEPUkBTwAGco1E1AKObJ-mQXXcxPTETye7EYo720TEA">
+</div>
+<div class="flex-1 px-2.5 z-10">
+<span class="text-xs font-black tracking-wide text-slate-700">05</span>
+<h3 class="text-sm font-extrabold text-slate-900 leading-tight">Julia<br>Berger</h3>
+</div>
+<div class="relative w-14 h-14 shrink-0 flex items-center justify-center">
+<svg class="w-14 h-14 gauge-circle" viewBox="0 0 36 36">
+<path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#cbf3e6" stroke-width="3.2"></path>
+<path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#10b981" stroke-dasharray="88, 100" stroke-linecap="round" stroke-width="3.2"></path>
+</svg>
+<span class="absolute text-xs font-black text-[#059669]">88%</span>
+</div>
+</div>
+<!-- Card 06: John Wick (70%) -->
+<div class="student-pill bg-[#fef5e7] p-3 flex items-center justify-between relative overflow-hidden h-[106px] border border-[#fde8c5]/80">
+<div class="w-20 h-full flex items-end justify-center shrink-0 -ml-1">
+<img alt="John Wick" class="w-20 h-24 object-contain translate-y-1" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcmiYDty7GboPEqmJTzB0sgOcemFlaNRNuuoUl9Sko1H-o5TlZ3AiD0AjRTf8-25mmoyHu-xAbwsYy4gncoRFTEJZpfjKoN5w_KvyUbdArK8uulPllki72zrFGiv8Ai0eK3v5PX27ooY17wsx4RF7-Aae_hKqXNtXVOTlpCA2obWYQaQUS9XGj3qfSs-h358Ze-yD4DIiUto_KVLLSZ4LoeyV3L8vypmRhUgfarMCncfSO0jcn4BGvsehtJgvIdVBggQ">
+</div>
+<div class="flex-1 px-2.5 z-10">
+<span class="text-xs font-black tracking-wide text-slate-700">06</span>
+<h3 class="text-sm font-extrabold text-slate-900 leading-tight">John<br>Wick</h3>
+</div>
+<div class="relative w-14 h-14 shrink-0 flex items-center justify-center">
+<svg class="w-14 h-14 gauge-circle" viewBox="0 0 36 36">
+<path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#fdedd0" stroke-width="3.2"></path>
+<path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#f97316" stroke-dasharray="70, 100" stroke-linecap="round" stroke-width="3.2"></path>
+</svg>
+<span class="absolute text-xs font-black text-[#ea580c]">70%</span>
+</div>
+</div>
+<!-- Card 07: George Limbaf (82%) -->
+<div class="student-pill bg-[#f7efff] p-3 flex items-center justify-between relative overflow-hidden h-[106px] border border-[#edd7ff]/80">
+<div class="w-20 h-full flex items-end justify-center shrink-0 -ml-1">
+<img alt="George Limbaf" class="w-20 h-24 object-contain translate-y-1" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCVklqxllECzGzBvliLROtcm1YgJBAbv1oiO21JTYvjGkntkIGisU9Hs7gKo9s7FApVZsWeAL5gnJsv7oS2jMNuRj7bpYpIKJVjFg7nbXYWPeWS2Z2vKQm09I2hGCEDh_lAf1FM5gJfzNsaN15U83xHGCba_5vMw2QbtbvLjWkn6h7qqPP5VMX5wkl6MUT4xip_XVL5cQp4AkQGTJG4YRUfOiL2pIz4cbfUv-F_NjJPzCxqIcCAiRHPep23c3LUnQJ6Q">
+</div>
+<div class="flex-1 px-2.5 z-10">
+<span class="text-xs font-black tracking-wide text-slate-700">07</span>
+<h3 class="text-sm font-extrabold text-slate-900 leading-tight">George<br>Limbaf</h3>
+</div>
+<div class="relative w-14 h-14 shrink-0 flex items-center justify-center">
+<svg class="w-14 h-14 gauge-circle" viewBox="0 0 36 36">
+<path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e9d5ff" stroke-width="3.2"></path>
+<path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#8b5cf6" stroke-dasharray="82, 100" stroke-linecap="round" stroke-width="3.2"></path>
+</svg>
+<span class="absolute text-xs font-black text-[#7c3aed]">82%</span>
+</div>
+</div>
+<!-- Card 08: Dave Johnson (90%) -->
+<div class="student-pill bg-[#e3f4ff] p-3 flex items-center justify-between relative overflow-hidden h-[106px] border border-[#bde4ff]/80">
+<div class="w-20 h-full flex items-end justify-center shrink-0 -ml-1">
+<img alt="Dave Johnson" class="w-20 h-24 object-contain translate-y-1" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhOYQ6qu2-wm2Fd9j2lzIbqtdAoIZ9mndA0EbaaSLow3dpftcQSq9_hae8Ff4LOnGB7gTNMSskPLk6ACRXEatxVht9PK2PlSH_9u4lZMMaUgDWzHjdnmm7eHfGArSXd79vOdPHaQzUq6mKOhf9mB06WifrvFkpeWq2d_08RPJm5vsk0TzBFWhZqo2fXCicc6iKhyxw6sfvEC9vjb0BJ1xFzJqDJ-fZ-XJH-k2Mnai-9kDoSWM4-GAiRK6Mj7lMQL2faA">
+</div>
+<div class="flex-1 px-2.5 z-10">
+<span class="text-xs font-black tracking-wide text-slate-700">08</span>
+<h3 class="text-sm font-extrabold text-slate-900 leading-tight">Dave<br>Johnson</h3>
+</div>
+<div class="relative w-14 h-14 shrink-0 flex items-center justify-center">
+<svg class="w-14 h-14 gauge-circle" viewBox="0 0 36 36">
+<path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#cbe8ff" stroke-width="3.2"></path>
+<path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#0ea5e9" stroke-dasharray="90, 100" stroke-linecap="round" stroke-width="3.2"></path>
+</svg>
+<span class="absolute text-xs font-black text-[#0284c7]">90%</span>
+</div>
+</div>
+<!-- Card 09: Emma Watson (76%) -->
+<div class="student-pill bg-[#ffebee] p-3 flex items-center justify-between relative overflow-hidden h-[106px] border border-[#ffd2d8]/80">
+<div class="w-20 h-full flex items-end justify-center shrink-0 -ml-1">
+<img alt="Emma Watson" class="w-20 h-24 object-contain translate-y-1" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDogtvjRb98ipv5V5nXe8D1FoSPelRb4L2LTB2XrC26JtRJkNoWF8paoyHsLTmRRIb4Wqlwa3t8bgv_Og2AxkHOxjAgpZ2o1xuUqUIRBFH0QcF10q7PyIZbWCQQX-tRhslFdEdgnRfCtejOThnUySAKqlJrt7_H0hBq5vBCPIrPkbM-esxrozGYpNhAxQEhUzX_Iq4auO_7I98mtz-92_ICw1pFrxxPqtwwXnbyyLo-3oDs5ih6c9tDz9HKGI-20dxj5A">
+</div>
+<div class="flex-1 px-2.5 z-10">
+<span class="text-xs font-black tracking-wide text-slate-700">09</span>
+<h3 class="text-sm font-extrabold text-slate-900 leading-tight">Emma<br>Watson</h3>
+</div>
+<div class="relative w-14 h-14 shrink-0 flex items-center justify-center">
+<svg class="w-14 h-14 gauge-circle" viewBox="0 0 36 36">
+<path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#fecdd3" stroke-width="3.2"></path>
+<path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#f43f5e" stroke-dasharray="76, 100" stroke-linecap="round" stroke-width="3.2"></path>
+</svg>
+<span class="absolute text-xs font-black text-[#e11d48]">76%</span>
+</div>
+</div>
+<!-- Card 10: Liam Smith (94%) -->
+<div class="student-pill bg-[#e3faf1] p-3 flex items-center justify-between relative overflow-hidden h-[106px] border border-[#c1f3de]/80">
+<div class="w-20 h-full flex items-end justify-center shrink-0 -ml-1">
+<img alt="Liam Smith" class="w-20 h-24 object-contain translate-y-1" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCVklqxllECzGzBvliLROtcm1YgJBAbv1oiO21JTYvjGkntkIGisU9Hs7gKo9s7FApVZsWeAL5gnJsv7oS2jMNuRj7bpYpIKJVjFg7nbXYWPeWS2Z2vKQm09I2hGCEDh_lAf1FM5gJfzNsaN15U83xHGCba_5vMw2QbtbvLjWkn6h7qqPP5VMX5wkl6MUT4xip_XVL5cQp4AkQGTJG4YRUfOiL2pIz4cbfUv-F_NjJPzCxqIcCAiRHPep23c3LUnQJ6Q">
+</div>
+<div class="flex-1 px-2.5 z-10">
+<span class="text-xs font-black tracking-wide text-slate-700">10</span>
+<h3 class="text-sm font-extrabold text-slate-900 leading-tight">Liam<br>Smith</h3>
+</div>
+<div class="relative w-14 h-14 shrink-0 flex items-center justify-center">
+<svg class="w-14 h-14 gauge-circle" viewBox="0 0 36 36">
+<path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#bbf7d0" stroke-width="3.2"></path>
+<path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#10b981" stroke-dasharray="94, 100" stroke-linecap="round" stroke-width="3.2"></path>
+</svg>
+<span class="absolute text-xs font-black text-[#059669]">94%</span>
+</div>
+</div>
+<!-- Card 11: Sophia Lee (68%) -->
+<div class="student-pill bg-[#f3ecff] p-3 flex items-center justify-between relative overflow-hidden h-[106px] border border-[#e4d4ff]/80">
+<div class="w-20 h-full flex items-end justify-center shrink-0 -ml-1">
+<img alt="Sophia Lee" class="w-20 h-24 object-contain translate-y-1" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDji_A2tcYoPZl-ujpiSp_BRlcJuaBeVRWpv3dfuXGe-VbL5cxX6V9WLa3Bs0ilbRSpl3iQ9UIjYt1onD5k5TBeWGEsXMcpbw4J8kY06a7IzcPYjBVtrLpMedOK8icVAa67nRD0YJ0rNyxtwRDE3qh4iwmns5yQuvFkuo0U0TtgnkQDwAjA38ep3ulHtbKMjyfawo4bTSsa6IW0r1UkzSsonxIgelbTj2NGAHL0B6NTLmuqRjnUpPWYRKykePVwOL2dUg">
+</div>
+<div class="flex-1 px-2.5 z-10">
+<span class="text-xs font-black tracking-wide text-slate-700">11</span>
+<h3 class="text-sm font-extrabold text-slate-900 leading-tight">Sophia<br>Lee</h3>
+</div>
+<div class="relative w-14 h-14 shrink-0 flex items-center justify-center">
+<svg class="w-14 h-14 gauge-circle" viewBox="0 0 36 36">
+<path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e9d5ff" stroke-width="3.2"></path>
+<path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#a855f7" stroke-dasharray="68, 100" stroke-linecap="round" stroke-width="3.2"></path>
+</svg>
+<span class="absolute text-xs font-black text-[#9333ea]">68%</span>
+</div>
+</div>
+<!-- Card 12: Noah Brown (81%) -->
+<div class="student-pill bg-[#e3f2ff] p-3 flex items-center justify-between relative overflow-hidden h-[106px] border border-[#bfdfff]/80">
+<div class="w-20 h-full flex items-end justify-center shrink-0 -ml-1">
+<img alt="Noah Brown" class="w-20 h-24 object-contain translate-y-1" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhOYQ6qu2-wm2Fd9j2lzIbqtdAoIZ9mndA0EbaaSLow3dpftcQSq9_hae8Ff4LOnGB7gTNMSskPLk6ACRXEatxVht9PK2PlSH_9u4lZMMaUgDWzHjdnmm7eHfGArSXd79vOdPHaQzUq6mKOhf9mB06WifrvFkpeWq2d_08RPJm5vsk0TzBFWhZqo2fXCicc6iKhyxw6sfvEC9vjb0BJ1xFzJqDJ-fZ-XJH-k2Mnai-9kDoSWM4-GAiRK6Mj7lMQL2faA">
+</div>
+<div class="flex-1 px-2.5 z-10">
+<span class="text-xs font-black tracking-wide text-slate-700">12</span>
+<h3 class="text-sm font-extrabold text-slate-900 leading-tight">Noah<br>Brown</h3>
+</div>
+<div class="relative w-14 h-14 shrink-0 flex items-center justify-center">
+<svg class="w-14 h-14 gauge-circle" viewBox="0 0 36 36">
+<path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#bae6fd" stroke-width="3.2"></path>
+<path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#0284c7" stroke-dasharray="81, 100" stroke-linecap="round" stroke-width="3.2"></path>
+</svg>
+<span class="absolute text-xs font-black text-[#0284c7]">81%</span>
+</div>
+</div>
+</div>
+<!-- Pagination and Showing Counter -->
+<div class="flex items-center justify-between pt-2 px-1 text-xs text-slate-500 font-semibold">
+<span>Showing 1 - 12 of 28 students</span>
+<div class="flex items-center gap-1.5">
+<button class="w-7 h-7 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+<span class="w-7 h-7 rounded-full bg-[#18c4b8] text-white flex items-center justify-center text-xs font-bold shadow-sm">1</span>
+<button class="w-7 h-7 rounded-full flex items-center justify-center text-slate-600 hover:bg-slate-100">2</button>
+<button class="w-7 h-7 rounded-full flex items-center justify-center text-slate-600 hover:bg-slate-100">3</button>
+<button class="w-7 h-7 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+</div>
+</div>
+</section>
+<!-- RIGHT: Sidebar Analytics & Highlights (4 Cols) -->
+<aside class="lg:col-span-4 flex flex-col gap-4">
+<!-- Card: Class Overview -->
+<div class="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm relative overflow-hidden">
+<!-- Title with spark accents -->
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center gap-2">
+<svg class="w-5 h-5 text-slate-800" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+<path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<h3 class="text-base font-extrabold text-slate-900">Class Overview</h3>
+</div>
+<!-- Green doodle spark -->
+<svg class="w-5 h-5 text-teal-500" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+<path d="M12 3v3M18.5 5.5l-2 2M21 12h-3" stroke-linecap="round"></path>
+</svg>
+</div>
+<!-- Donut Gauge & Legend -->
+<div class="flex items-center justify-between gap-4 py-2">
+<!-- Large Donut -->
+<div class="relative w-36 h-36 flex items-center justify-center shrink-0">
+<svg class="w-36 h-36 gauge-circle" viewBox="0 0 36 36">
+<!-- Background ring -->
+<path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#f1f5f9" stroke-width="3.5"></path>
+<!-- Not Marked segment (purple hint) -->
+<path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#cbd5e1" stroke-dasharray="100, 100" stroke-width="3.5"></path>
+<!-- Absent segment (amber hint) -->
+<path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e2e8f0" stroke-dasharray="87, 100" stroke-width="3.5"></path>
+<!-- Present segment (teal main) -->
+<path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#14b8a6" stroke-dasharray="87, 100" stroke-linecap="round" stroke-width="3.6"></path>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+<span class="text-3xl font-black text-slate-900 tracking-tight leading-none">87%</span>
+<span class="text-[11px] font-semibold text-slate-400 mt-1">Avg. Attendance</span>
+</div>
+</div>
+<!-- Stats List / Legend -->
+<div class="flex-1 flex flex-col gap-3 pr-2">
+<div class="flex items-center justify-between text-xs">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-[#10b981]"></span>
+<span class="font-medium text-slate-600">Present</span>
+</div>
+<span class="font-bold text-slate-900">22</span>
+</div>
+<div class="flex items-center justify-between text-xs">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-[#f59e0b]"></span>
+<span class="font-medium text-slate-600">Absent</span>
+</div>
+<span class="font-bold text-slate-900">6</span>
+</div>
+<div class="flex items-center justify-between text-xs">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-[#a855f7]"></span>
+<span class="font-medium text-slate-600">Not Marked</span>
+</div>
+<span class="font-bold text-slate-900">0</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Card: Subject-wise Average -->
+<div class="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm flex flex-col gap-3.5">
+<div class="flex items-center gap-2 mb-1">
+<svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+<path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<h3 class="text-sm font-extrabold text-slate-900">Subject-wise Average <span class="text-xs font-semibold text-slate-400">(BE - Computer)</span></h3>
+</div>
+<!-- Progress Bar 1: Cloud Computing -->
+<div class="flex items-center justify-between gap-3 text-xs">
+<span class="w-32 font-semibold text-slate-700 truncate">Cloud Computing</span>
+<div class="flex-1 bg-slate-100 h-2.5 rounded-full overflow-hidden">
+<div class="bg-gradient-to-r from-teal-400 to-emerald-400 h-full rounded-full" style="width: 89%;"></div>
+</div>
+<span class="w-8 text-right font-black text-slate-800">89%</span>
+</div>
+<!-- Progress Bar 2: DBMS -->
+<div class="flex items-center justify-between gap-3 text-xs">
+<span class="w-32 font-semibold text-slate-700 truncate">DBMS</span>
+<div class="flex-1 bg-slate-100 h-2.5 rounded-full overflow-hidden">
+<div class="bg-gradient-to-r from-blue-400 to-sky-500 h-full rounded-full" style="width: 84%;"></div>
+</div>
+<span class="w-8 text-right font-black text-slate-800">84%</span>
+</div>
+<!-- Progress Bar 3: Operating Systems -->
+<div class="flex items-center justify-between gap-3 text-xs">
+<span class="w-32 font-semibold text-slate-700 truncate">Operating Systems</span>
+<div class="flex-1 bg-slate-100 h-2.5 rounded-full overflow-hidden">
+<div class="bg-gradient-to-r from-purple-400 to-indigo-400 h-full rounded-full" style="width: 76%;"></div>
+</div>
+<span class="w-8 text-right font-black text-slate-800">76%</span>
+</div>
+<!-- Progress Bar 4: Computer Networks -->
+<div class="flex items-center justify-between gap-3 text-xs">
+<span class="w-32 font-semibold text-slate-700 truncate">Computer Networks</span>
+<div class="flex-1 bg-slate-100 h-2.5 rounded-full overflow-hidden">
+<div class="bg-gradient-to-r from-amber-400 to-orange-400 h-full rounded-full" style="width: 82%;"></div>
+</div>
+<span class="w-8 text-right font-black text-slate-800">82%</span>
+</div>
+<!-- Progress Bar 5: Machine Learning -->
+<div class="flex items-center justify-between gap-3 text-xs">
+<span class="w-32 font-semibold text-slate-700 truncate">Machine Learning</span>
+<div class="flex-1 bg-slate-100 h-2.5 rounded-full overflow-hidden">
+<div class="bg-gradient-to-r from-rose-400 to-red-400 h-full rounded-full" style="width: 78%;"></div>
+</div>
+<span class="w-8 text-right font-black text-slate-800">78%</span>
+</div>
+</div>
+<!-- Card: Motivational Footer Banner -->
+<div class="bg-gradient-to-r from-[#fef7ee] to-[#fff3e0] border border-[#fed7aa]/60 rounded-3xl p-4 flex items-center justify-between gap-3 shadow-sm">
+<div class="flex items-center gap-3">
+<!-- Smiling Sun Icon -->
+<div class="w-10 h-10 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<circle cx="12" cy="12" r="4"></circle>
+<path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41m14.14-14.14l-1.41 1.41"></path>
+</svg>
+</div>
+<div>
+<h4 class="text-sm font-extrabold text-slate-900 leading-tight">Every Student Counts</h4>
+<p class="text-[11px] text-amber-800/80 font-medium mt-0.5">Track today for a brighter tomorrow</p>
+</div>
+</div>
+<!-- Golden Star badge -->
+<div class="text-amber-400 text-2xl pr-1">
+            ★
+          </div>
+</div>
+</aside>
+</div>
+<!-- END: MainContentGrid -->
+</div>
+<!-- END: DashboardContainer -->
+</body></html>

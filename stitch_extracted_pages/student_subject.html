@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RaiSakshya - Operating Systems Attendance Dashboard</title>
+<!-- Google Fonts: Plus Jakarta Sans -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              dark: '#03171e',
+              navbar: '#061a23',
+              cardDark: '#0a232f',
+              primary: '#059669',
+              emerald: '#10b981',
+              accentMint: '#e6f7f2',
+              cardBg: '#ffffff',
+            }
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-typography-and-scroll">
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      background-color: #f1f8fe;
+      color: #1e293b;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-[#edf5fc] text-slate-800 pb-12 selection:bg-emerald-100 selection:text-emerald-800">
+<!-- BEGIN: MainHeaderNavbar -->
+<header class="w-full px-5 pt-3 pb-1 max-w-[1536px] mx-auto">
+<!-- Dark Pill Navigation Bar -->
+<nav class="bg-[#051a24] text-white rounded-[26px] px-6 py-2.5 flex items-center justify-between shadow-xl shadow-slate-900/10" data-purpose="primary-navigation">
+<!-- Brand Logo and Subtitle -->
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center shadow-md shadow-emerald-950/40">
+<svg class="w-5 h-5 text-white" fill="currentColor" viewbox="0 0 24 24">
+<path d="M12 3L1 9L12 15L21 10.09V17H23V9M5 13.18V17.18L12 21L19 17.18V13.18L12 17L5 13.18Z"></path>
+</svg>
+</div>
+<div>
+<h1 class="text-[17px] font-bold tracking-tight text-white leading-tight">RaiSakshya</h1>
+<p class="text-[10px] text-slate-300 font-normal leading-tight">Smart Attendance for Brighter Futures</p>
+</div>
+</div>
+<!-- Center Nav Links -->
+<div class="flex items-center gap-1 sm:gap-2">
+<a class="flex flex-col items-center justify-center px-5 py-1 text-slate-400 hover:text-white transition-colors group" href="#">
+<svg class="w-5 h-5 mb-0.5 group-hover:scale-105 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[11px] font-medium">Dashboard</span>
+</a>
+<a class="flex flex-col items-center justify-center px-5 py-1 text-slate-400 hover:text-white transition-colors group" href="#">
+<svg class="w-5 h-5 mb-0.5 group-hover:scale-105 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[11px] font-medium">Teachers</span>
+</a>
+<!-- Active Link: Subjects -->
+<a class="flex flex-col items-center justify-center px-7 py-1.5 rounded-xl bg-[#09353a] text-emerald-400 border border-emerald-500/20 shadow-inner relative" href="#">
+<svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" stroke-width="2.2" viewbox="0 0 24 24">
+<path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[11px] font-semibold tracking-wide">Subjects</span>
+<span class="absolute bottom-1 w-1 h-1 bg-emerald-400 rounded-full"></span>
+</a>
+</div>
+<!-- Right Profile & Notification Area -->
+<div class="flex items-center gap-4">
+<!-- Bell Notification -->
+<button aria-label="Notifications" class="relative p-1.5 text-slate-300 hover:text-white transition-colors">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full ring-2 ring-[#051a24]"></span>
+</button>
+<!-- User Profile Dropdown Pill -->
+<div class="flex items-center gap-2.5 pl-1 pr-1 py-1 rounded-full cursor-pointer hover:bg-slate-800/40 transition">
+<div class="w-9 h-9 rounded-full overflow-hidden border border-amber-300 bg-amber-100 flex items-center justify-center shrink-0">
+<!-- Illustrated Male Avatar -->
+<svg class="w-full h-full" fill="none" viewbox="0 0 64 64">
+<rect fill="#FDE68A" height="64" width="64"></rect>
+<!-- Hair -->
+<path d="M18 26C18 16 24 10 32 10C40 10 46 16 46 26V32H18V26Z" fill="#582C12"></path>
+<!-- Head -->
+<circle cx="32" cy="30" fill="#FCD3B5" r="14"></circle>
+<path d="M26 22C29 18 35 18 38 22" stroke="#582C12" stroke-linecap="round" stroke-width="2.5"></path>
+<!-- Eyes -->
+<circle cx="27" cy="29" fill="#29180C" r="2"></circle>
+<circle cx="37" cy="29" fill="#29180C" r="2"></circle>
+<path d="M29 36C31 38 33 38 35 36" stroke="#D97706" stroke-linecap="round" stroke-width="1.8"></path>
+<!-- Neck & Clothes -->
+<path d="M28 42V48H36V42" fill="#FCD3B5"></path>
+<path d="M14 60C14 50 22 47 32 47C42 47 50 50 50 60V64H14V60Z" fill="#1E3A8A"></path>
+<path d="M28 47L32 54L36 47" fill="#FCD3B5"></path>
+</svg>
+</div>
+<div class="text-left hidden md:block pr-1">
+<div class="text-[13px] font-semibold text-white leading-tight flex items-center gap-1.5">
+<span>Aarav Sharma</span>
+<svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<p class="text-[10px] text-slate-300 font-normal">SE Computer</p>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<!-- END: MainHeaderNavbar -->
+<!-- BEGIN: PageHeaderAndHeroGraphic -->
+<section class="max-w-[1536px] mx-auto px-6 pt-4 pb-2 relative overflow-hidden" data-purpose="banner-header">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+<!-- Titles -->
+<div class="z-10 pt-1">
+<h2 class="text-3xl lg:text-[34px] font-extrabold text-[#0a1f33] tracking-tight">Subjects</h2>
+<p class="text-slate-500 font-medium text-[15px] mt-0.5">Your performance and attendance in each subject.</p>
+</div>
+<!-- Campus Architectural Vector Illustration Header -->
+<div class="relative w-full lg:w-[720px] h-24 lg:h-28 overflow-hidden pointer-events-none flex items-end justify-end">
+<svg class="w-full h-full object-cover" fill="none" viewbox="0 0 800 130" xmlns="http://www.w3.org/2000/svg">
+<!-- Sky and Soft Warm Sun Backdrop -->
+<circle cx="650" cy="50" fill="#fef3c7" opacity="0.6" r="70"></circle>
+<circle cx="650" cy="50" fill="#fde68a" opacity="0.7" r="50"></circle>
+<!-- Distant Cloud Curves -->
+<path d="M420 120 C460 70 540 70 580 120 Z" fill="#e0f2fe" opacity="0.6"></path>
+<path d="M560 120 C600 65 680 65 720 120 Z" fill="#dbeafe" opacity="0.5"></path>
+<!-- Modern University Complex (Geometric Buildings) -->
+<!-- Building 1 (Left Cyan Modern) -->
+<rect fill="#bae6fd" height="60" rx="3" width="60" x="460" y="70"></rect>
+<rect fill="#38bdf8" height="10" rx="1.5" width="8" x="465" y="78"></rect>
+<rect fill="#38bdf8" height="10" rx="1.5" width="8" x="478" y="78"></rect>
+<rect fill="#38bdf8" height="10" rx="1.5" width="8" x="491" y="78"></rect>
+<rect fill="#38bdf8" height="10" rx="1.5" width="8" x="504" y="78"></rect>
+<rect fill="#38bdf8" height="10" rx="1.5" width="8" x="465" y="94"></rect>
+<rect fill="#38bdf8" height="10" rx="1.5" width="8" x="478" y="94"></rect>
+<rect fill="#38bdf8" height="10" rx="1.5" width="8" x="491" y="94"></rect>
+<rect fill="#38bdf8" height="10" rx="1.5" width="8" x="504" y="94"></rect>
+<!-- Building 2 (Tall Main Center Building with Angled Roof) -->
+<path d="M530 40 L595 18 L605 24 L605 130 L530 130 Z" fill="#fdba74" opacity="0.25"></path>
+<rect fill="#e0f2fe" height="98" rx="2" width="70" x="532" y="32"></rect>
+<path d="M532 32 L567 18 L602 32 Z" fill="#cbd5e1"></path>
+<!-- Windows Columns -->
+<g fill="#38bdf8" opacity="0.9">
+<rect height="12" rx="1" width="9" x="540" y="44"></rect>
+<rect height="12" rx="1" width="9" x="555" y="44"></rect>
+<rect height="12" rx="1" width="9" x="570" y="44"></rect>
+<rect height="12" rx="1" width="9" x="585" y="44"></rect>
+<rect height="12" rx="1" width="9" x="540" y="62"></rect>
+<rect height="12" rx="1" width="9" x="555" y="62"></rect>
+<rect height="12" rx="1" width="9" x="570" y="62"></rect>
+<rect height="12" rx="1" width="9" x="585" y="62"></rect>
+<rect height="12" rx="1" width="9" x="540" y="80"></rect>
+<rect height="12" rx="1" width="9" x="555" y="80"></rect>
+<rect height="12" rx="1" width="9" x="570" y="80"></rect>
+<rect height="12" rx="1" width="9" x="585" y="80"></rect>
+<rect height="12" rx="1" width="9" x="540" y="98"></rect>
+<rect height="12" rx="1" width="9" x="555" y="98"></rect>
+<rect height="12" rx="1" width="9" x="570" y="98"></rect>
+<rect height="12" rx="1" width="9" x="585" y="98"></rect>
+</g>
+<!-- Building 3 (Right Wing) -->
+<rect fill="#bfdbfe" height="68" rx="2" width="45" x="605" y="62"></rect>
+<rect fill="#60a5fa" height="10" rx="1" width="8" x="612" y="70"></rect>
+<rect fill="#60a5fa" height="10" rx="1" width="8" x="625" y="70"></rect>
+<rect fill="#60a5fa" height="10" rx="1" width="8" x="638" y="70"></rect>
+<rect fill="#60a5fa" height="10" rx="1" width="8" x="612" y="86"></rect>
+<rect fill="#60a5fa" height="10" rx="1" width="8" x="625" y="86"></rect>
+<rect fill="#60a5fa" height="10" rx="1" width="8" x="638" y="86"></rect>
+<!-- Building 4 (Far Right Campus Block) -->
+<rect fill="#e2e8f0" height="48" rx="2" width="40" x="655" y="82"></rect>
+<rect fill="#94a3b8" height="8" rx="1" width="6" x="660" y="88"></rect>
+<rect fill="#94a3b8" height="8" rx="1" width="6" x="670" y="88"></rect>
+<rect fill="#94a3b8" height="8" rx="1" width="6" x="680" y="88"></rect>
+<!-- Campus Modern Stylized Trees & Foliage -->
+<circle cx="440" cy="115" fill="#34d399" r="14"></circle>
+<circle cx="452" cy="108" fill="#10b981" r="18"></circle>
+<circle cx="525" cy="118" fill="#059669" r="12"></circle>
+<circle cx="705" cy="104" fill="#34d399" r="16"></circle>
+<circle cx="722" cy="98" fill="#10b981" r="22"></circle>
+<circle cx="742" cy="106" fill="#059669" r="18"></circle>
+<circle cx="765" cy="114" fill="#10b981" r="14"></circle>
+<circle cx="782" cy="112" fill="#34d399" r="16"></circle>
+<!-- Ground Baseline -->
+<rect fill="#a7f3d0" height="5" width="400" x="400" y="125"></rect>
+</svg>
+</div>
+</div>
+</section>
+<!-- END: PageHeaderAndHeroGraphic -->
+<!-- BEGIN: MainDashboardGrid -->
+<main class="max-w-[1536px] mx-auto px-5 mt-2 grid grid-cols-1 lg:grid-cols-12 gap-5" data-purpose="dashboard-content">
+<!-- BEGIN: LeftSidebarSubjectsList -->
+<aside class="lg:col-span-4 xl:col-span-3 flex flex-col gap-3" data-purpose="subjects-sidebar">
+<div class="px-1 pt-1">
+<h3 class="text-[12px] font-bold tracking-wider text-slate-700 uppercase">All Subjects</h3>
+</div>
+<!-- Subject 1: Operating Systems (Active) -->
+<div class="bg-[#edf9f3] border-2 border-emerald-400 rounded-2xl p-4 flex items-center justify-between shadow-sm cursor-pointer transition-all hover:shadow-md" data-purpose="subject-card-active">
+<div class="flex items-center gap-3.5">
+<div class="w-11 h-11 rounded-xl bg-[#d4f3e6] flex items-center justify-center shrink-0">
+<!-- Gear Icon in Green -->
+<svg class="w-6 h-6 text-[#10b981]" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round"></path>
+<circle cx="12" cy="12" r="3"></circle>
+</svg>
+</div>
+<div>
+<h4 class="text-[14px] font-bold text-slate-800 leading-snug">Operating Systems</h4>
+<span class="text-[12px] font-medium text-slate-500">SE-CSE-301</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<div class="text-right">
+<span class="block text-[14px] font-bold text-emerald-600 leading-none">88%</span>
+<span class="block text-[12px] font-bold text-slate-700 mt-1">#2</span>
+</div>
+<svg class="w-4 h-4 text-slate-600 ml-1" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+</div>
+<!-- Subject 2: Database Management -->
+<div class="bg-white border border-slate-200/80 rounded-2xl p-4 flex items-center justify-between shadow-sm hover:border-slate-300 transition-all cursor-pointer" data-purpose="subject-card">
+<div class="flex items-center gap-3.5">
+<div class="w-11 h-11 rounded-xl bg-sky-50 flex items-center justify-center shrink-0">
+<!-- Database Cylinder Icon -->
+<svg class="w-6 h-6 text-sky-500" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+<path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" stroke-linecap="round"></path>
+<path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" stroke-linecap="round"></path>
+</svg>
+</div>
+<div>
+<h4 class="text-[14px] font-bold text-slate-800 leading-snug">Database Management</h4>
+<span class="text-[12px] font-medium text-slate-500">SE-CSE-302</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<div class="text-right">
+<span class="block text-[14px] font-bold text-teal-700 leading-none">#4</span>
+<span class="block text-[12px] font-medium text-slate-500 mt-1">82%</span>
+</div>
+<svg class="w-4 h-4 text-slate-600 ml-1" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+</div>
+<!-- Subject 3: Data Structures -->
+<div class="bg-white border border-slate-200/80 rounded-2xl p-4 flex items-center justify-between shadow-sm hover:border-slate-300 transition-all cursor-pointer" data-purpose="subject-card">
+<div class="flex items-center gap-3.5">
+<div class="w-11 h-11 rounded-xl bg-emerald-50 flex items-center justify-center shrink-0">
+<!-- Code Brackets Icon -->
+<svg class="w-6 h-6 text-emerald-500" fill="none" stroke="currentColor" stroke-width="2.2" viewbox="0 0 24 24">
+<path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<div>
+<h4 class="text-[14px] font-bold text-slate-800 leading-snug">Data Structures</h4>
+<span class="text-[12px] font-medium text-slate-500">SE-CSE-303</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<div class="text-right">
+<span class="block text-[14px] font-bold text-emerald-600 leading-none">#1</span>
+<span class="block text-[12px] font-medium text-slate-500 mt-1">92%</span>
+</div>
+<svg class="w-4 h-4 text-slate-600 ml-1" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+</div>
+<!-- Subject 4: Computer Networks -->
+<div class="bg-white border border-slate-200/80 rounded-2xl p-4 flex items-center justify-between shadow-sm hover:border-slate-300 transition-all cursor-pointer" data-purpose="subject-card">
+<div class="flex items-center gap-3.5">
+<div class="w-11 h-11 rounded-xl bg-orange-50 flex items-center justify-center shrink-0">
+<!-- Wifi Icon -->
+<svg class="w-6 h-6 text-orange-400" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<div>
+<h4 class="text-[14px] font-bold text-slate-800 leading-snug">Computer Networks</h4>
+<span class="text-[12px] font-medium text-slate-500">SE-CSE-304</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<div class="text-right">
+<span class="block text-[14px] font-bold text-amber-600 leading-none">#5</span>
+<span class="block text-[12px] font-medium text-slate-500 mt-1">78%</span>
+</div>
+<svg class="w-4 h-4 text-slate-600 ml-1" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+</div>
+<!-- Subject 5: Software Engineering -->
+<div class="bg-white border border-slate-200/80 rounded-2xl p-4 flex items-center justify-between shadow-sm hover:border-slate-300 transition-all cursor-pointer" data-purpose="subject-card">
+<div class="flex items-center gap-3.5">
+<div class="w-11 h-11 rounded-xl bg-amber-50 flex items-center justify-center shrink-0">
+<!-- Document / Note Icon -->
+<svg class="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<div>
+<h4 class="text-[14px] font-bold text-slate-800 leading-snug">Software Engineering</h4>
+<span class="text-[12px] font-medium text-slate-500">SE-CSE-305</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<div class="text-right">
+<span class="block text-[14px] font-bold text-orange-500 leading-none">#3</span>
+<span class="block text-[12px] font-medium text-slate-500 mt-1">85%</span>
+</div>
+<svg class="w-4 h-4 text-slate-600 ml-1" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+</div>
+</aside>
+<!-- END: LeftSidebarSubjectsList -->
+<!-- BEGIN: RightMainContentArea -->
+<section class="lg:col-span-8 xl:col-span-9 flex flex-col gap-4" data-purpose="main-dashboard-panel">
+<!-- Top Subject Overview Banner Card -->
+<div class="bg-white rounded-2xl p-4 sm:px-6 sm:py-3.5 border border-slate-100 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4" data-purpose="subject-summary-card">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-2xl bg-orange-50 flex items-center justify-center shrink-0">
+<!-- Orange Gear Icon -->
+<svg class="w-7 h-7 text-orange-500" fill="none" stroke="currentColor" stroke-width="2.1" viewbox="0 0 24 24">
+<path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round"></path>
+<circle cx="12" cy="12" r="3"></circle>
+</svg>
+</div>
+<div>
+<h3 class="text-xl font-extrabold text-[#0a1f33] leading-tight">Operating Systems</h3>
+<p class="text-xs font-semibold text-slate-500 mt-0.5">SE-CSE-301</p>
+</div>
+</div>
+<div class="flex items-center gap-7 self-end sm:self-center pr-2">
+<!-- Rank Metric -->
+<div class="text-center">
+<span class="text-2xl font-black text-emerald-600 block leading-tight">#2</span>
+<span class="text-[12px] font-medium text-slate-500 uppercase tracking-tight block">Your Rank</span>
+</div>
+<div class="h-8 w-[1px] bg-slate-200"></div>
+<!-- Attendance Metric -->
+<div class="text-center">
+<span class="text-2xl font-black text-teal-600 block leading-tight">88%</span>
+<span class="text-[12px] font-medium text-slate-500 uppercase tracking-tight block">Attendance</span>
+</div>
+</div>
+</div>
+<!-- Middle: Attendance Trend Line Chart Card -->
+<div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm" data-purpose="attendance-trend-chart">
+<!-- Title and Subtitle -->
+<div class="flex items-center gap-2 mb-1">
+<svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<h4 class="text-[16px] font-extrabold text-[#0a1f33]">Attendance Trend</h4>
+</div>
+<p class="text-[12px] text-slate-600 font-medium ml-7 mb-4">Your attendance in the last 10 classes.</p>
+<!-- SVG Line Chart with Data Nodes & Labels -->
+<div class="relative w-full h-[220px] pt-4">
+<svg class="w-full h-full overflow-visible" preserveaspectratio="none" viewbox="0 0 950 200">
+<defs>
+<!-- Gradient fill under trend line -->
+<lineargradient id="trendGradient" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#10b981" stop-opacity="0.28"></stop>
+<stop offset="70%" stop-color="#34d399" stop-opacity="0.10"></stop>
+<stop offset="100%" stop-color="#ecfdf5" stop-opacity="0.01"></stop>
+</lineargradient>
+</defs>
+<!-- Y-Axis Grid Lines & Horizontal Scales (0% to 100%) -->
+<!-- 100% -> Y=20 -->
+<line stroke="#f1f5f9" stroke-width="1.2" x1="50" x2="940" y1="20" y2="20"></line>
+<text fill="#64748b" font-family="'Plus Jakarta Sans', sans-serif" font-size="11" font-weight="600" x="18" y="24">100%</text>
+<!-- 75% -> Y=57.5 -->
+<line stroke="#f1f5f9" stroke-width="1.2" x1="50" x2="940" y1="58" y2="58"></line>
+<text fill="#64748b" font-family="'Plus Jakarta Sans', sans-serif" font-size="11" font-weight="600" x="24" y="62">75%</text>
+<!-- 50% -> Y=95 -->
+<line stroke="#f1f5f9" stroke-width="1.2" x1="50" x2="940" y1="95" y2="95"></line>
+<text fill="#64748b" font-family="'Plus Jakarta Sans', sans-serif" font-size="11" font-weight="600" x="24" y="99">50%</text>
+<!-- 25% -> Y=132.5 -->
+<line stroke="#f1f5f9" stroke-width="1.2" x1="50" x2="940" y1="133" y2="133"></line>
+<text fill="#64748b" font-family="'Plus Jakarta Sans', sans-serif" font-size="11" font-weight="600" x="24" y="137">25%</text>
+<!-- 0% -> Y=170 -->
+<line stroke="#e2e8f0" stroke-width="1.2" x1="50" x2="940" y1="170" y2="170"></line>
+<text fill="#64748b" font-family="'Plus Jakarta Sans', sans-serif" font-size="11" font-weight="600" x="32" y="174">0%</text>
+<!-- Coordinates Calculation for X points (90 step, from 70 to 880):
+                 Formula Y: 170 - (val / 100) * 150
+                 C1 (82%): x=75, y=47
+                 C2 (90%): x=165, y=35
+                 C3 (78%): x=255, y=53
+                 C4 (85%): x=345, y=42.5
+                 C5 (92%): x=435, y=32
+                 C6 (80%): x=525, y=50
+                 C7 (88%): x=615, y=38
+                 C8 (90%): x=705, y=35
+                 C9 (86%): x=795, y=41
+                 C10 (92%): x=885, y=32
+            -->
+<!-- Filled Area Under Curve -->
+<path d="M 75 47 L 165 35 L 255 53 L 345 42.5 L 435 32 L 525 50 L 615 38 L 705 35 L 795 41 L 885 32 L 885 170 L 75 170 Z" fill="url(#trendGradient)"></path>
+<!-- Trend Line -->
+<path d="M 75 47 L 165 35 L 255 53 L 345 42.5 L 435 32 L 525 50 L 615 38 L 705 35 L 795 41 L 885 32" fill="none" stroke="#10b981" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+<!-- Point 1 (C1: 82%) -->
+<circle cx="75" cy="47" fill="#10b981" r="4.5" stroke="#ffffff" stroke-width="1.5"></circle>
+<text fill="#0f172a" font-size="11" font-weight="700" text-anchor="middle" x="75" y="38">82%</text>
+<text fill="#64748b" font-size="11" font-weight="600" text-anchor="middle" x="75" y="188">C1</text>
+<!-- Point 2 (C2: 90%) -->
+<circle cx="165" cy="35" fill="#10b981" r="4.5" stroke="#ffffff" stroke-width="1.5"></circle>
+<text fill="#0f172a" font-size="11" font-weight="700" text-anchor="middle" x="165" y="26">90%</text>
+<text fill="#64748b" font-size="11" font-weight="600" text-anchor="middle" x="165" y="188">C2</text>
+<!-- Point 3 (C3: 78%) -->
+<circle cx="255" cy="53" fill="#10b981" r="4.5" stroke="#ffffff" stroke-width="1.5"></circle>
+<text fill="#0f172a" font-size="11" font-weight="700" text-anchor="middle" x="255" y="44">78%</text>
+<text fill="#64748b" font-size="11" font-weight="600" text-anchor="middle" x="255" y="188">C3</text>
+<!-- Point 4 (C4: 85%) -->
+<circle cx="345" cy="42.5" fill="#10b981" r="4.5" stroke="#ffffff" stroke-width="1.5"></circle>
+<text fill="#0f172a" font-size="11" font-weight="700" text-anchor="middle" x="345" y="33">85%</text>
+<text fill="#64748b" font-size="11" font-weight="600" text-anchor="middle" x="345" y="188">C4</text>
+<!-- Point 5 (C5: 92%) -->
+<circle cx="435" cy="32" fill="#10b981" r="4.5" stroke="#ffffff" stroke-width="1.5"></circle>
+<text fill="#0f172a" font-size="11" font-weight="700" text-anchor="middle" x="435" y="23">92%</text>
+<text fill="#64748b" font-size="11" font-weight="600" text-anchor="middle" x="435" y="188">C5</text>
+<!-- Point 6 (C6: 80%) -->
+<circle cx="525" cy="50" fill="#10b981" r="4.5" stroke="#ffffff" stroke-width="1.5"></circle>
+<text fill="#0f172a" font-size="11" font-weight="700" text-anchor="middle" x="525" y="41">80%</text>
+<text fill="#64748b" font-size="11" font-weight="600" text-anchor="middle" x="525" y="188">C6</text>
+<!-- Point 7 (C7: 88%) -->
+<circle cx="615" cy="38" fill="#10b981" r="4.5" stroke="#ffffff" stroke-width="1.5"></circle>
+<text fill="#0f172a" font-size="11" font-weight="700" text-anchor="middle" x="615" y="29">88%</text>
+<text fill="#64748b" font-size="11" font-weight="600" text-anchor="middle" x="615" y="188">C7</text>
+<!-- Point 8 (C8: 90%) -->
+<circle cx="705" cy="35" fill="#10b981" r="4.5" stroke="#ffffff" stroke-width="1.5"></circle>
+<text fill="#0f172a" font-size="11" font-weight="700" text-anchor="middle" x="705" y="26">90%</text>
+<text fill="#64748b" font-size="11" font-weight="600" text-anchor="middle" x="705" y="188">C8</text>
+<!-- Point 9 (C9: 86%) -->
+<circle cx="795" cy="41" fill="#10b981" r="4.5" stroke="#ffffff" stroke-width="1.5"></circle>
+<text fill="#0f172a" font-size="11" font-weight="700" text-anchor="middle" x="795" y="32">86%</text>
+<text fill="#64748b" font-size="11" font-weight="600" text-anchor="middle" x="795" y="188">C9</text>
+<!-- Point 10 (C10: 92%) -->
+<circle cx="885" cy="32" fill="#10b981" r="4.5" stroke="#ffffff" stroke-width="1.5"></circle>
+<text fill="#059669" font-size="12" font-weight="800" text-anchor="middle" x="885" y="21">92%</text>
+<text fill="#64748b" font-size="11" font-weight="600" text-anchor="middle" x="885" y="188">C10</text>
+</svg>
+</div>
+</div>
+<!-- Bottom Row: 3 Analytics Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4" data-purpose="bottom-metrics-row">
+<!-- Card 1: Your Performance Bar Comparison -->
+<div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex flex-col justify-between" data-purpose="performance-comparison-card">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<!-- Bar chart icon -->
+<svg class="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" stroke-width="2.3" viewbox="0 0 24 24">
+<path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<h4 class="text-[15px] font-extrabold text-[#0a1f33]">Your Performance</h4>
+</div>
+<p class="text-[12px] text-slate-500 font-medium">Compare your attendance with class average.</p>
+</div>
+<!-- Dual Vertical Bars -->
+<div class="flex items-end justify-center gap-8 h-40 pt-4 pb-2 px-2">
+<!-- Your Attendance (88%) -->
+<div class="flex flex-col items-center flex-1 max-w-[85px] h-full justify-end">
+<span class="text-[13px] font-extrabold text-slate-800 mb-1.5">88%</span>
+<div class="w-full bg-[#10b981] rounded-t-lg transition-all" style="height: 105px;"></div>
+<span class="text-[11px] font-medium text-slate-500 mt-2 whitespace-nowrap">Your Attendance</span>
+</div>
+<!-- Class Average (80%) -->
+<div class="flex flex-col items-center flex-1 max-w-[85px] h-full justify-end">
+<span class="text-[13px] font-extrabold text-slate-800 mb-1.5">80%</span>
+<div class="w-full bg-[#cbd5e1] rounded-t-lg transition-all" style="height: 88px;"></div>
+<span class="text-[11px] font-medium text-slate-500 mt-2 whitespace-nowrap">Class Average</span>
+</div>
+</div>
+</div>
+<!-- Card 2: Rank Distribution Histogram -->
+<div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex flex-col justify-between" data-purpose="rank-distribution-card">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<!-- Trophy Icon -->
+<svg class="w-5 h-5 text-amber-500" fill="currentColor" viewbox="0 0 24 24">
+<path d="M19 4H17V3C17 2.45 16.55 2 16 2H8C7.45 2 7 2.45 7 3V4H5C3.9 4 3 4.9 3 6V8C3 10.55 4.92 12.64 7.4 12.94C8.08 14.7 9.64 16 11.5 16.32V19H9C8.45 19 8 19.45 8 20C8 20.55 8.45 21 9 21H15C15.55 21 16 20.55 16 20C16 19.45 15.55 19 15 19H12.5V16.32C14.36 16 15.92 14.7 16.6 12.94C19.08 12.64 21 10.55 21 8V6C21 4.9 20.1 4 19 4ZM5 8V6H7V10.1C5.84 9.65 5 8.9 5 8ZM19 8C19 8.9 18.16 9.65 17 10.1V6H19V8Z"></path>
+</svg>
+<h4 class="text-[15px] font-extrabold text-[#0a1f33]">Rank Distribution</h4>
+</div>
+<p class="text-[12px] text-slate-500 font-medium">Where you stand in the class.</p>
+</div>
+<!-- Histogram Chart with Y-Axis and X-Axis -->
+<div class="relative pt-2 pb-1">
+<div class="flex items-end">
+<!-- Rotated Y-Axis Label & Numbers -->
+<div class="flex flex-col items-end pr-2 text-[10px] font-semibold text-slate-500 h-32 justify-between shrink-0">
+<span>30</span>
+<span>20</span>
+<span>10</span>
+<span>0</span>
+</div>
+<!-- Bars Container -->
+<div class="flex-1 border-b border-slate-200 flex items-end justify-between gap-1.5 px-1 h-32 pb-0">
+<!-- 90-100% Bar (12) -->
+<div class="flex flex-col items-center flex-1">
+<span class="text-[11px] font-bold text-slate-700 mb-1">12</span>
+<div class="w-full bg-[#e2e8f0] rounded-t-sm" style="height: 48px;"></div>
+</div>
+<!-- 80-90% Bar (18 - ACTIVE/HIGHLIGHTED) -->
+<div class="flex flex-col items-center flex-1 relative">
+<span class="text-[11px] font-bold text-emerald-700 mb-1">18</span>
+<div class="w-full bg-[#10b981] rounded-t-sm relative flex flex-col justify-center items-center" style="height: 74px;">
+<!-- Badge inside bar -->
+<span class="text-[8px] font-semibold text-white/90">You</span>
+</div>
+</div>
+<!-- 70-80% Bar (7) -->
+<div class="flex flex-col items-center flex-1">
+<span class="text-[11px] font-bold text-slate-700 mb-1">7</span>
+<div class="w-full bg-[#e2e8f0] rounded-t-sm" style="height: 30px;"></div>
+</div>
+<!-- 60-70% Bar (4) -->
+<div class="flex flex-col items-center flex-1">
+<span class="text-[11px] font-bold text-slate-700 mb-1">4</span>
+<div class="w-full bg-[#e2e8f0] rounded-t-sm" style="height: 18px;"></div>
+</div>
+<!-- <60% Bar (2) -->
+<div class="flex flex-col items-center flex-1">
+<span class="text-[11px] font-bold text-slate-700 mb-1">2</span>
+<div class="w-full bg-[#e2e8f0] rounded-t-sm" style="height: 10px;"></div>
+</div>
+</div>
+</div>
+<!-- X-Axis Labels -->
+<div class="flex justify-between pl-7 pr-1 text-[9px] font-semibold text-slate-500 mt-1">
+<span class="text-center flex-1">90–100%</span>
+<span class="text-center flex-1 text-emerald-700 font-bold">80–90%</span>
+<span class="text-center flex-1">70–80%</span>
+<span class="text-center flex-1">60–70%</span>
+<span class="text-center flex-1">&lt;60%</span>
+</div>
+<div class="text-center mt-2">
+<span class="text-[10px] font-semibold text-slate-500 uppercase tracking-wide">Attendance Range</span>
+</div>
+</div>
+</div>
+<!-- Card 3: Insights & Recommendations -->
+<div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex flex-col justify-between" data-purpose="insights-recommendations-card">
+<div class="mb-2">
+<div class="flex items-center gap-2 mb-1">
+<!-- Lightbulb Icon -->
+<svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" stroke-width="2.2" viewbox="0 0 24 24">
+<path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<h4 class="text-[15px] font-extrabold text-[#0a1f33]">Insights &amp; Recommendations</h4>
+</div>
+</div>
+<!-- 3 Callout Cards -->
+<div class="flex flex-col gap-2.5">
+<!-- Callout 1: Green Stat -->
+<div class="bg-[#f0fbf7] border border-emerald-100/90 rounded-xl p-2.5 flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center shrink-0">
+<svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.6" viewbox="0 0 24 24">
+<path d="M7 17l9.2-9.2M17 17V7H7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<p class="text-[12px] text-slate-700 leading-snug">
+<strong class="font-bold text-slate-800">Your attendance is 8% higher</strong> than the class average (80%).
+              </p>
+</div>
+<!-- Callout 2: Warning Missed Class -->
+<div class="bg-[#fff9f1] border border-amber-200/60 rounded-xl p-2.5 flex items-center justify-between gap-2 cursor-pointer hover:bg-amber-50/70 transition">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center shrink-0">
+<svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<div>
+<h5 class="text-[12px] font-bold text-slate-800 leading-tight">You missed 1 class on 28 Sep</h5>
+<p class="text-[11px] text-slate-500 font-medium">Topic: Memory Management</p>
+</div>
+</div>
+<svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<!-- Callout 3: Target Rank -->
+<div class="bg-[#f0f9ff] border border-sky-100 rounded-xl p-2.5 flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-sky-100 flex items-center justify-center shrink-0">
+<svg class="w-4 h-4 text-sky-600" fill="none" stroke="currentColor" stroke-width="2.3" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="9"></circle>
+<circle cx="12" cy="12" r="5"></circle>
+<circle cx="12" cy="12" fill="currentColor" r="1.5"></circle>
+</svg>
+</div>
+<div>
+<h5 class="text-[12px] font-bold text-slate-800 leading-tight">Stay above 85%</h5>
+<p class="text-[11px] text-slate-500 font-medium">to maintain your top 3 rank.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Full-Width Bottom Banner: Great consistency! -->
+<div class="relative bg-gradient-to-r from-[#e7f7f3] via-[#ecfaf6] to-[#ebf7fa] border border-emerald-200/50 rounded-2xl p-4 sm:px-6 flex items-center justify-between overflow-hidden shadow-sm mt-1" data-purpose="banner-consistency">
+<div class="flex items-center gap-4 z-10">
+<!-- Target Icon -->
+<div class="w-11 h-11 rounded-2xl bg-white/90 shadow-sm border border-emerald-200/40 flex items-center justify-center shrink-0">
+<svg class="w-6 h-6 text-teal-600" fill="none" stroke="currentColor" stroke-width="2.3" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="9"></circle>
+<circle cx="12" cy="12" r="5"></circle>
+<circle cx="12" cy="12" fill="currentColor" r="2"></circle>
+</svg>
+</div>
+<div>
+<h4 class="text-[15px] font-extrabold text-[#0a1f33] leading-snug">Great consistency!</h4>
+<p class="text-[12px] text-slate-600 font-medium">You have maintained above 85% attendance for the last 3 weeks.</p>
+</div>
+</div>
+<!-- Decorative Floral/Leaf Foliage on Right -->
+<div class="absolute right-0 top-0 bottom-0 w-44 pointer-events-none opacity-85 flex items-center justify-end">
+<svg class="h-full w-auto" fill="none" viewbox="0 0 150 70">
+<!-- Decorative mint and emerald leaves -->
+<ellipse cx="140" cy="55" fill="#10b981" opacity="0.85" rx="35" ry="14" transform="rotate(-35 140 55)"></ellipse>
+<ellipse cx="120" cy="50" fill="#059669" opacity="0.9" rx="30" ry="12" transform="rotate(-60 120 50)"></ellipse>
+<ellipse cx="150" cy="40" fill="#34d399" opacity="0.85" rx="28" ry="11" transform="rotate(-15 150 40)"></ellipse>
+<ellipse cx="105" cy="62" fill="#6ee7b7" opacity="0.7" rx="25" ry="10" transform="rotate(-75 105 62)"></ellipse>
+<ellipse cx="130" cy="68" fill="#047857" opacity="0.6" rx="20" ry="9" transform="rotate(-40 130 68)"></ellipse>
+</svg>
+</div>
+</div>
+</section>
+<!-- END: RightMainContentArea -->
+</main>
+<!-- END: MainDashboardGrid -->
+</body></html>

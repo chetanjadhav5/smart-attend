@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RaiSakshya - Teacher Dashboard</title>
+<!-- Tailwind CSS v3 with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            navy: {
+              900: '#061a23',
+              850: '#0b222c',
+              800: '#112d38',
+            },
+            tealNav: {
+              active: '#005e54',
+              hover: '#014d45',
+            },
+            status: {
+              presentBg: '#e8faf4',
+              presentText: '#00a86b',
+              absentBg: '#feeceb',
+              absentText: '#f04438',
+            }
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-layout">
+    body {
+      background: radial-gradient(circle at 10% 15%, #f6fcfb 0%, #eef8f5 40%, #e5f5f0 100%);
+      min-height: 100vh;
+    }
+    .campus-art-mask {
+      mask-image: linear-gradient(to right, transparent, black 15%, black 90%, transparent);
+      -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 90%, transparent);
+    }
+  </style>
+</head>
+<body class="font-sans text-slate-800 antialiased selection:bg-teal-500 selection:text-white pb-16">
+<!-- BEGIN: MainContainer -->
+<div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pt-5">
+<!-- BEGIN: TopNavigation -->
+<header class="w-full bg-[#081f29] rounded-[24px] px-6 py-2.5 flex items-center justify-between shadow-lg text-white mb-8 border border-white/5" data-purpose="top-navigation">
+<!-- Brand Logo & Motto -->
+<div class="flex items-center space-x-3.5">
+<div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center border border-white/10 text-white shadow-inner">
+<svg class="w-6 h-6 fill-current" viewbox="0 0 24 24">
+<path d="M12 3L1 9L12 15L21 10.09V17H23V9M5 13.18V17.18L12 21L19 17.18V13.18L12 17L5 13.18Z"></path>
+</svg>
+</div>
+<div>
+<div class="text-[19px] font-bold tracking-tight text-white leading-tight">RaiSakshya</div>
+<div class="text-[11px] text-teal-100/70 font-normal leading-tight">Smart Attendance for Brighter Futures</div>
+</div>
+</div>
+<!-- Center Nav Links -->
+<nav class="hidden md:flex items-center space-x-1 sm:space-x-2" data-purpose="center-nav-links">
+<!-- Dashboard Link -->
+<a class="flex flex-col items-center justify-center px-5 py-1.5 rounded-xl text-slate-300 hover:text-white transition group" href="#">
+<svg class="w-5 h-5 mb-0.5 fill-current opacity-80 group-hover:opacity-100" viewbox="0 0 24 24">
+<path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path>
+</svg>
+<span class="text-xs font-medium">Dashboard</span>
+</a>
+<!-- Teachers Link (Active) -->
+<a class="flex flex-col items-center justify-center px-7 py-1.5 rounded-2xl bg-[#006050] text-white shadow-md border border-emerald-400/20" href="#">
+<svg class="w-5 h-5 mb-0.5 fill-current" viewbox="0 0 24 24">
+<path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.64 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.64 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"></path>
+</svg>
+<span class="text-xs font-semibold">Teachers</span>
+</a>
+<!-- Subjects Link -->
+<a class="flex flex-col items-center justify-center px-5 py-1.5 rounded-xl text-slate-300 hover:text-white transition group" href="#">
+<svg class="w-5 h-5 mb-0.5 fill-current opacity-80 group-hover:opacity-100" viewbox="0 0 24 24">
+<path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"></path>
+</svg>
+<span class="text-xs font-medium">Subjects</span>
+</a>
+</nav>
+<!-- Right Profile & Notifications -->
+<div class="flex items-center space-x-4">
+<!-- Notification Bell -->
+<button aria-label="Notifications" class="relative p-2 text-slate-300 hover:text-white focus:outline-none" type="button">
+<svg class="w-6 h-6 fill-current" viewbox="0 0 24 24">
+<path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"></path>
+</svg>
+<span class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-[#081f29]"></span>
+</button>
+<!-- User Profile Pill -->
+<div class="flex items-center space-x-3 bg-white/5 py-1.5 pl-1.5 pr-3 rounded-full border border-white/10 hover:bg-white/10 cursor-pointer transition">
+<div class="w-9 h-9 rounded-full overflow-hidden bg-sky-200 border border-white/40 flex-shrink-0">
+<img alt="Aarav Sharma Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCawnjHMLU8odAkJizx78LRRYlBIRyQkcV667ZjC3f47Ve9pSbYISd3hU_E47RQBst9Z4Ihe1Y2s4855S8SNKodwhWtFQec1J3TTggfxXtU5R2SrzSOHP1H5KKhqGZYejRDJMpswfInGYzOGUcCvZpLovm0oedvS-wcUFKgawq0Iq-3vE_HNIsPFUoOHtpgiACy3i_BCQROddB_rtfOgXZSOsKfCepDSld2TbdFBl0yPDiYjYeoooF5rCr9P62yQ578Lg"/>
+</div>
+<div class="text-left hidden sm:block">
+<div class="text-xs font-bold leading-tight text-white">Aarav Sharma</div>
+<div class="text-[10px] text-slate-300 font-medium leading-tight">SE Computer</div>
+</div>
+<svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+</header>
+<!-- END: TopNavigation -->
+<!-- BEGIN: HeroHeaderSection -->
+<section class="relative flex flex-col lg:flex-row items-start lg:items-end justify-between mb-8 pb-4" data-purpose="page-hero-banner">
+<!-- Title & Search Side -->
+<div class="w-full lg:max-w-xl z-10 pt-2">
+<h1 class="text-3xl sm:text-4xl lg:text-[42px] font-extrabold text-[#0a1f2b] tracking-tight leading-none mb-2.5">
+          Teachers
+        </h1>
+<p class="text-base text-slate-500 font-medium mb-6">
+          Check if your teachers are present today.
+        </p>
+<!-- Search Bar -->
+<div class="relative w-full max-w-md">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"></path>
+</svg>
+</div>
+<input class="w-full pl-11 pr-5 py-3.5 bg-white/95 rounded-full border border-slate-200/80 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500/40 focus:border-teal-500 shadow-sm" placeholder="Search by teacher name or subject..." type="text"/>
+</div>
+</div>
+<!-- Campus Illustration Banner Graphic -->
+<div class="w-full lg:w-7/12 flex justify-end items-end mt-4 lg:mt-0 pointer-events-none select-none">
+<svg class="w-full h-auto max-h-[175px] drop-shadow-sm" fill="none" viewbox="0 0 760 170" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<lineargradient id="skySun" x1="0%" x2="100%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#FFEBB8" stop-opacity="0.8"></stop>
+<stop offset="100%" stop-color="#FFDA85" stop-opacity="0.3"></stop>
+</lineargradient>
+<lineargradient id="buildingGrad1" x1="0%" x2="100%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#D9F2FA"></stop>
+<stop offset="100%" stop-color="#B2E2F2"></stop>
+</lineargradient>
+<lineargradient id="buildingGrad2" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#EAF6FB"></stop>
+<stop offset="100%" stop-color="#C5E8F5"></stop>
+</lineargradient>
+<lineargradient id="groundGrad" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#C7ECCC"></stop>
+<stop offset="100%" stop-color="#A5DFB0"></stop>
+</lineargradient>
+</defs>
+<!-- Sun Glow -->
+<circle cx="590" cy="85" fill="url(#skySun)" r="50"></circle>
+<!-- Distant Foliage -->
+<ellipse cx="670" cy="110" fill="#48B383" opacity="0.6" rx="35" ry="40"></ellipse>
+<ellipse cx="710" cy="95" fill="#3AA073" opacity="0.7" rx="30" ry="45"></ellipse>
+<ellipse cx="530" cy="115" fill="#5DC495" opacity="0.6" rx="28" ry="32"></ellipse>
+<ellipse cx="380" cy="115" fill="#4CB887" opacity="0.5" rx="32" ry="32"></ellipse>
+<ellipse cx="410" cy="100" fill="#3DA677" opacity="0.6" rx="26" ry="38"></ellipse>
+<ellipse cx="445" cy="110" fill="#67CE9F" opacity="0.7" rx="34" ry="35"></ellipse>
+<!-- Campus Modern Architecture -->
+<!-- Main Tower Left -->
+<path d="M470 50 H520 V150 H470 Z" fill="url(#buildingGrad1)"></path>
+<path d="M470 50 L495 38 L520 50 Z" fill="#88CFE6"></path>
+<!-- Windows -->
+<rect fill="#389FCE" height="15" opacity="0.8" rx="1.5" width="8" x="477" y="60"></rect>
+<rect fill="#389FCE" height="15" opacity="0.8" rx="1.5" width="8" x="492" y="60"></rect>
+<rect fill="#389FCE" height="15" opacity="0.8" rx="1.5" width="8" x="506" y="60"></rect>
+<rect fill="#389FCE" height="15" opacity="0.8" rx="1.5" width="8" x="477" y="85"></rect>
+<rect fill="#389FCE" height="15" opacity="0.8" rx="1.5" width="8" x="492" y="85"></rect>
+<rect fill="#389FCE" height="15" opacity="0.8" rx="1.5" width="8" x="506" y="85"></rect>
+<rect fill="#389FCE" height="15" opacity="0.8" rx="1.5" width="8" x="477" y="110"></rect>
+<rect fill="#389FCE" height="15" opacity="0.8" rx="1.5" width="8" x="492" y="110"></rect>
+<rect fill="#389FCE" height="15" opacity="0.8" rx="1.5" width="8" x="506" y="110"></rect>
+<!-- Middle Higher Building -->
+<path d="M520 70 H580 V150 H520 Z" fill="url(#buildingGrad2)"></path>
+<rect fill="#44A5CE" height="14" opacity="0.7" rx="1" width="10" x="528" y="80"></rect>
+<rect fill="#44A5CE" height="14" opacity="0.7" rx="1" width="10" x="545" y="80"></rect>
+<rect fill="#44A5CE" height="14" opacity="0.7" rx="1" width="10" x="562" y="80"></rect>
+<rect fill="#44A5CE" height="14" opacity="0.7" rx="1" width="10" x="528" y="105"></rect>
+<rect fill="#44A5CE" height="14" opacity="0.7" rx="1" width="10" x="545" y="105"></rect>
+<rect fill="#44A5CE" height="14" opacity="0.7" rx="1" width="10" x="562" y="105"></rect>
+<!-- Right Campus Wing -->
+<path d="M580 90 H640 V150 H580 Z" fill="url(#buildingGrad1)"></path>
+<rect fill="#389FCE" height="12" opacity="0.8" rx="1" width="10" x="590" y="102"></rect>
+<rect fill="#389FCE" height="12" opacity="0.8" rx="1" width="10" x="608" y="102"></rect>
+<rect fill="#389FCE" height="12" opacity="0.8" rx="1" width="8" x="625" y="102"></rect>
+<!-- Foreground Lush Trees -->
+<circle cx="360" cy="120" fill="#339966" r="28"></circle>
+<circle cx="378" cy="110" fill="#40B379" r="22"></circle>
+<circle cx="645" cy="115" fill="#2E8F5E" r="24"></circle>
+<circle cx="665" cy="105" fill="#3CB379" r="26"></circle>
+<circle cx="690" cy="115" fill="#2E8F5E" r="22"></circle>
+<circle cx="725" cy="120" fill="#41B67D" r="28"></circle>
+<!-- Rolling Campus Green Horizon -->
+<path d="M300 155 Q 520 125 760 148 L760 170 L300 170 Z" fill="url(#groundGrad)"></path>
+<path d="M340 162 Q 540 138 760 156 L760 170 L340 170 Z" fill="#75C68A" opacity="0.7"></path>
+</svg>
+</div>
+</section>
+<!-- END: HeroHeaderSection -->
+<!-- BEGIN: TeacherGridSection -->
+<main class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" data-purpose="teachers-card-grid">
+<!-- TILE 1: Dr. R. K. Patil -->
+<article class="bg-white rounded-[28px] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100 flex flex-col justify-between hover:shadow-lg transition-all duration-300 group" data-purpose="teacher-card">
+<!-- Top Status Badge -->
+<div class="flex justify-end w-full">
+<span class="inline-flex items-center px-3.5 py-1 rounded-full text-xs font-semibold bg-[#e8faf4] text-[#00a86b]">
+<span class="w-2 h-2 rounded-full bg-[#00a86b] mr-1.5"></span>
+            Present
+          </span>
+</div>
+<!-- 3D Avatar Center Graphic -->
+<div class="w-full h-48 sm:h-52 flex items-center justify-center my-1">
+<img alt="Dr. R. K. Patil Avatar" class="max-h-full w-auto object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCawnjHMLU8odAkJizx78LRRYlBIRyQkcV667ZjC3f47Ve9pSbYISd3hU_E47RQBst9Z4Ihe1Y2s4855S8SNKodwhWtFQec1J3TTggfxXtU5R2SrzSOHP1H5KKhqGZYejRDJMpswfInGYzOGUcCvZpLovm0oedvS-wcUFKgawq0Iq-3vE_HNIsPFUoOHtpgiACy3i_BCQROddB_rtfOgXZSOsKfCepDSld2TbdFBl0yPDiYjYeoooF5rCr9P62yQ578Lg"/>
+</div>
+<!-- Bottom Information -->
+<div class="mt-2 text-left">
+<h2 class="text-[19px] font-bold text-slate-900 tracking-tight leading-snug">Dr. R. K. Patil</h2>
+<p class="text-[14px] text-slate-500 font-medium mt-0.5">Operating Systems</p>
+</div>
+</article>
+<!-- TILE 2: Prof. S. M. Deshmukh -->
+<article class="bg-white rounded-[28px] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100 flex flex-col justify-between hover:shadow-lg transition-all duration-300 group" data-purpose="teacher-card">
+<!-- Top Status Badge -->
+<div class="flex justify-end w-full">
+<span class="inline-flex items-center px-3.5 py-1 rounded-full text-xs font-semibold bg-[#e8faf4] text-[#00a86b]">
+<span class="w-2 h-2 rounded-full bg-[#00a86b] mr-1.5"></span>
+            Present
+          </span>
+</div>
+<!-- 3D Avatar Center Graphic -->
+<div class="w-full h-48 sm:h-52 flex items-center justify-center my-1">
+<img alt="Prof. S. M. Deshmukh Avatar" class="max-h-full w-auto object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBK3wMsLQukx9ESdz8XF9XAJQ3OepQA3Cnp0WQk2Yb3gDkzoPIzyGIqXopYJddNHzmReeOitzavYdkOU8gkxEvfA28BSuQdxkZylm_fjFqo2oqtGFP_Hf-EUyLEPYefDxWUtdkH6ERKeCJQH9pxBpXYaxq2KjGHf187tAAiX40ojT9K1q-iD2og7R1uYVly2sV7N2OmWWHyfXaiLAjl-P_BfmJeDX5XJv-MMd1SLK4IMEcr5HGBIRt_1UPoc8fMjQ4kQ"/>
+</div>
+<!-- Bottom Information -->
+<div class="mt-2 text-left">
+<h2 class="text-[19px] font-bold text-slate-900 tracking-tight leading-snug">Prof. S. M. Deshmukh</h2>
+<p class="text-[14px] text-slate-500 font-medium mt-0.5">Data Structures</p>
+</div>
+</article>
+<!-- TILE 3: Prof. A. J. Kulkarni (Absent) -->
+<article class="bg-white rounded-[28px] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100 flex flex-col justify-between hover:shadow-lg transition-all duration-300 group" data-purpose="teacher-card">
+<!-- Top Status Badge -->
+<div class="flex justify-end w-full">
+<span class="inline-flex items-center px-3.5 py-1 rounded-full text-xs font-semibold bg-[#feeceb] text-[#f04438]">
+<span class="w-2 h-2 rounded-full bg-[#f04438] mr-1.5"></span>
+            Absent
+          </span>
+</div>
+<!-- 3D Avatar Center Graphic -->
+<div class="w-full h-48 sm:h-52 flex items-center justify-center my-1">
+<img alt="Prof. A. J. Kulkarni Avatar" class="max-h-full w-auto object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuATIHivJSYX4cU5AdrjHFTXqWTlVXF-cMROMYHusdkdXGjhhqQHyc0GuJ7nTINUuazoe-gkbQyQ7HrWUQb-bPejqUo9Y4tKXHJniqNFWJtnfQn7X7xmMWhoNRFcr79tNRE4gLUDNpVREA7Kfu5lQpDOmAfsCwwb2MopYFzFmh6wcMlJ0MksuDxPvKkc2b1qBqteXSrVs-gNWR6dU1949Jl6pHGrdST6vYvI_Q3HDlZ7PsdaGOJ1Lx7E78_mjPWaTT8OFg"/>
+</div>
+<!-- Bottom Information -->
+<div class="mt-2 text-left">
+<h2 class="text-[19px] font-bold text-slate-900 tracking-tight leading-snug">Prof. A. J. Kulkarni</h2>
+<p class="text-[14px] text-slate-500 font-medium mt-0.5">Database Management</p>
+</div>
+</article>
+<!-- TILE 4: Prof. N. P. Shah -->
+<article class="bg-white rounded-[28px] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100 flex flex-col justify-between hover:shadow-lg transition-all duration-300 group" data-purpose="teacher-card">
+<!-- Top Status Badge -->
+<div class="flex justify-end w-full">
+<span class="inline-flex items-center px-3.5 py-1 rounded-full text-xs font-semibold bg-[#e8faf4] text-[#00a86b]">
+<span class="w-2 h-2 rounded-full bg-[#00a86b] mr-1.5"></span>
+            Present
+          </span>
+</div>
+<!-- 3D Avatar Center Graphic -->
+<div class="w-full h-48 sm:h-52 flex items-center justify-center my-1">
+<img alt="Prof. N. P. Shah Avatar" class="max-h-full w-auto object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_4scLBRjRJGzrHcjoqU2YzZfDmjBapmd0a3YCLsy6VZNKydtVsQDds0GYKbNwXGqy59B8TStNd-G_PnADfoh7AdNAuyquESyuhQa6rOFINk7LHhtvsTAqiyLtHSWlQNx1Ls_9L16N63mtYB-6lIMnVTB5-Wum1bOgtGHhBFfZVt4LdPEXEb-x6AU5oWz4ClfGZHJAbXS4iqaYeQ2pb1UzyeSejIPB8whXEW2RzM3TyaIp34gXYNh7cdWWoI5KAR7Skw"/>
+</div>
+<!-- Bottom Information -->
+<div class="mt-2 text-left">
+<h2 class="text-[19px] font-bold text-slate-900 tracking-tight leading-snug">Prof. N. P. Shah</h2>
+<p class="text-[14px] text-slate-500 font-medium mt-0.5">Computer Networks</p>
+</div>
+</article>
+<!-- TILE 5: Dr. P. V. Jadhav -->
+<article class="bg-white rounded-[28px] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100 flex flex-col justify-between hover:shadow-lg transition-all duration-300 group" data-purpose="teacher-card">
+<!-- Top Status Badge -->
+<div class="flex justify-end w-full">
+<span class="inline-flex items-center px-3.5 py-1 rounded-full text-xs font-semibold bg-[#e8faf4] text-[#00a86b]">
+<span class="w-2 h-2 rounded-full bg-[#00a86b] mr-1.5"></span>
+            Present
+          </span>
+</div>
+<!-- 3D Avatar Center Graphic -->
+<div class="w-full h-48 sm:h-52 flex items-center justify-center my-1">
+<img alt="Dr. P. V. Jadhav Avatar" class="max-h-full w-auto object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCYfe01VmzLKfbmMz34PEWSRNufT8CLm2aa9SXH-dhfupPdXouxzcrxGyRm9wLid4BoE_EKj2DhSKTikosbQ1XzjXFv5Epvoa-oat0W5IEdHrlaonCSRYB0COLJTJ2Sy_hkMQ-ejw-uUWXR_TWT1EWnQYA_7aqX9Hsd8qEhIYdnpD6dhYszC_YrkSs0ZP0hh7eqE0DLuFNkM1x_GGWcStPlFLuGcoOdquUGingtagLdawirFxy7CX77Sa_JtqYmW796Qw"/>
+</div>
+<!-- Bottom Information -->
+<div class="mt-2 text-left">
+<h2 class="text-[19px] font-bold text-slate-900 tracking-tight leading-snug">Dr. P. V. Jadhav</h2>
+<p class="text-[14px] text-slate-500 font-medium mt-0.5">Software Engineering</p>
+</div>
+</article>
+<!-- TILE 6: Prof. K. S. More -->
+<article class="bg-white rounded-[28px] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100 flex flex-col justify-between hover:shadow-lg transition-all duration-300 group" data-purpose="teacher-card">
+<!-- Top Status Badge -->
+<div class="flex justify-end w-full">
+<span class="inline-flex items-center px-3.5 py-1 rounded-full text-xs font-semibold bg-[#e8faf4] text-[#00a86b]">
+<span class="w-2 h-2 rounded-full bg-[#00a86b] mr-1.5"></span>
+            Present
+          </span>
+</div>
+<!-- 3D Avatar Center Graphic -->
+<div class="w-full h-48 sm:h-52 flex items-center justify-center my-1">
+<img alt="Prof. K. S. More Avatar" class="max-h-full w-auto object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAef8EH1ZVMYmstcFiuIUXdSvqvRW1w-QRir6uAcD6kdYgHMS19TGaLXpkuwg_6MZUxKemMEc9rCsboIjkT9f3GBahfk6qgiRLpy-grGtsj3Dqq1Es7F5Bv3FnuC2q99gzcoV6lDX692yFCxgsoDLTk6f6Y0RFOLR0jgCGF5HGbO1ohkBCUI4OMfMo-ceyCKDM8Jx5bmUN2j0QhF-P0R5I9QpWNAG9GjhVHyq7-ehzqkRl9GdNsBLzLmRwWs6BLvk_xkg"/>
+</div>
+<!-- Bottom Information -->
+<div class="mt-2 text-left">
+<h2 class="text-[19px] font-bold text-slate-900 tracking-tight leading-snug">Prof. K. S. More</h2>
+<p class="text-[14px] text-slate-500 font-medium mt-0.5">Web Technologies</p>
+</div>
+</article>
+<!-- TILE 7: Prof. R. A. Bhosale -->
+<article class="bg-white rounded-[28px] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100 flex flex-col justify-between hover:shadow-lg transition-all duration-300 group" data-purpose="teacher-card">
+<!-- Top Status Badge -->
+<div class="flex justify-end w-full">
+<span class="inline-flex items-center px-3.5 py-1 rounded-full text-xs font-semibold bg-[#e8faf4] text-[#00a86b]">
+<span class="w-2 h-2 rounded-full bg-[#00a86b] mr-1.5"></span>
+            Present
+          </span>
+</div>
+<!-- 3D Avatar Center Graphic -->
+<div class="w-full h-48 sm:h-52 flex items-center justify-center my-1">
+<img alt="Prof. R. A. Bhosale Avatar" class="max-h-full w-auto object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7Ji8kco21QNk-J5_yMR2NKiBUXVk0U0NgoFqlp4kRjChL6-9Kj726JWgfbMcA4j8Wn4dHgcjFlOwFu5TyA00-vLddnnyldCKQ38fQUTETlCS8rFMneQB51xEDV7vRB0SVd7rj1e_s-ThhEwpDvbYWtxc2eckEZKwdm-YU1VSl_9kRehZFTEGlUWJl-Clzz5s1qDEEent51mS_8BW7ZD6yLqzCm4buoeqw_WCGLOw2x0oos7pWtW865Oeeg4qyLZxtug"/>
+</div>
+<!-- Bottom Information -->
+<div class="mt-2 text-left">
+<h2 class="text-[19px] font-bold text-slate-900 tracking-tight leading-snug">Prof. R. A. Bhosale</h2>
+<p class="text-[14px] text-slate-500 font-medium mt-0.5">Theory of Computation</p>
+</div>
+</article>
+<!-- TILE 8: Prof. V. T. Gaikwad (Absent) -->
+<article class="bg-white rounded-[28px] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100 flex flex-col justify-between hover:shadow-lg transition-all duration-300 group" data-purpose="teacher-card">
+<!-- Top Status Badge -->
+<div class="flex justify-end w-full">
+<span class="inline-flex items-center px-3.5 py-1 rounded-full text-xs font-semibold bg-[#feeceb] text-[#f04438]">
+<span class="w-2 h-2 rounded-full bg-[#f04438] mr-1.5"></span>
+            Absent
+          </span>
+</div>
+<!-- 3D Avatar Center Graphic -->
+<div class="w-full h-48 sm:h-52 flex items-center justify-center my-1">
+<img alt="Prof. V. T. Gaikwad Avatar" class="max-h-full w-auto object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQKuaS8mK7a5g6AJoxAovSZ4arzDk6p_THT1FAQ5yGwqPtw1A5F0XP-UgUh1856sZ8p7U9AZSl4vURf1v9XgsCKwHg3s8I_2REXz4u8VsNlw_S34b-ptANqHka-pXbhLIi16jQeivCKAV_kFkZPOIYJ0ymKAXk4sjEy26rdFqobMngf3VnNqmP_L2buGY80xac6Q3lzi2CXQ_amQWRY8eMQ1JC5mHclVPmpCNxA6AQH-fb6xJKF4RsKJrKNTgLKBdllQ"/>
+</div>
+<!-- Bottom Information -->
+<div class="mt-2 text-left">
+<h2 class="text-[19px] font-bold text-slate-900 tracking-tight leading-snug">Prof. V. T. Gaikwad</h2>
+<p class="text-[14px] text-slate-500 font-medium mt-0.5">Machine Learning</p>
+</div>
+</article>
+</main>
+<!-- END: TeacherGridSection -->
+</div>
+<!-- END: MainContainer -->
+</body></html>

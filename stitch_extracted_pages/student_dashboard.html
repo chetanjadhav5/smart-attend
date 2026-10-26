@@ -1,0 +1,449 @@
+<!DOCTYPE html><html lang="en" style=""><svg class="inline-defs-container" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden"></svg><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>RaiSakshya - Student Attendance Dashboard</title>
+<!-- Tailwind CSS CDN v3 with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Font Awesome Icons -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<!-- Google Fonts Inter & Outfit -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              teal: '#00C48C',
+              dark: '#081726',
+              mint: '#E6F8F3',
+              accent: '#10B981',
+            }
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-layout">
+    body {
+      background: radial-gradient(circle at 10% 20%, #eff6ff 0%, #f0fdf4 40%, #eef2f6 100%);
+      min-height: 100vh;
+    }
+    /* Donut chart gradient styling */
+    .donut-chart {
+      background: conic-gradient(#00C48C 0% 88%, #e2e8f0 88% 100%);
+      border-radius: 50%;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+  </style>
+</head>
+<body class="text-slate-800 font-sans p-3 sm:p-4 md:p-5 flex justify-center">
+<div class="w-full max-w-7xl mx-auto flex flex-col gap-4" data-purpose="dashboard-container">
+<!-- BEGIN: TopHeaderNav -->
+<header class="bg-[#0B1522] rounded-2xl md:rounded-3xl px-5 py-3 md:py-3.5 flex items-center justify-between shadow-xl text-white">
+<!-- Logo and App Name -->
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-teal-400 text-xl border border-white/10">
+<i class="fa-solid fa-graduation-cap"></i>
+</div>
+<div>
+<h1 class="text-lg md:text-xl font-bold tracking-tight text-white leading-tight">RaiSakshya</h1>
+<p class="text-[11px] text-slate-400 font-medium leading-none mt-0.5">Smart Attendance for Brighter Futures</p>
+</div>
+</div>
+<!-- User Profile and Actions -->
+<div class="flex items-center gap-3 md:gap-5">
+<!-- Notification Button -->
+<button aria-label="Notifications" class="relative w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-300 transition-colors" type="button">
+<i class="fa-regular fa-bell text-lg"></i>
+<span class="absolute top-2 right-2.5 w-2 h-2 bg-rose-500 rounded-full ring-2 ring-[#0B1522]"></span>
+</button>
+<!-- Profile Dropdown Button -->
+<div class="flex items-center gap-3 pl-2 border-l border-white/10 cursor-pointer select-none">
+<img alt="Aarav Sharma" class="w-10 h-10 rounded-full object-cover ring-2 ring-teal-400/30" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAG3PU9cjmPJmrs3ug36QItYFA_FfRp05l8VzToHhgkiCP7acaX6-6ItGKEb6ovWO5M5a911BOn1A4E3b8g0kNBXyUgQDwMPyP3wQjAoai513g2hs7-QfMqRQwoZhMCTZvBc83kM9e6rabhumhamoNFnSV14cj9M5jmdzhitRB8pW5S_4_yRiznkGmRNOzvsHK850SfFCZ5eh6u4QdAuG9TahhoKz88dnb6F7mrFZ5nGPm5wElvib-q">
+<div class="hidden sm:block text-left">
+<h4 class="text-sm font-semibold text-white leading-tight">Aarav Sharma</h4>
+<span class="text-[11px] text-slate-400 font-medium">SE Computer</span>
+</div>
+<i class="fa-solid fa-chevron-down text-xs text-slate-400 ml-0.5 hidden sm:inline-block"></i>
+</div>
+</div>
+</header>
+<!-- END: TopHeaderNav -->
+<!-- BEGIN: HeroBannerSection -->
+<section class="relative bg-gradient-to-r from-blue-50/70 via-teal-50/50 to-emerald-50/80 rounded-2xl md:rounded-3xl p-5 md:p-6 overflow-hidden border border-white/60 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between min-h-[130px] md:min-h-[145px]">
+<!-- Greeting and Date Details -->
+<div class="z-10 max-w-xl">
+<span class="text-xs md:text-sm font-semibold tracking-wide text-slate-500 uppercase">Friday, 03 Oct 2026</span>
+<h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 mt-1 mb-1 tracking-tight flex items-center gap-2">
+          Good Evening, Aarav <span class="inline-block transform hover:rotate-12 transition-transform cursor-default">👋</span>
+</h2>
+<p class="text-slate-600 text-sm md:text-base font-medium">Your attendance is on track. Keep up the good work!</p>
+</div>
+<!-- Campus Horizon Illustration -->
+<div class="hidden lg:block absolute right-0 bottom-0 h-full w-[540px] pointer-events-none select-none overflow-hidden">
+<svg class="absolute right-0 bottom-0 w-full h-full" fill="none" preserveAspectRatio="xMaxYMax slice" viewBox="0 0 540 170" xmlns="http://www.w3.org/2000/svg">
+<!-- Sky and Sun Glow -->
+<circle cx="280" cy="50" fill="#FED7AA" fill-opacity="0.6" r="45"></circle>
+<!-- Back Hills -->
+<path d="M0 170 C120 120 280 140 540 130 L540 170 Z" fill="#99F6E4" fill-opacity="0.35"></path>
+<path d="M50 170 C200 130 380 135 540 150 L540 170 Z" fill="#BBF7D0" fill-opacity="0.45"></path>
+<!-- Modern Campus Building Blocks -->
+<g opacity="0.9">
+<!-- Central Main Block -->
+<path d="M290 60 L380 40 L380 170 L290 170 Z" fill="#93C5FD"></path>
+<path d="M380 40 L450 65 L450 170 L380 170 Z" fill="#60A5FA"></path>
+<!-- Perspective windows -->
+<rect fill="#DBEAFE" height="15" rx="1" width="12" x="305" y="70"></rect>
+<rect fill="#DBEAFE" height="15" rx="1" width="12" x="325" y="66"></rect>
+<rect fill="#DBEAFE" height="15" rx="1" width="12" x="345" y="62"></rect>
+<rect fill="#DBEAFE" height="15" rx="1" width="12" x="305" y="95"></rect>
+<rect fill="#DBEAFE" height="15" rx="1" width="12" x="325" y="91"></rect>
+<rect fill="#DBEAFE" height="15" rx="1" width="12" x="345" y="87"></rect>
+<!-- Right Wing -->
+<path d="M450 65 L520 85 L520 170 L450 170 Z" fill="#3B82F6" opacity="0.8"></path>
+<rect fill="#EFF6FF" height="12" width="10" x="465" y="80"></rect>
+<rect fill="#EFF6FF" height="12" width="10" x="485" y="85"></rect>
+</g>
+<!-- Trees Foreground and Midground -->
+<!-- Tree 1 -->
+<ellipse cx="230" cy="115" fill="#059669" rx="18" ry="32"></ellipse>
+<ellipse cx="218" cy="125" fill="#10B981" rx="16" ry="24"></ellipse>
+<!-- Tree 2 -->
+<circle cx="260" cy="125" fill="#047857" r="24"></circle>
+<circle cx="270" cy="132" fill="#10B981" r="18"></circle>
+<!-- Tree 3 -->
+<ellipse cx="180" cy="135" fill="#10B981" rx="22" ry="28"></ellipse>
+<ellipse cx="195" cy="138" fill="#34D399" rx="18" ry="22"></ellipse>
+<!-- Tree 4 Small bushes -->
+<circle cx="150" cy="150" fill="#059669" r="14"></circle>
+<circle cx="130" cy="155" fill="#34D399" r="12"></circle>
+<!-- Right side landscaping -->
+<ellipse cx="500" cy="140" fill="#047857" rx="20" ry="25"></ellipse>
+<ellipse cx="525" cy="130" fill="#10B981" rx="15" ry="30"></ellipse>
+<!-- Grass strip -->
+<rect fill="#34D399" height="5" opacity="0.6" width="540" x="0" y="165"></rect>
+</svg>
+</div>
+</section>
+<!-- END: HeroBannerSection -->
+<!-- BEGIN: TopMetricsGrid -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-4" data-purpose="top-metrics-row">
+<!-- Card: Overall Attendance (Left: 5 cols on lg) -->
+<div class="lg:col-span-5 bg-white/90 backdrop-blur-sm rounded-2xl md:rounded-3xl p-5 sm:p-6 shadow-sm border border-slate-100 flex flex-col justify-between h-full" data-purpose="overall-attendance-card">
+<!-- Card Header -->
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-500 text-lg">
+<i class="fa-solid fa-chart-pie"></i>
+</div>
+<div>
+<h3 class="text-lg font-bold text-slate-800 leading-none">Overall Attendance</h3>
+<p class="text-xs font-semibold text-slate-400 mt-1">All subjects · Till date</p>
+</div>
+</div>
+<!-- Donut Chart & Counts -->
+<div class="flex flex-col sm:flex-row items-center justify-between gap-6 my-4 sm:my-2"><!-- Circular Donut Chart -->
+<div class="relative w-48 h-48 md:w-52 md:h-52 flex items-center justify-center shrink-0 my-2">
+  <svg class="w-full h-full transform -rotate-90" viewBox="0 0 200 200">
+    <!-- Background Circle -->
+    <circle cx="100" cy="100" fill="transparent" r="78" stroke="#E2E8F0" stroke-width="18"></circle>
+    <!-- Progress Circle 88% -->
+    <circle cx="100" cy="100" fill="transparent" r="78" stroke="#00C48C" stroke-dasharray="490.1" stroke-dashoffset="58.8" stroke-linecap="round" stroke-width="18"></circle>
+  </svg>
+  <div class="absolute inset-0 flex flex-col items-center justify-center text-center select-none">
+    <span class="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">88%</span>
+    <span class="text-xs md:text-sm font-semibold text-slate-500 mt-1">Overall</span>
+  </div>
+</div>
+<!-- Legend & Numerical Stats -->
+<div class="w-full sm:w-auto flex flex-col justify-center gap-4 md:gap-5 pr-2 sm:pr-4 flex-1 max-w-xs">
+  <!-- Present -->
+  <div class="flex items-center justify-between gap-6 sm:gap-10">
+    <div class="flex items-center gap-3">
+      <span class="w-3.5 h-3.5 rounded-full bg-[#00C48C] shrink-0"></span>
+      <span class="text-sm md:text-base font-semibold text-slate-700">Present</span>
+    </div>
+    <span class="text-lg md:text-xl font-bold text-slate-900">106</span>
+  </div>
+  <!-- Absent -->
+  <div class="flex items-center justify-between gap-6 sm:gap-10">
+    <div class="flex items-center gap-3">
+      <span class="w-3.5 h-3.5 rounded-full bg-amber-400 shrink-0"></span>
+      <span class="text-sm md:text-base font-semibold text-slate-700">Absent</span>
+    </div>
+    <span class="text-lg md:text-xl font-bold text-slate-900">10</span>
+  </div>
+  <!-- Not Marked -->
+  <div class="flex items-center justify-between gap-6 sm:gap-10">
+    <div class="flex items-center gap-3">
+      <span class="w-3.5 h-3.5 rounded-full bg-slate-400 shrink-0"></span>
+      <span class="text-sm md:text-base font-semibold text-slate-700">Not Marked</span>
+    </div>
+    <span class="text-lg md:text-xl font-bold text-slate-900">4</span>
+  </div>
+</div></div>
+<div class="hidden sm:block"></div>
+</div>
+<!-- Card: Attendance Trend (Right: 7 cols on lg) -->
+<div class="lg:col-span-7 bg-white/90 backdrop-blur-sm rounded-2xl md:rounded-3xl p-5 sm:p-6 shadow-sm border border-slate-100 flex flex-col justify-between h-full" data-purpose="attendance-trend-card">
+<!-- Header & Time Filter -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-teal-500/10 flex items-center justify-center text-teal-500 text-lg">
+<i class="fa-solid fa-arrow-trend-up"></i>
+</div>
+<div>
+<h3 class="text-lg font-bold text-slate-800 leading-none">Attendance Trend</h3>
+<p class="text-xs font-semibold text-slate-400 mt-1">Overall attendance in the last 8 weeks</p>
+</div>
+</div>
+<!-- Dropdown Pill -->
+<div class="inline-flex items-center gap-2 self-start sm:self-auto px-3.5 py-1.5 rounded-xl border border-slate-200 hover:border-slate-300 bg-white text-xs font-semibold text-slate-700 shadow-sm cursor-pointer transition">
+<i class="fa-regular fa-calendar text-slate-500"></i>
+<span class="">Last 8 Weeks</span>
+<i class="fa-solid fa-chevron-down text-[10px] text-slate-400 ml-1"></i>
+</div>
+</div>
+<!-- SVG Line Trend Chart with Exact Values -->
+<div class="w-full relative pt-2 pb-0"><!-- Highest Week Highlight Badge on top right -->
+<div class="absolute right-2 top-0 bg-[#00C48C] text-white text-xs font-bold px-2.5 py-0.5 rounded-full shadow-sm z-10">
+  92%
+</div>
+<svg class="w-full h-52 md:h-56 overflow-visible" viewBox="0 0 540 200">
+  <!-- Dotted Horizontal Grid lines -->
+  <!-- 100% -->
+  <line stroke="#f1f5f9" stroke-dasharray="4 4" stroke-width="1.5" x1="38" x2="525" y1="25" y2="25"></line>
+  <text fill="#94a3b8" font-size="11" font-weight="600" x="6" y="29">100%</text>
+  <!-- 75% -->
+  <line stroke="#f1f5f9" stroke-dasharray="4 4" stroke-width="1.5" x1="38" x2="525" y1="65" y2="65"></line>
+  <text fill="#94a3b8" font-size="11" font-weight="600" x="12" y="69">75%</text>
+  <!-- 50% -->
+  <line stroke="#f1f5f9" stroke-dasharray="4 4" stroke-width="1.5" x1="38" x2="525" y1="105" y2="105"></line>
+  <text fill="#94a3b8" font-size="11" font-weight="600" x="12" y="109">50%</text>
+  <!-- 25% -->
+  <line stroke="#f1f5f9" stroke-dasharray="4 4" stroke-width="1.5" x1="38" x2="525" y1="145" y2="145"></line>
+  <text fill="#94a3b8" font-size="11" font-weight="600" x="12" y="149">25%</text>
+  <!-- 0% -->
+  <line stroke="#e2e8f0" stroke-width="1.5" x1="38" x2="525" y1="180" y2="180"></line>
+  <text fill="#94a3b8" font-size="11" font-weight="600" x="18" y="184">0%</text>
+  <defs>
+    <linearGradient id="trendFillGradient" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#00C48C" stop-opacity="0.3"></stop>
+      <stop offset="100%" stop-color="#00C48C" stop-opacity="0.02"></stop>
+    </linearGradient>
+  </defs>
+  <!-- Area Fill Under Curve -->
+  <polygon fill="url(#trendFillGradient)" points="52,53 118,48 184,60 250,39 316,45 382,42 448,47 514,37 514,180 52,180"></polygon>
+  <!-- Smooth Polyline -->
+  <polyline fill="none" points="52,53 118,48 184,60 250,39 316,45 382,42 448,47 514,37" stroke="#00C48C" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.5"></polyline>
+  <!-- Data Points & Labels -->
+  <!-- W1 -->
+  <circle cx="52" cy="53" fill="#00C48C" r="5" stroke="#fff" stroke-width="2.5"></circle>
+  <text fill="#0f172a" font-size="12" font-weight="700" text-anchor="middle" x="52" y="41">82%</text>
+  <text fill="#64748b" font-size="11" font-weight="600" text-anchor="middle" x="52" y="197">W1</text>
+  <!-- W2 -->
+  <circle cx="118" cy="48" fill="#00C48C" r="5" stroke="#fff" stroke-width="2.5"></circle>
+  <text fill="#0f172a" font-size="12" font-weight="700" text-anchor="middle" x="118" y="36">85%</text>
+  <text fill="#64748b" font-size="11" font-weight="600" text-anchor="middle" x="118" y="197">W2</text>
+  <!-- W3 -->
+  <circle cx="184" cy="60" fill="#00C48C" r="5" stroke="#fff" stroke-width="2.5"></circle>
+  <text fill="#0f172a" font-size="12" font-weight="700" text-anchor="middle" x="184" y="48">78%</text>
+  <text fill="#64748b" font-size="11" font-weight="600" text-anchor="middle" x="184" y="197">W3</text>
+  <!-- W4 -->
+  <circle cx="250" cy="39" fill="#00C48C" r="5" stroke="#fff" stroke-width="2.5"></circle>
+  <text fill="#0f172a" font-size="12" font-weight="700" text-anchor="middle" x="250" y="27">91%</text>
+  <text fill="#64748b" font-size="11" font-weight="600" text-anchor="middle" x="250" y="197">W4</text>
+  <!-- W5 -->
+  <circle cx="316" cy="45" fill="#00C48C" r="5" stroke="#fff" stroke-width="2.5"></circle>
+  <text fill="#0f172a" font-size="12" font-weight="700" text-anchor="middle" x="316" y="33">87%</text>
+  <text fill="#64748b" font-size="11" font-weight="600" text-anchor="middle" x="316" y="197">W5</text>
+  <!-- W6 -->
+  <circle cx="382" cy="42" fill="#00C48C" r="5" stroke="#fff" stroke-width="2.5"></circle>
+  <text fill="#0f172a" font-size="12" font-weight="700" text-anchor="middle" x="382" y="30">89%</text>
+  <text fill="#64748b" font-size="11" font-weight="600" text-anchor="middle" x="382" y="197">W6</text>
+  <!-- W7 -->
+  <circle cx="448" cy="47" fill="#00C48C" r="5" stroke="#fff" stroke-width="2.5"></circle>
+  <text fill="#0f172a" font-size="12" font-weight="700" text-anchor="middle" x="448" y="35">86%</text>
+  <text fill="#64748b" font-size="11" font-weight="600" text-anchor="middle" x="448" y="197">W7</text>
+  <!-- W8 -->
+  <circle cx="514" cy="37" fill="#00C48C" r="6" stroke="#fff" stroke-width="2.5"></circle>
+  <text fill="#64748b" font-size="11" font-weight="600" text-anchor="middle" x="514" y="197">W8</text>
+</svg></div>
+</div>
+</section>
+<!-- END: TopMetricsGrid -->
+<!-- BEGIN: BottomDetailsSection -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-4" data-purpose="bottom-details-row">
+<!-- Subject-wise Attendance (Left: 7 cols on lg) -->
+<div class="lg:col-span-7 bg-white/90 backdrop-blur-sm rounded-2xl md:rounded-3xl p-5 sm:p-6 shadow-sm border border-slate-100 flex flex-col justify-between h-full" data-purpose="subject-wise-attendance-card">
+<!-- Header -->
+<div class="flex items-center gap-3 mb-3">
+<div class="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-500 text-lg">
+<i class="fa-solid fa-book-open"></i>
+</div>
+<div>
+<h3 class="text-lg font-bold text-slate-800 leading-none">Subject-wise Attendance</h3>
+<p class="text-xs font-semibold text-slate-400 mt-1">Your attendance in each subject</p>
+</div>
+</div>
+<!-- Subject List -->
+<div class="flex flex-col gap-2"><!-- Subject 1: Data Structures -->
+<div class="flex items-center justify-between gap-4 py-2 px-2.5 rounded-xl hover:bg-slate-50/80 transition-colors cursor-pointer group">
+  <div class="flex items-center gap-3.5 w-48 md:w-56 shrink-0">
+    <div class="w-10 h-10 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center text-base font-bold shrink-0">
+      <i class="fa-solid fa-code"></i>
+    </div>
+    <span class="text-sm md:text-base font-semibold text-slate-800">Data Structures</span>
+  </div>
+  <!-- Substantially thicker & wider progress bar -->
+  <div class="flex-1 bg-slate-100 rounded-full h-3.5 overflow-hidden mx-2">
+    <div class="bg-[#00C48C] h-3.5 rounded-full transition-all duration-500" style="width: 92%;"></div>
+  </div>
+  <!-- Percentage & Chevron -->
+  <div class="flex items-center gap-2 justify-end w-20 text-right shrink-0">
+    <span class="text-sm md:text-base font-bold text-slate-800">92%</span>
+    <i class="fa-solid fa-chevron-right text-xs text-slate-400 group-hover:text-slate-600 transition-colors"></i>
+  </div>
+</div>
+
+<!-- Subject 2: Database Management -->
+<div class="flex items-center justify-between gap-4 py-2 px-2.5 rounded-xl hover:bg-slate-50/80 transition-colors cursor-pointer group">
+  <div class="flex items-center gap-3.5 w-48 md:w-56 shrink-0">
+    <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-500 flex items-center justify-center text-base font-bold shrink-0">
+      <i class="fa-solid fa-database"></i>
+    </div>
+    <span class="text-sm md:text-base font-semibold text-slate-800">Database Management</span>
+  </div>
+  <div class="flex-1 bg-slate-100 rounded-full h-3.5 overflow-hidden mx-2">
+    <div class="bg-blue-400 h-3.5 rounded-full transition-all duration-500" style="width: 85%;"></div>
+  </div>
+  <div class="flex items-center gap-2 justify-end w-20 text-right shrink-0">
+    <span class="text-sm md:text-base font-bold text-slate-800">85%</span>
+    <i class="fa-solid fa-chevron-right text-xs text-slate-400 group-hover:text-slate-600 transition-colors"></i>
+  </div>
+</div>
+
+<!-- Subject 3: Operating Systems -->
+<div class="flex items-center justify-between gap-4 py-2 px-2.5 rounded-xl hover:bg-slate-50/80 transition-colors cursor-pointer group">
+  <div class="flex items-center gap-3.5 w-48 md:w-56 shrink-0">
+    <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-500 flex items-center justify-center text-base font-bold shrink-0">
+      <i class="fa-solid fa-gear"></i>
+    </div>
+    <span class="text-sm md:text-base font-semibold text-slate-800">Operating Systems</span>
+  </div>
+  <div class="flex-1 bg-slate-100 rounded-full h-3.5 overflow-hidden mx-2">
+    <div class="bg-amber-400 h-3.5 rounded-full transition-all duration-500" style="width: 78%;"></div>
+  </div>
+  <div class="flex items-center gap-2 justify-end w-20 text-right shrink-0">
+    <span class="text-sm md:text-base font-bold text-slate-800">78%</span>
+    <i class="fa-solid fa-chevron-right text-xs text-slate-400 group-hover:text-slate-600 transition-colors"></i>
+  </div>
+</div>
+
+<!-- Subject 4: Computer Networks -->
+<div class="flex items-center justify-between gap-4 py-2 px-2.5 rounded-xl hover:bg-slate-50/80 transition-colors cursor-pointer group">
+  <div class="flex items-center gap-3.5 w-48 md:w-56 shrink-0">
+    <div class="w-10 h-10 rounded-xl bg-rose-50 text-rose-500 flex items-center justify-center text-base font-bold shrink-0">
+      <i class="fa-solid fa-wifi"></i>
+    </div>
+    <span class="text-sm md:text-base font-semibold text-slate-800">Computer Networks</span>
+  </div>
+  <div class="flex-1 bg-slate-100 rounded-full h-3.5 overflow-hidden mx-2">
+    <div class="bg-rose-400 h-3.5 rounded-full transition-all duration-500" style="width: 88%;"></div>
+  </div>
+  <div class="flex items-center gap-2 justify-end w-20 text-right shrink-0">
+    <span class="text-sm md:text-base font-bold text-slate-800">88%</span>
+    <i class="fa-solid fa-chevron-right text-xs text-slate-400 group-hover:text-slate-600 transition-colors"></i>
+  </div>
+</div>
+
+<!-- Subject 5: Software Engineering -->
+<div class="flex items-center justify-between gap-4 py-2 px-2.5 rounded-xl hover:bg-slate-50/80 transition-colors cursor-pointer group">
+  <div class="flex items-center gap-3.5 w-48 md:w-56 shrink-0">
+    <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-base font-bold shrink-0">
+      <i class="fa-regular fa-file-lines"></i>
+    </div>
+    <span class="text-sm md:text-base font-semibold text-slate-800">Software Engineering</span>
+  </div>
+  <div class="flex-1 bg-slate-100 rounded-full h-3.5 overflow-hidden mx-2">
+    <div class="bg-[#00C48C] h-3.5 rounded-full transition-all duration-500" style="width: 91%;"></div>
+  </div>
+  <div class="flex items-center gap-2 justify-end w-20 text-right shrink-0">
+    <span class="text-sm md:text-base font-bold text-slate-800">91%</span>
+    <i class="fa-solid fa-chevron-right text-xs text-slate-400 group-hover:text-slate-600 transition-colors"></i>
+  </div>
+</div></div>
+</div>
+<!-- Alerts & Stay Consistent Column (Right: 5 cols on lg) -->
+<div class="lg:col-span-5 flex flex-col justify-between gap-4 h-full" data-purpose="alerts-and-motivation-column">
+<!-- Alerts Container -->
+<div class="bg-white/90 backdrop-blur-sm rounded-2xl md:rounded-3xl p-5 shadow-sm border border-slate-100">
+<!-- Header -->
+<div class="flex items-center gap-2.5 mb-4">
+<i class="fa-solid fa-bell text-amber-500 text-lg"></i>
+<h3 class="text-lg font-bold text-slate-800">Alerts</h3>
+</div>
+<div class="flex flex-col gap-3">
+<!-- Warning Alert Card -->
+<div class="p-3.5 rounded-2xl bg-rose-50/70 border border-rose-100/80 flex items-center justify-between gap-3 hover:bg-rose-50 transition cursor-pointer">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-rose-100 text-rose-500 flex items-center justify-center shrink-0">
+<i class="fa-solid fa-circle-exclamation text-base"></i>
+</div>
+<div>
+<h4 class="text-xs sm:text-sm font-bold text-slate-800 leading-tight">Operating Systems attendance is 78%</h4>
+<p class="text-[11px] sm:text-xs text-slate-500 mt-0.5">Try to attend more classes to maintain a safe score.</p>
+</div>
+</div>
+<i class="fa-solid fa-chevron-right text-xs text-slate-400 shrink-0"></i>
+</div>
+<!-- Positive Alert Card -->
+<div class="p-3.5 rounded-2xl bg-emerald-50/70 border border-emerald-100/80 flex items-center justify-between gap-3 hover:bg-emerald-50 transition cursor-pointer">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-emerald-100 text-[#00C48C] flex items-center justify-center shrink-0">
+<i class="fa-solid fa-chart-line text-sm"></i>
+</div>
+<div>
+<h4 class="text-xs sm:text-sm font-bold text-slate-800 leading-tight">Your attendance improved by 5%</h4>
+<p class="text-[11px] sm:text-xs text-slate-500 mt-0.5">Great progress compared to last month!</p>
+</div>
+</div>
+<i class="fa-solid fa-chevron-right text-xs text-slate-400 shrink-0"></i>
+</div>
+</div>
+</div>
+<!-- Stay Consistent Motivational Banner -->
+<div class="relative bg-gradient-to-r from-teal-50/90 via-emerald-50/60 to-white/90 rounded-2xl md:rounded-3xl p-4 sm:p-5 border border-emerald-100/60 shadow-sm overflow-hidden flex items-center justify-between">
+<div class="flex items-center gap-4 z-10">
+<!-- Target Dartboard Icon -->
+<div class="w-12 h-12 rounded-2xl bg-white shadow-sm border border-emerald-100 flex items-center justify-center shrink-0 text-emerald-500 text-xl">
+<i class="fa-solid fa-bullseye"></i>
+</div>
+<div>
+<h4 class="text-base font-extrabold text-slate-900 leading-tight">Stay Consistent!</h4>
+<p class="text-xs text-slate-600 font-medium mt-0.5">You're just 2% away from 90%. Keep going!</p>
+</div>
+</div>
+<!-- Decorative Floral/Leaf Corner Graphic -->
+<div class="absolute -right-3 -bottom-3 opacity-30 sm:opacity-40 pointer-events-none">
+<svg fill="none" height="90" viewBox="0 0 120 90" width="120" xmlns="http://www.w3.org/2000/svg">
+<path d="M40 90C40 60 70 40 110 35C110 65 80 85 40 90Z" fill="#10B981"></path>
+<path d="M70 90C70 50 100 20 130 10C130 50 100 80 70 90Z" fill="#047857"></path>
+<path d="M90 90C90 70 105 50 130 45C130 70 110 85 90 90Z" fill="#6EE7B7"></path>
+</svg>
+</div>
+</div>
+</div>
+</section>
+<!-- END: BottomDetailsSection -->
+</div>
+
+
+</body></html>

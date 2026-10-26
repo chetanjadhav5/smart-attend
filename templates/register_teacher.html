@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Teacher Registration - RaiSakshya</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              teal: '#00C48C',
+              dark: '#081726',
+              mint: '#E6F8F3',
+              accent: '#10B981',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: radial-gradient(circle at 10% 20%, #eff6ff 0%, #f0fdf4 40%, #eef2f6 100%);
+      min-height: 100vh;
+    }
+    .reticle-ring {
+      border: 3.5px solid rgba(255, 255, 255, 0.7);
+      border-radius: 50%;
+    }
+  </style>
+</head>
+<body class="text-slate-800 antialiased p-3 sm:p-5 flex flex-col justify-center items-center min-h-screen">
+
+  <div class="w-full max-w-2xl mx-auto flex flex-col gap-5">
+    
+    <!-- Header -->
+    <div class="flex items-center justify-between">
+      <a href="/login" class="inline-flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-slate-800 transition">
+        <i class="fa-solid fa-arrow-left"></i> Back to Login
+      </a>
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-xl bg-[#0B1522] flex items-center justify-center text-teal-400 text-sm shadow">
+          <i class="fa-solid fa-graduation-cap"></i>
+        </div>
+        <span class="font-bold text-sm text-slate-800">RaiSakshya</span>
+      </div>
+    </div>
+
+    <!-- Stepper Indicator -->
+    <div class="grid grid-cols-2 gap-3 bg-white/70 backdrop-blur-md p-2 rounded-2xl border border-white/60 shadow-sm">
+      <div id="step-1-indicator" class="flex items-center gap-3 p-2.5 rounded-xl bg-[#0B1522] text-white transition-all">
+        <div class="w-7 h-7 rounded-lg bg-indigo-500 text-white font-extrabold text-xs flex items-center justify-center">1</div>
+        <div class="text-left">
+          <p class="text-xs font-bold leading-tight">Phase 1</p>
+          <p class="text-[10px] text-slate-300">Credentials & OTP</p>
+        </div>
+      </div>
+
+      <div id="step-2-indicator" class="flex items-center gap-3 p-2.5 rounded-xl bg-slate-100/60 text-slate-400 transition-all">
+        <div class="w-7 h-7 rounded-lg bg-slate-200 text-slate-600 font-extrabold text-xs flex items-center justify-center">2</div>
+        <div class="text-left">
+          <p class="text-xs font-bold leading-tight">Phase 2</p>
+          <p class="text-[10px] text-slate-500">Teacher Profile & Face</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Card -->
+    <div class="bg-white/95 backdrop-blur-xl rounded-[32px] p-6 sm:p-8 shadow-2xl border border-white/80">
+      
+      <!-- PHASE 1: Credentials & OTP -->
+      <div id="phase-1-container" class="flex flex-col gap-5">
+        <div>
+          <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">Faculty & Teacher Registration</h2>
+          <p class="text-xs text-slate-500 mt-1">Provide your institutional email to initiate teacher sign-up.</p>
+        </div>
+
+        <form id="phase-1-form" onsubmit="sendPhase1Otp(event)" class="flex flex-col gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1.5" for="teacher-email">Faculty Email Address</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
+                <i class="fa-regular fa-envelope text-sm"></i>
+              </span>
+              <input id="teacher-email" type="email" required placeholder="prof.name@college.edu"
+                class="w-full pl-10 pr-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-semibold text-slate-900 focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1.5" for="teacher-pass">Create Password</label>
+              <input id="teacher-pass" type="password" required minlength="6" placeholder="Min 6 characters"
+                class="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-semibold text-slate-900 focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1.5" for="teacher-confirm-pass">Confirm Password</label>
+              <input id="teacher-confirm-pass" type="password" required minlength="6" placeholder="Re-type password"
+                class="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-semibold text-slate-900 focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none">
+            </div>
+          </div>
+
+          <button type="submit" id="send-otp-btn" class="w-full py-3.5 rounded-2xl bg-[#0B1522] hover:bg-[#121f31] text-white font-extrabold text-sm flex items-center justify-center gap-2 shadow-lg transition">
+            <span>Send OTP Verification Code</span>
+            <i class="fa-solid fa-paper-plane text-indigo-400 text-xs"></i>
+          </button>
+        </form>
+
+        <!-- OTP Input Area -->
+        <div id="otp-section" class="hidden flex flex-col gap-3 p-4 bg-indigo-50/70 border border-indigo-100 rounded-2xl">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-indigo-900">Enter 6-Digit OTP</span>
+            <span class="text-[11px] font-bold text-indigo-700 bg-indigo-100/90 px-2.5 py-0.5 rounded-full flex items-center gap-1">
+              <i class="fa-regular fa-envelope"></i> Sent to your email
+            </span>
+          </div>
+
+          <div class="flex gap-2 justify-center">
+            <input type="text" maxlength="6" id="otp-input" placeholder="______" autocomplete="one-time-code"
+              class="w-48 text-center text-lg font-mono font-bold tracking-widest px-4 py-2.5 rounded-xl bg-white border border-indigo-300 text-indigo-950 focus:ring-2 focus:ring-indigo-500 outline-none">
+          </div>
+
+          <button type="button" onclick="verifyTeacherOtp()" id="verify-otp-btn" class="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow transition">
+            Verify Code & Proceed to Phase 2
+          </button>
+        </div>
+      </div>
+
+      <!-- PHASE 2: Teacher Profile & Biometrics -->
+      <div id="phase-2-container" class="hidden flex flex-col gap-6">
+        <div>
+          <div class="flex items-center gap-2 text-xs font-bold text-emerald-600 mb-1">
+            <i class="fa-solid fa-circle-check"></i> Email Verified
+          </div>
+          <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">Phase 2: Faculty Details & Face Enrollment</h2>
+          <p class="text-xs text-slate-500 mt-1">Fill in academic details and capture biometric face for Admin approval.</p>
+        </div>
+
+        <form id="phase-2-form" onsubmit="submitPhase2Registration(event)" class="flex flex-col gap-5">
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1" for="teacher-name">Full Name (with Title)</label>
+              <input id="teacher-name" type="text" required placeholder="e.g. Dr. Vikramaditya Rao"
+                class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm font-semibold outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1" for="teacher-emp-id">Employee ID</label>
+              <input id="teacher-emp-id" type="text" required placeholder="e.g. EMP-5012"
+                class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm font-semibold outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1" for="teacher-dept">Department</label>
+              <select id="teacher-dept" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm font-semibold outline-none">
+                <option value="Computer Engineering">Computer Engineering</option>
+                <option value="Information Technology">Information Technology</option>
+                <option value="AI & Data Science">AI & Data Science</option>
+                <option value="Electronics & Telecomm">Electronics & Telecomm</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1" for="teacher-desig">Designation</label>
+              <select id="teacher-desig" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm font-semibold outline-none">
+                <option value="Assistant Professor">Assistant Professor</option>
+                <option value="Associate Professor">Associate Professor</option>
+                <option value="Professor">Professor</option>
+                <option value="Head of Department">Head of Department (HOD)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1" for="teacher-cabin">Cabin / Lab Location</label>
+              <input id="teacher-cabin" type="text" placeholder="e.g. Room 304 - Tech Tower"
+                class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm font-semibold outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1" for="teacher-subjects">Subjects Taught</label>
+              <input id="teacher-subjects" type="text" required placeholder="e.g. Artificial Intelligence, Machine Learning"
+                class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm font-semibold outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+          </div>
+
+          <!-- Class Teacher Toggle Section -->
+          <div class="p-4 rounded-2xl bg-indigo-50/60 border border-indigo-100 flex flex-col gap-3">
+            <div class="flex items-center justify-between">
+              <div>
+                <h4 class="text-xs sm:text-sm font-bold text-indigo-950">Are you appointed as a Class Teacher?</h4>
+                <p class="text-[11px] text-indigo-700">Class teachers have authority to approve student sign-ups.</p>
+              </div>
+              <input type="checkbox" id="is-class-teacher-toggle" onchange="toggleClassTeacherFields()" class="w-5 h-5 text-indigo-600 rounded-lg focus:ring-indigo-500">
+            </div>
+
+            <div id="class-assigned-container" class="hidden">
+              <label class="block text-xs font-bold text-indigo-900 mb-1">Select Assigned Class & Division</label>
+              <select id="class-assigned-select" class="w-full px-3 py-2 rounded-xl bg-white border border-indigo-200 text-xs font-bold text-slate-800 outline-none">
+                <option value="SE Computer - Div A">SE Computer - Div A</option>
+                <option value="SE Computer - Div B">SE Computer - Div B</option>
+                <option value="TE Computer - Div A">TE Computer - Div A</option>
+                <option value="BE Computer - Div A">BE Computer - Div A</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Avatar / Animated Teacher Face Selection -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-2">Select Digital Faculty Avatar</label>
+            <div class="grid grid-cols-4 sm:grid-cols-8 gap-2">
+              <label class="cursor-pointer">
+                <input type="radio" name="teacher_avatar" value="/static/teacher_faces/20bb28b4-f54a-4a3c-9630-e75ad391e672.png" checked class="peer sr-only">
+                <img src="/static/teacher_faces/20bb28b4-f54a-4a3c-9630-e75ad391e672.png" class="w-14 h-14 rounded-2xl bg-amber-100 p-1 object-cover border-2 border-transparent peer-checked:border-indigo-600 peer-checked:ring-2 peer-checked:ring-indigo-400">
+              </label>
+              <label class="cursor-pointer">
+                <input type="radio" name="teacher_avatar" value="/static/teacher_faces/22ea68d3-8b39-4b21-86f5-524d563ceee4.png" class="peer sr-only">
+                <img src="/static/teacher_faces/22ea68d3-8b39-4b21-86f5-524d563ceee4.png" class="w-14 h-14 rounded-2xl bg-blue-100 p-1 object-cover border-2 border-transparent peer-checked:border-indigo-600 peer-checked:ring-2 peer-checked:ring-indigo-400">
+              </label>
+              <label class="cursor-pointer">
+                <input type="radio" name="teacher_avatar" value="/static/teacher_faces/308cb046-f220-4dba-a871-63cdef5a258c.png" class="peer sr-only">
+                <img src="/static/teacher_faces/308cb046-f220-4dba-a871-63cdef5a258c.png" class="w-14 h-14 rounded-2xl bg-purple-100 p-1 object-cover border-2 border-transparent peer-checked:border-indigo-600 peer-checked:ring-2 peer-checked:ring-indigo-400">
+              </label>
+              <label class="cursor-pointer">
+                <input type="radio" name="teacher_avatar" value="/static/teacher_faces/33768a7e-c518-4ba6-bc46-b6cc06c36aa5.png" class="peer sr-only">
+                <img src="/static/teacher_faces/33768a7e-c518-4ba6-bc46-b6cc06c36aa5.png" class="w-14 h-14 rounded-2xl bg-emerald-100 p-1 object-cover border-2 border-transparent peer-checked:border-indigo-600 peer-checked:ring-2 peer-checked:ring-indigo-400">
+              </label>
+              <label class="cursor-pointer">
+                <input type="radio" name="teacher_avatar" value="/static/teacher_faces/70a23d6a-ee5f-422b-b85e-a43ed14cab66.png" class="peer sr-only">
+                <img src="/static/teacher_faces/70a23d6a-ee5f-422b-b85e-a43ed14cab66.png" class="w-14 h-14 rounded-2xl bg-rose-100 p-1 object-cover border-2 border-transparent peer-checked:border-indigo-600 peer-checked:ring-2 peer-checked:ring-indigo-400">
+              </label>
+              <label class="cursor-pointer">
+                <input type="radio" name="teacher_avatar" value="/static/teacher_faces/9dbcd861-2ee5-4022-a40b-b36af3d8f553.png" class="peer sr-only">
+                <img src="/static/teacher_faces/9dbcd861-2ee5-4022-a40b-b36af3d8f553.png" class="w-14 h-14 rounded-2xl bg-sky-100 p-1 object-cover border-2 border-transparent peer-checked:border-indigo-600 peer-checked:ring-2 peer-checked:ring-indigo-400">
+              </label>
+              <label class="cursor-pointer">
+                <input type="radio" name="teacher_avatar" value="/static/teacher_faces/aaa3d5cf-fec2-4f08-ad68-c02cc114500b.png" class="peer sr-only">
+                <img src="/static/teacher_faces/aaa3d5cf-fec2-4f08-ad68-c02cc114500b.png" class="w-14 h-14 rounded-2xl bg-teal-100 p-1 object-cover border-2 border-transparent peer-checked:border-indigo-600 peer-checked:ring-2 peer-checked:ring-indigo-400">
+              </label>
+              <label class="cursor-pointer">
+                <input type="radio" name="teacher_avatar" value="/static/teacher_faces/c3cde75f-4cea-4624-9e4c-d235c397916c.png" class="peer sr-only">
+                <img src="/static/teacher_faces/c3cde75f-4cea-4624-9e4c-d235c397916c.png" class="w-14 h-14 rounded-2xl bg-indigo-100 p-1 object-cover border-2 border-transparent peer-checked:border-indigo-600 peer-checked:ring-2 peer-checked:ring-indigo-400">
+              </label>
+            </div>
+          </div>
+
+          <!-- Biometric Face Capture with Camera -->
+          <div class="border border-slate-200 rounded-2xl p-4 bg-slate-50/70 flex flex-col gap-3">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-camera text-indigo-600"></i>
+                <span class="text-xs font-bold text-slate-800">Biometric Face Record (AWS Rekognition)</span>
+              </div>
+              <span id="face-enrolled-badge" class="hidden text-[10px] font-extrabold text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full">
+                ✓ Face Enrolled
+              </span>
+            </div>
+
+            <!-- Camera Viewfinder -->
+            <div class="relative w-full aspect-[16/9] rounded-2xl overflow-hidden bg-slate-900 flex items-center justify-center">
+              <video id="reg-video" autoplay playsinline class="w-full h-full object-cover"></video>
+              <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div class="reticle-ring w-40 h-40"></div>
+              </div>
+              <div id="reg-cam-badge" class="absolute top-3 right-3 bg-black/60 px-2.5 py-1 rounded-full text-[10px] text-white font-bold flex items-center gap-1.5">
+                <span class="status-dot w-2 h-2 rounded-full bg-amber-400"></span>
+                <span class="status-text">Standby</span>
+              </div>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="startRegistrationCamera()" class="flex-1 py-2 px-3 bg-white hover:bg-slate-100 border border-slate-200 text-slate-800 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-video"></i> Start Camera
+              </button>
+              <button type="button" onclick="captureRegistrationFace()" id="capture-face-btn" class="flex-1 py-2 px-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow transition flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-camera-retro"></i> Capture & Record Face
+              </button>
+            </div>
+          </div>
+
+          <!-- Proceed Button -->
+          <button type="submit" id="proceed-btn" class="w-full py-4 rounded-2xl bg-[#0B1522] hover:bg-[#121f31] text-white font-extrabold text-base flex items-center justify-center gap-2 shadow-xl hover:shadow-2xl active:scale-[0.99] transition">
+            <span>Proceed & Submit to Admin for Approval</span>
+            <i class="fa-solid fa-arrow-right text-indigo-400"></i>
+          </button>
+        </form>
+      </div>
+
+      <!-- SUCCESS SCREEN -->
+      <div id="success-container" class="hidden flex flex-col items-center text-center gap-4 py-6">
+        <div class="w-16 h-16 rounded-3xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-3xl shadow-lg">
+          <i class="fa-solid fa-user-shield"></i>
+        </div>
+        <div>
+          <h3 class="text-2xl font-extrabold text-slate-900">Teacher Application Submitted!</h3>
+          <p class="text-sm text-slate-600 max-w-md mx-auto mt-1">
+            Your verification request and biometric face profile have been submitted to the College Administrator.
+          </p>
+        </div>
+
+        <div class="p-4 bg-amber-50 border border-amber-200 rounded-2xl text-xs text-amber-800 max-w-md text-left flex items-start gap-3">
+          <i class="fa-solid fa-shield-halved text-amber-600 text-base mt-0.5"></i>
+          <span>Only after the College Administrator approves your registration will you be authorized to log in to the Teacher Portal.</span>
+        </div>
+
+        <a href="/login" class="mt-2 py-3 px-8 rounded-xl bg-[#0B1522] text-white font-bold text-sm shadow hover:bg-slate-800 transition">
+          Return to Login
+        </a>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script src="/static/js/api.js"></script>
+  <script src="/static/js/camera.js"></script>
+  <script>
+    let registeredFaceBase64 = null;
+    let cameraController = null;
+
+    function toggleClassTeacherFields() {
+      const toggle = document.getElementById('is-class-teacher-toggle');
+      const box = document.getElementById('class-assigned-container');
+      if (toggle.checked) {
+        box.classList.remove('hidden');
+      } else {
+        box.classList.add('hidden');
+      }
+    }
+
+    async function sendPhase1Otp(e) {
+      e.preventDefault();
+      const email = document.getElementById('teacher-email').value;
+      const pass = document.getElementById('teacher-pass').value;
+      const confirmPass = document.getElementById('teacher-confirm-pass').value;
+
+      if (pass !== confirmPass) {
+        API.showToast("Passwords do not match!", 'error');
+        return;
+      }
+
+      const btn = document.getElementById('send-otp-btn');
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Sending OTP...`;
+
+      const res = await API.sendOtp(email, 'Teacher Registration & Verification');
+      btn.disabled = false;
+      btn.innerHTML = `<span>Send OTP Verification Code</span> <i class="fa-solid fa-paper-plane text-indigo-400 text-xs"></i>`;
+
+      if (res.success) {
+        API.showToast("Verification code sent to your email! Please check your inbox.", 'success');
+        document.getElementById('otp-section').classList.remove('hidden');
+        const otpInput = document.getElementById('otp-input');
+        otpInput.value = '';
+        otpInput.focus();
+      } else {
+        API.showToast(res.message || "Failed to send verification email", 'error');
+      }
+    }
+
+    async function verifyTeacherOtp() {
+      const email = document.getElementById('teacher-email').value;
+      const otp = document.getElementById('otp-input').value;
+      const btn = document.getElementById('verify-otp-btn');
+
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Verifying...`;
+
+      const res = await API.verifyOtp(email, otp);
+      btn.disabled = false;
+      btn.innerHTML = `Verify Code & Proceed to Phase 2`;
+
+      if (res.success) {
+        API.showToast("Email verified successfully! Advancing to Phase 2.", 'success');
+        document.getElementById('phase-1-container').classList.add('hidden');
+        document.getElementById('phase-2-container').classList.remove('hidden');
+
+        // Update stepper
+        document.getElementById('step-1-indicator').className = "flex items-center gap-3 p-2.5 rounded-xl bg-indigo-50 text-indigo-800 border border-indigo-200 transition-all";
+        document.getElementById('step-2-indicator').className = "flex items-center gap-3 p-2.5 rounded-xl bg-[#0B1522] text-white transition-all shadow-md";
+      } else {
+        API.showToast(res.message, 'error');
+      }
+    }
+
+    async function startRegistrationCamera() {
+      cameraController = new CameraController('reg-video', null, 'reg-cam-badge');
+      await cameraController.startCamera();
+    }
+
+    function captureRegistrationFace() {
+      if (cameraController) {
+        registeredFaceBase64 = cameraController.captureSnapshotBase64();
+      }
+      document.getElementById('face-enrolled-badge').classList.remove('hidden');
+      API.showToast("Teacher Face Biometric captured via AWS Rekognition!", 'success');
+    }
+
+    async function submitPhase2Registration(e) {
+      e.preventDefault();
+      const email = document.getElementById('teacher-email').value;
+      const password = document.getElementById('teacher-pass').value;
+      const name = document.getElementById('teacher-name').value;
+      const employee_id = document.getElementById('teacher-emp-id').value;
+      const department = document.getElementById('teacher-dept').value;
+      const designation = document.getElementById('teacher-desig').value;
+      const cabin = document.getElementById('teacher-cabin').value;
+      const subjects = document.getElementById('teacher-subjects').value;
+      const is_class_teacher = document.getElementById('is-class-teacher-toggle').checked;
+      const class_assigned = is_class_teacher ? document.getElementById('class-assigned-select').value : '';
+      const avatar = document.querySelector('input[name="teacher_avatar"]:checked').value;
+
+      const proceedBtn = document.getElementById('proceed-btn');
+      proceedBtn.disabled = true;
+      proceedBtn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Submitting to Admin...`;
+
+      const payload = {
+        email, password, name, employee_id, department, designation, cabin,
+        subjects, is_class_teacher, class_assigned, avatar, face_image: registeredFaceBase64
+      };
+
+      const res = await API.registerTeacher(payload);
+      if (res.success) {
+        if (cameraController) cameraController.stopCamera();
+        document.getElementById('phase-2-container').classList.add('hidden');
+        document.getElementById('success-container').classList.remove('hidden');
+        API.showToast(res.message, 'success');
+      } else {
+        proceedBtn.disabled = false;
+        proceedBtn.innerHTML = `<span>Proceed & Submit to Admin for Approval</span> <i class="fa-solid fa-arrow-right text-indigo-400"></i>`;
+        API.showToast(res.message || 'Registration failed', 'error');
+      }
+    }
+  </script>
+</body>
+</html>
