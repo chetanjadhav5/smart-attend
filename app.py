@@ -17,6 +17,14 @@ SSL_KEY = os.getenv("SSL_KEY", "key.pem").strip()
 
 # Build dynamic allowed origins list from .env
 raw_origins = os.getenv("ALLOWED_ORIGINS", "")
+if "${EC2_PUBLIC_IP}" in raw_origins:
+    raw_origins = raw_origins.replace("${EC2_PUBLIC_IP}", EC2_PUBLIC_IP)
+if "$EC2_PUBLIC_IP" in raw_origins:
+    raw_origins = raw_origins.replace("$EC2_PUBLIC_IP", EC2_PUBLIC_IP)
+if "${PORT}" in raw_origins:
+    raw_origins = raw_origins.replace("${PORT}", str(PORT))
+if "$PORT" in raw_origins:
+    raw_origins = raw_origins.replace("$PORT", str(PORT))
 allowed_origins = [o.strip() for o in raw_origins.split(",") if o.strip()]
 
 # Guarantee EC2 IP and standard development ports are present
@@ -189,7 +197,7 @@ if __name__ == "__main__":
         print(f" Public EC2 Access: {scheme}://{EC2_PUBLIC_IP}:{PORT}")
     if ssl_context:
         print(" [SSL/HTTPS Active] WebRTC MediaDevices & Camera Enabled!")
-        print(" Browser Tip: Click 'Advanced' -> 'Proceed to 3.110.208.141' to accept cert.")
+        print(f" Browser Tip: Click 'Advanced' -> 'Proceed to {EC2_PUBLIC_IP}' to accept cert.")
     else:
         print(" [HTTP Mode] Set ENABLE_HTTPS=true in .env to enable SSL & Camera.")
     print("=" * 60)

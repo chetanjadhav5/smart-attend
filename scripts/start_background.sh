@@ -29,10 +29,17 @@ gunicorn \
     --error-logfile error.log \
     app:app
 
+# Load EC2_PUBLIC_IP and PORT from .env if present
+if [ -f .env ]; then
+    export $(grep -E '^(EC2_PUBLIC_IP|PORT)=' .env | xargs) 2>/dev/null || true
+fi
+SERVER_IP="${EC2_PUBLIC_IP:-3.110.208.141}"
+SERVER_PORT="${PORT:-5000}"
+
 echo "=========================================================================="
 echo " RaiSakshya is now running in the BACKGROUND!"
 echo " Safe to close SSH session."
-echo " Access URL: https://3.110.208.141:5000"
+echo " Access URL: https://${SERVER_IP}:${SERVER_PORT}"
 echo " Process PID: $(cat gunicorn.pid 2>/dev/null)"
 echo " Check logs anytime with: tail -f error.log"
 echo " Stop server anytime with: bash scripts/stop_background.sh"
